@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
-func CallMe() {
-	fmt.Println("Hello, World!")
+func CallMe() string {
+	return "Hello, World!"
 }
