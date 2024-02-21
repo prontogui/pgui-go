@@ -1,3 +1,3 @@
-module github.com/prontogui/pgui-go
+module github.com/prontogui/golib
 
 go 1.21.6
