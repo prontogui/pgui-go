@@ -19,3 +19,10 @@
 
 # Go workspace file
 go.work
+
+# "imported" protobuf files
+proto
+
+# protobuf generated files
+pb
+
