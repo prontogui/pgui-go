@@ -69,7 +69,9 @@ func ExchangeUpdates(cborOut []byte) (bool, []byte) {
 	}
 }
 
-// Implementation of PGServer.StreamUpdates API call
+// Implementation of PGServer.StreamUpdates API call.
+// TODO:  properly handle simultaneous calls to this API, e.g. two different apps connected
+// at same time.
 func (s *PGServerImpl) StreamUpdates(stream pb.PGService_StreamUpdatesServer) error {
 
 	// Launch a Go routine to stream mutations back to caller
