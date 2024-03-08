@@ -29,7 +29,7 @@ func init() {
 	outboundUpdates = make(chan []byte, 2)
 }
 
-// This function pulls updates from a channel and streams them to app.
+// Called as a GO routine, this function pulls updates from a channel and streams them to app.
 func streamOutboundUpdates(cancel chan bool, stream pb.PGService_StreamUpdatesServer) {
 
 	// Loop for every udpate streamed back to caller...
@@ -49,6 +49,23 @@ func streamOutboundUpdates(cancel chan bool, stream pb.PGService_StreamUpdatesSe
 			uxs := &pb.PGUpdate{Cbor: cbor}
 			stream.SendMsg(uxs)
 		}
+	}
+}
+
+// Sends an update (as CBOR) to the app and waits for an update to come back.
+func ExchangeUpdates(cborOut []byte) (bool, []byte) {
+
+	// Queue the update to be streamed to app
+	outboundUpdates <- cborOut
+
+	// Wait for an update from app
+	select {
+	case cborIn, ok := <-inboundUpdates:
+		if !ok {
+			return false, nil
+		}
+
+		return true, cborIn
 	}
 }
 
