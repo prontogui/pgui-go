@@ -1,11 +1,13 @@
 package pgcomm
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
 	"net"
 
+	cbor "github.com/fxamacker/cbor/v2"
 	pb "github.com/prontogui/golib/pb"
 	"google.golang.org/grpc"
 )
@@ -53,20 +55,30 @@ func streamOutboundUpdates(cancel chan bool, stream pb.PGService_StreamUpdatesSe
 }
 
 // Sends an update (as CBOR) to the app and waits for an update to come back.
-func ExchangeUpdates(cborOut []byte) (bool, []byte) {
+func ExchangeUpdates(updateOut interface{}) (interface{}, error) {
+
+	cborOut, err := cbor.Marshal(updateOut)
+	if err != nil {
+		return nil, err
+	}
 
 	// Queue the update to be streamed to app
 	outboundUpdates <- cborOut
 
 	// Wait for an update from app
-	select {
-	case cborIn, ok := <-inboundUpdates:
-		if !ok {
-			return false, nil
-		}
-
-		return true, cborIn
+	updateIn, ok := <-inboundUpdates
+	if !ok {
+		return nil, errors.New("inboundUpdates channel is invalid")
 	}
+
+	var cborIn interface{}
+
+	err = cbor.Unmarshal(updateIn, &cborIn)
+	if err != nil {
+		return nil, err
+	}
+
+	return cborIn, nil
 }
 
 // Implementation of PGServer.StreamUpdates API call.

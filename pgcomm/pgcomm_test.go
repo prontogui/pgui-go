@@ -25,12 +25,12 @@ func Test_ExchangeUpdates1(t *testing.T) {
 		inboundUpdates <- update
 	}()
 
-	ok, updateIn := ExchangeUpdates([]byte{1, 2})
+	updateIn, err := ExchangeUpdates("12")
 
-	if !ok {
-		t.Fatal("ok = false was returned.  Expected ok = true")
+	if err != nil {
+		t.Fatal("error was returned.  Expected no error")
 	}
-	if updateIn == nil || len(updateIn) != 2 || updateIn[0] != 1 || updateIn[1] != 2 {
+	if updateIn.(string) != "12" {
 		t.Fatal("wrong update was returned")
 	}
 }
@@ -43,9 +43,13 @@ func Test_ExchangeUpdates2(t *testing.T) {
 		close(inboundUpdates)
 	}()
 
-	ok, _ := ExchangeUpdates([]byte{1, 2})
+	_, err := ExchangeUpdates("12")
 
-	if ok {
-		t.Fatal("ok = true was returned.  Expected ok = false")
+	if err == nil {
+		t.Fatal("no error was returned.  Expected an error")
+	}
+
+	if err.Error() != "inboundUpdates channel is invalid" {
+		t.Fatal("wrong error was returned")
 	}
 }
