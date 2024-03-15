@@ -63,14 +63,19 @@ func verifyListOfPrimitives(t *testing.T, primitives []any, expecting ...primiti
 
 func Test_FullUpdate(t *testing.T) {
 
-	c := &primitive.Command{}
+	top := []any{&primitive.Command{}}
 	s := NewSynchro()
-	s.SetTopPrimitive(c)
+	s.SetTopPrimitives(top)
 	// Verify there is a full update pending
 	update := s.GetFullUpdate()
 	primitives := verifyUpdateStructure(t, update, true)
 
 	ec := &primitive.Command{}
-	ec.Label.Set("abcs")
+
 	verifyListOfPrimitives(t, primitives, ec)
 }
+
+// TODO
+// Build a function that returns a somewhat sophisticated list of primitives for testing partial updates.
+// Write tests to see if partial updates are created currectly as individual and set of fields are changed.
+//
