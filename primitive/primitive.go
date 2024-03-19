@@ -1,6 +1,7 @@
 package primitive
 
+import "github.com/prontogui/golib/key"
+
 type Primitive interface {
-	GetPKey() []uint
-	AssignPKey([]uint, func([]uint) uint8)
+	NotifyOnSet(key.PKey, func(key.PKey, key.FKey))
 }

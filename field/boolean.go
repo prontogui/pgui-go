@@ -1,6 +1,7 @@
 package field
 
 type Boolean struct {
+	Reserved
 	b bool
 }
 
@@ -10,4 +11,5 @@ func (f *Boolean) Get() bool {
 
 func (f *Boolean) Set(b bool) {
 	f.b = b
+	f.OnSet()
 }

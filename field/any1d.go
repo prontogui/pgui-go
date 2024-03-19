@@ -1,6 +1,7 @@
 package field
 
 type Any1D struct {
+	Reserved
 	aa []any
 }
 
@@ -10,4 +11,5 @@ func (f *Any1D) Get() []any {
 
 func (f *Any1D) Set(aa []any) {
 	f.aa = aa
+	f.OnSet()
 }

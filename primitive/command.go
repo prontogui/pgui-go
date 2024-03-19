@@ -2,10 +2,11 @@ package primitive
 
 import (
 	"github.com/prontogui/golib/field"
+	"github.com/prontogui/golib/key"
 )
 
 type Command struct {
-	PReserved
+	Reserved
 
 	BSide BSide
 
@@ -14,21 +15,10 @@ type Command struct {
 	Status field.Integer
 }
 
-func NewCommand() *Command {
-	cmd := &Command{}
-
-	closure := func(fieldno int8) {
-		cmd.OnFieldSet(fieldno)
-	}
-
-	// Initialize PReserved stuff according to number of fields
-	cmd.Init(3)
-
-	// Assign field number and "on set" closure to each field
-	// TODO:  handle BSide somehow
-	cmd.BSide.OnSet(closure)
-	cmd.Label.OnSet(0, closure)
-	// And other fields...
-
-	return cmd
+func (cmd *Command) NotifyOnSet(pkey key.PKey, onset func(key.PKey, key.FKey)) {
+	// Prepare all the field for updates
+	cmd.BSide.PrepareForUpdates(pkey, onset)
+	cmd.Label.PrepareForUpdates("Label", pkey, onset)
+	cmd.Issued.PrepareForUpdates("Issued", pkey, onset)
+	cmd.Status.PrepareForUpdates("Status", pkey, onset)
 }

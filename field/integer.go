@@ -1,6 +1,7 @@
 package field
 
 type Integer struct {
+	Reserved
 	i int
 }
 
@@ -10,4 +11,5 @@ func (f *Integer) Get() int {
 
 func (f *Integer) Set(i int) {
 	f.i = i
+	f.OnSet()
 }

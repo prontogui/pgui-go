@@ -1,6 +1,7 @@
 package field
 
 type Blob struct {
+	Reserved
 	blob []byte
 }
 
@@ -10,4 +11,5 @@ func (f *Blob) Get() []byte {
 
 func (f *Blob) Set(blob []byte) {
 	f.blob = blob
+	f.OnSet()
 }
