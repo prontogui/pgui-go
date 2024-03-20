@@ -11,5 +11,5 @@ func (f *Boolean) Get() bool {
 
 func (f *Boolean) Set(b bool) {
 	f.b = b
-	f.OnSet()
+	f.OnSet(false)
 }

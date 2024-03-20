@@ -11,5 +11,5 @@ func (f *Blob) Get() []byte {
 
 func (f *Blob) Set(blob []byte) {
 	f.blob = blob
-	f.OnSet()
+	f.OnSet(false)
 }

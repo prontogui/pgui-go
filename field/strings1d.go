@@ -11,5 +11,5 @@ func (f *Strings1D) Get() []string {
 
 func (f *Strings1D) Set(sa []string) {
 	f.sa = sa
-	f.OnSet()
+	f.OnSet(false)
 }

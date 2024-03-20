@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	cbor "github.com/fxamacker/cbor/v2"
-	"github.com/prontogui/golib/primitive"
+	"github.com/prontogui/golib/coreprimitives"
 	// "github.com/prontogui/golib/testhelp"
 )
 
@@ -102,16 +102,16 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...any) {
 func Test_FullUpdate(t *testing.T) {
 
 	s := NewSynchro()
-	s.SetTopPrimitives(&primitive.Command{})
+	s.SetTopPrimitives(&coreprimitives.Command{})
 
 	// Verify there is a full update pending
-	ec := &primitive.Command{}
+	ec := &coreprimitives.Command{}
 	verifyFullUpdate(t, s.GetFullUpdate(), ec)
 }
 
 func Test_PartialUpdate(t *testing.T) {
 
-	cmd := &primitive.Command{}
+	cmd := &coreprimitives.Command{}
 	cmd.Label.Set("Hello, World!")
 
 	s := NewSynchro()
@@ -125,12 +125,19 @@ func Test_PartialUpdate(t *testing.T) {
 	// Change command label
 	cmd.Label.Set("Guten Tag!")
 
-	// Test for partial update
-	cmd2 := &primitive.Command{}
-	cmd2.Label.Set("Guten Tag!")
-	//cmd2.SetPKey([]int{0})
+	// Test for partial updates available
+	updatesCbor := s.GetPartialUpdate()
+	if updatesCbor == nil {
+		t.Fatal("no updates available")
+	}
 
-	// verifyUpdate(t, s.GetPartialUpdate(), cmd2)
+	// Verify the content of updates
+	var updates []any
+	err := cbor.Unmarshal(updatesCbor, &updates)
+	if err != nil {
+		t.Fatalf("attempt to unmarshall updateds resulted in error of %s", err.Error())
+	}
+
 }
 
 // TODO

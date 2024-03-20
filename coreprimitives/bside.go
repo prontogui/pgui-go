@@ -1,12 +1,8 @@
-package primitive
+package coreprimitives
 
 import (
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
-)
-
-const (
-	NumBsideFields = 3
 )
 
 type BSide struct {
@@ -25,7 +21,7 @@ type BSide struct {
 	Embodiment field.String
 }
 
-func (bs *BSide) PrepareForUpdates(pkey key.PKey, onset func(key.PKey, key.FKey)) {
+func (bs *BSide) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	bs.Row.PrepareForUpdates("Row", pkey, onset)
 	bs.Col.PrepareForUpdates("Col", pkey, onset)
 	bs.Embodiment.PrepareForUpdates("Embodiment", pkey, onset)

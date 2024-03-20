@@ -1,4 +1,4 @@
-package primitive
+package coreprimitives
 
 import (
 	"github.com/prontogui/golib/field"
@@ -15,7 +15,7 @@ type Command struct {
 	Status field.Integer
 }
 
-func (cmd *Command) NotifyOnSet(pkey key.PKey, onset func(key.PKey, key.FKey)) {
+func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	// Prepare all the field for updates
 	cmd.BSide.PrepareForUpdates(pkey, onset)
 	cmd.Label.PrepareForUpdates("Label", pkey, onset)
