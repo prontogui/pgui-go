@@ -18,6 +18,14 @@ type TestPrimitive struct {
 func (*TestPrimitive) PrepareForUpdates(key.PKey, key.OnSetFunction) {
 }
 
+func (*TestPrimitive) GetChildPrimitive(index int) primitive.Interface {
+	return nil
+}
+
+func (*TestPrimitive) GetFieldValue(fieldname string) any {
+	return nil
+}
+
 func Test_Any1DSetAndGet(t *testing.T) {
 	f := Any1D{}
 

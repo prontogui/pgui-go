@@ -9,47 +9,6 @@ import (
 	// "github.com/prontogui/golib/testhelp"
 )
 
-/* Version 1 - delete if all goes well.
-
-func verifyUpdateStructure(t *testing.T, update any, isfull bool) []any {
-
-	if update == nil {
-		t.Fatal("no update returned.")
-	}
-
-	l, ok := update.([]any)
-	if !ok {
-		t.Fatal("the returned update has invalid structure.")
-	}
-	if len(l) != 2 {
-		t.Fatal("the update returned a list with wrong number of items.  Expecting 2 items.")
-	}
-
-	flag, ok := l[0].(bool)
-
-	if !ok {
-		t.Fatal("first elemenent of returned udpate is not a boolean.")
-	}
-	if isfull {
-		if !flag {
-			t.Fatal("partial update returned.  Expecting a full update to be returned.")
-		}
-	} else {
-		if flag {
-			t.Fatal("full update returned.  Expecting a partial update to be returned.")
-		}
-	}
-
-	updateItem, ok := l[1].([]any)
-
-	if !ok {
-		t.Fatal("second element of returned update is not a list of interfaces.")
-	}
-
-	return updateItem
-}
-*/
-
 func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...any) {
 
 	if cborUpdate == nil {
@@ -109,35 +68,94 @@ func Test_FullUpdate(t *testing.T) {
 	verifyFullUpdate(t, s.GetFullUpdate(), ec)
 }
 
-func Test_PartialUpdate(t *testing.T) {
+func verifyUpdateItemPKey(t *testing.T, item any, pkey uint64) {
+	itemPKey, ok := item.(uint64)
+	if !ok {
+		t.Fatal("update item cannot be converted to PKey")
+	}
 
-	cmd := &coreprimitives.Command{}
-	cmd.Label.Set("Hello, World!")
+	if itemPKey != pkey {
+		t.Fatal("update item does not match expected PKey")
+	}
+}
+
+func verifyUpdateItemMap(t *testing.T, item any, m map[string]any) {
+	itemmap, ok := item.(map[any]any)
+	if !ok {
+		t.Fatal("update item is not map[any]any type")
+	}
+
+	if len(itemmap) != len(m) {
+		t.Fatal("update item map is different size than expected")
+	}
+
+	for k, v := range m {
+		v2, ok := itemmap[k]
+		if !ok {
+			t.Fatalf("key %s not found in update item map", k)
+		}
+
+		if !reflect.DeepEqual(v, v2) {
+			t.Fatalf("update item key/value pair for '%s' does not match as expected", k)
+		}
+	}
+
+}
+
+func Test_PartialUpdate1(t *testing.T) {
+
+	cmd1 := &coreprimitives.Command{}
+	cmd2 := &coreprimitives.Command{}
+	cmd3 := &coreprimitives.Command{}
 
 	s := NewSynchro()
-	s.SetTopPrimitives(cmd)
+	s.SetTopPrimitives(cmd1, cmd2, cmd3)
 
 	// Test for no partial update yet
-	if s.GetPartialUpdate() != nil {
+	pu, err := s.GetPartialUpdate()
+	if pu != nil {
 		t.Fatal("partial update available when nothing changed. Not expecting a partial update.")
+	}
+	if err != nil {
+		t.Fatalf("unexpected error %s while getting partial update", err.Error())
 	}
 
 	// Change command label
-	cmd.Label.Set("Guten Tag!")
+	cmd1.Label.Set("Guten Tag!")
+	cmd1.Issued.Set(true)
+
+	cmd3.Status.Set(2)
 
 	// Test for partial updates available
-	updatesCbor := s.GetPartialUpdate()
+	updatesCbor, err := s.GetPartialUpdate()
 	if updatesCbor == nil {
 		t.Fatal("no updates available")
+	}
+	if err != nil {
+		t.Fatalf("unexpected error %s while getting partial update", err.Error())
 	}
 
 	// Verify the content of updates
 	var updates []any
-	err := cbor.Unmarshal(updatesCbor, &updates)
+	err = cbor.Unmarshal(updatesCbor, &updates)
 	if err != nil {
 		t.Fatalf("attempt to unmarshall updateds resulted in error of %s", err.Error())
 	}
 
+	len := len(updates)
+	if len != 4 {
+		t.Fatalf("partial update returned %d items.  Expecting 4 items", len)
+	}
+
+	verifyUpdateItemPKey(t, updates[0], 0)
+
+	m1 := map[string]any{"Label": "Guten Tag!", "Issued": true}
+	verifyUpdateItemMap(t, updates[1], m1)
+
+	verifyUpdateItemPKey(t, updates[2], 2)
+
+	m2 := map[string]any{"Status": uint64(2)}
+	verifyUpdateItemMap(t, updates[3], m2)
 }
 
 // TODO

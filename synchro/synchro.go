@@ -9,7 +9,7 @@ import (
 
 type Update struct {
 	pkey    key.PKey
-	fields  [coreprimitives.MaxPrimitiveFields]key.FKey
+	fields  []key.FKey
 	ignored bool
 }
 
@@ -42,23 +42,34 @@ func ignoreDescendentUpdates(updates []*Update, pkey key.PKey) {
 
 func appendFieldToUpdate(update *Update, fkey key.FKey) {
 
-	var nextfree int
-	var nextfkey key.FKey
-
-	for nextfree, nextfkey = range update.fields {
+	for _, nextfkey := range update.fields {
 		// Already been recorded as an update?
 		if nextfkey == fkey {
 			return
 		}
-		// Found a free location to store fkey?
-		if fkey == 0 {
-			break
-		}
 	}
 
-	// TODO:  test for case where every field is updated for the primitive with the most fields.  Make sure we
-	// don't get index out of bounds.
-	update.fields[nextfree] = fkey
+	update.fields = append(update.fields, fkey)
+}
+
+func locatePrimitive(primitives []primitive.Interface, pkey key.PKey) primitive.Interface {
+
+	level := 0
+
+	var found primitive.Interface
+
+	// Get one of the top-level primitives to start with
+	next := primitives[pkey.IndexAtLevel(level)]
+
+	for next != nil {
+		found = next
+
+		// Try finding a child at the next level down
+		level = level + 1
+		next = found.GetChildPrimitive(pkey.IndexAtLevel(level))
+	}
+
+	return found
 }
 
 func (s *Synchro) OnSet(pkey key.PKey, fkey key.FKey, structural bool) {
@@ -70,7 +81,7 @@ func (s *Synchro) OnSet(pkey key.PKey, fkey key.FKey, structural bool) {
 	} else {
 		// Add a new update to pending
 		newUpdate := &Update{pkey: pkey}
-		newUpdate.fields[0] = fkey
+		newUpdate.fields = []key.FKey{fkey}
 		s.pendingUpdates = append(s.pendingUpdates, newUpdate)
 	}
 
@@ -91,27 +102,43 @@ func (s *Synchro) SetTopPrimitives(primitives ...primitive.Interface) {
 	}
 }
 
-func (s *Synchro) GetPartialUpdate() []byte {
+func marshalFieldsToMap(p primitive.Interface, fields []key.FKey) map[string]any {
+
+	m := make(map[string]any, len(fields))
+
+	for _, fkey := range fields {
+		fieldname := key.FieldnameFor(fkey)
+		m[fieldname] = p.GetFieldValue(fieldname)
+	}
+
+	return m
+}
+
+func (s *Synchro) GetPartialUpdate() ([]byte, error) {
 
 	if len(s.pendingUpdates) == 0 {
-		return nil
+		return nil, nil
 	}
+
+	var updateList []any
 
 	for _, update := range s.pendingUpdates {
 		if !update.ignored {
-			// Locate the primitive
 
-			// Get updates as a map from primitive based on fields
+			// Locate the primitive
+			found := locatePrimitive(s.primitives, update.pkey)
+
+			m := marshalFieldsToMap(found, update.fields)
 
 			// Add pkey and map to array of updates
-
+			updateList = append(updateList, update.pkey, m)
 		}
 	}
 
 	// Clear the pending updates
 	s.pendingUpdates = []*Update{}
 
-	return nil
+	return cbor.Marshal(updateList)
 }
 
 func (s *Synchro) GetFullUpdate() []byte {

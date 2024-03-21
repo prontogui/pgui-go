@@ -3,6 +3,7 @@ package coreprimitives
 import (
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
+	"github.com/prontogui/golib/primitive"
 )
 
 type BSide struct {
@@ -25,4 +26,20 @@ func (bs *BSide) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	bs.Row.PrepareForUpdates("Row", pkey, onset)
 	bs.Col.PrepareForUpdates("Col", pkey, onset)
 	bs.Embodiment.PrepareForUpdates("Embodiment", pkey, onset)
+}
+
+func (bs *BSide) GetChildPrimitive(index int) primitive.Interface {
+	return nil
+}
+
+func (bs *BSide) GetFieldValue(fieldname string) any {
+	switch fieldname {
+	case "Row":
+		return bs.Row
+	case "Col":
+		return bs.Col
+	case "Embodiment":
+		return bs.Embodiment
+	}
+	return nil
 }
