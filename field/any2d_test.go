@@ -8,11 +8,37 @@ import (
 func Test_Any2DSetAndGet(t *testing.T) {
 	f := Any2D{}
 
-	aaa := [][]any{{true, "abc", 10}, {false, "def", 20}, {true, "xyz", 30}}
+	actual, _ := generateTestData2D()
+	f.Set(actual)
 
-	f.Set(aaa)
+	expected, _ := generateTestData2D()
 
-	if !reflect.DeepEqual(f.Get(), aaa) {
-		t.Fatal("cannot set any 2D array and get the same value back.")
+	if !reflect.DeepEqual(f.Get(), expected) {
+		t.Fatal("cannot set a 2D array and get the same value back.")
+	}
+}
+
+func Test_Any2DPrepareForUpdates(t *testing.T) {
+	f := Any2D{}
+
+	values_i, values_p := generateTestData2D()
+	f.Set(values_i)
+
+	f.PrepareForUpdates("Abc", 50, testOnset)
+
+	verifyStashUpdateInfo(t, &f.Reserved)
+
+	for i, p1 := range values_p {
+		for j, p2 := range p1 {
+			if !p2.prepped {
+				t.Errorf("array element (%d, %d) was not prepared correctly", i, j)
+			}
+		}
+	}
+
+	f.Set(values_i)
+
+	if !testOnsetCalled {
+		t.Error("onset was not called")
 	}
 }

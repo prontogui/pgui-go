@@ -3,40 +3,41 @@ package field
 import (
 	"reflect"
 	"testing"
-
-	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
-
-type TestPrimitive struct {
-	b bool
-	s string
-	i int
-}
-
-// Implement primitive interface
-func (*TestPrimitive) PrepareForUpdates(key.PKey, key.OnSetFunction) {
-}
-
-func (*TestPrimitive) GetChildPrimitive(index int) primitive.Interface {
-	return nil
-}
-
-func (*TestPrimitive) GetFieldValue(fieldname string) any {
-	return nil
-}
 
 func Test_Any1DSetAndGet(t *testing.T) {
 	f := Any1D{}
 
-	item1 := &TestPrimitive{false, "a", 0}
-	item2 := &TestPrimitive{true, "b", 1}
+	actuals_i, _ := generateTestData1D()
+	f.Set(actuals_i)
 
-	aa := []primitive.Interface{item1, item2}
+	expected_i, _ := generateTestData1D()
 
-	f.Set(aa)
-
-	if !reflect.DeepEqual(f.Get(), aa) {
+	if !reflect.DeepEqual(f.Get(), expected_i) {
 		t.Fatal("cannot set any array and get the same value back.")
+	}
+}
+
+func Test_Any1DPrepareForUpdates(t *testing.T) {
+	f := Any1D{}
+
+	values_i, values_p := generateTestData1D()
+
+	f.Set(values_i)
+
+	f.PrepareForUpdates("Abc", 50, testOnset)
+
+	verifyStashUpdateInfo(t, &f.Reserved)
+
+	for i, p := range values_p {
+		if !p.prepped {
+			t.Errorf("array element (%d) was not prepared correctly", i)
+		}
+	}
+
+	f.Set(values_i)
+
+	if !testOnsetCalled {
+		t.Error("onset was not called")
 	}
 }

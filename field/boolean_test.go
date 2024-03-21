@@ -23,3 +23,17 @@ func Test_BooleanSetAndGetTrue(t *testing.T) {
 		t.Fatal("cannot set boolean to true and get the same value back.")
 	}
 }
+
+func Test_BooleanPrepareForUpdates(t *testing.T) {
+	f := Boolean{}
+
+	f.PrepareForUpdates("Abc", 50, testOnset)
+
+	verifyStashUpdateInfo(t, &f.Reserved)
+
+	f.Set(true)
+
+	if !testOnsetCalled {
+		t.Error("onset was not called")
+	}
+}

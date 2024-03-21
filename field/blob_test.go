@@ -14,3 +14,17 @@ func Test_BlobSetAndGet(t *testing.T) {
 		t.Fatal("cannot set blob and get the same value back.")
 	}
 }
+
+func Test_BlobPrepareForUpdates(t *testing.T) {
+	f := Blob{}
+
+	f.PrepareForUpdates("Abc", 50, testOnset)
+
+	verifyStashUpdateInfo(t, &f.Reserved)
+
+	f.Set([]byte{1, 2, 3})
+
+	if !testOnsetCalled {
+		t.Error("onset was not called")
+	}
+}

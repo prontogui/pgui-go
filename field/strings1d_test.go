@@ -16,3 +16,17 @@ func Test_String1DSetAndGet(t *testing.T) {
 		t.Fatal("cannot set string array and get the same value back.")
 	}
 }
+
+func Test_String1DPrepareForUpdates(t *testing.T) {
+	f := Strings1D{}
+
+	f.PrepareForUpdates("Abc", 50, testOnset)
+
+	verifyStashUpdateInfo(t, &f.Reserved)
+
+	f.Set([]string{"abc", "xyz"})
+
+	if !testOnsetCalled {
+		t.Error("onset was not called")
+	}
+}
