@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	cbor "github.com/fxamacker/cbor/v2"
-	"github.com/prontogui/golib"
 	// "github.com/prontogui/golib/testhelp"
 )
 
@@ -61,11 +60,26 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...any) {
 func Test_FullUpdate(t *testing.T) {
 
 	s := NewSynchro()
-	s.SetTopPrimitives(&golib.Command{})
+	s.SetTopPrimitives(&testcommand{})
 
 	// Verify there is a full update pending
-	ec := &golib.Command{}
-	verifyFullUpdate(t, s.GetFullUpdate(), ec)
+	ec := &testcommand{}
+	fullupdate, err := s.GetFullUpdate()
+	if err != nil {
+		t.Fatalf("unexpected error:  %s", err.Error())
+	}
+	verifyFullUpdate(t, fullupdate, ec)
+}
+
+func verifyUpdateItemFalse(t *testing.T, item any) {
+	flag, ok := item.(bool)
+	if !ok {
+		t.Fatal("update flag cannot be converted to bool")
+	}
+
+	if flag == true {
+		t.Fatal("update flag is true.  Expecting a flag of false to indicate partial update")
+	}
 }
 
 func verifyUpdateItemPKey(t *testing.T, item any, pkey uint64) {
@@ -104,9 +118,9 @@ func verifyUpdateItemMap(t *testing.T, item any, m map[string]any) {
 
 func Test_PartialUpdate1(t *testing.T) {
 
-	cmd1 := &golib.Command{}
-	cmd2 := &golib.Command{}
-	cmd3 := &golib.Command{}
+	cmd1 := &testcommand{}
+	cmd2 := &testcommand{}
+	cmd3 := &testcommand{}
 
 	s := NewSynchro()
 	s.SetTopPrimitives(cmd1, cmd2, cmd3)
@@ -143,19 +157,21 @@ func Test_PartialUpdate1(t *testing.T) {
 	}
 
 	len := len(updates)
-	if len != 4 {
-		t.Fatalf("partial update returned %d items.  Expecting 4 items", len)
+	if len != 5 {
+		t.Fatalf("partial update returned %d items.  Expecting 5 items", len)
 	}
 
-	verifyUpdateItemPKey(t, updates[0], 0)
+	verifyUpdateItemFalse(t, updates[0])
+
+	verifyUpdateItemPKey(t, updates[1], 0)
 
 	m1 := map[string]any{"Label": "Guten Tag!", "Issued": true}
-	verifyUpdateItemMap(t, updates[1], m1)
+	verifyUpdateItemMap(t, updates[2], m1)
 
-	verifyUpdateItemPKey(t, updates[2], 2)
+	verifyUpdateItemPKey(t, updates[3], 2)
 
 	m2 := map[string]any{"Status": uint64(2)}
-	verifyUpdateItemMap(t, updates[3], m2)
+	verifyUpdateItemMap(t, updates[4], m2)
 }
 
 // TODO

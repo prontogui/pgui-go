@@ -119,7 +119,7 @@ func (s *Synchro) GetPartialUpdate() ([]byte, error) {
 		return nil, nil
 	}
 
-	var updateList []any
+	updateList := []any{false}
 
 	for _, update := range s.pendingUpdates {
 		if !update.ignored {
@@ -140,9 +140,19 @@ func (s *Synchro) GetPartialUpdate() ([]byte, error) {
 	return cbor.Marshal(updateList)
 }
 
-func (s *Synchro) GetFullUpdate() []byte {
+func (s *Synchro) GetFullUpdate() ([]byte, error) {
 
-	return []byte{}
+	if s.primitives == nil {
+		return nil, nil
+	}
+
+	l := []any{true}
+
+	for _, v := range s.primitives {
+		l = append(l, v)
+	}
+
+	return cbor.Marshal(l)
 }
 
 func (s *Synchro) IngestUpdates(cbor []byte) {

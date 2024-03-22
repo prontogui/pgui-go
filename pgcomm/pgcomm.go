@@ -7,32 +7,34 @@ import (
 	"log/slog"
 	"net"
 
-	cbor "github.com/fxamacker/cbor/v2"
 	pb "github.com/prontogui/golib/pb"
 	"google.golang.org/grpc"
 )
 
-// The active server.
-// - a valid reference after calling Serve() and returns no error.
-// - null reference after calling StopServing().
-var active_server *grpc.Server
-
 // Implementation of the PGServer
-type PGServerImpl struct {
+type PGComm struct {
 	pb.UnimplementedPGServiceServer
+
+	// The active server.
+	// - a valid reference after calling Serve() and returns no error.
+	// - null reference after calling StopServing().
+	active_server *grpc.Server
+
+	inboundUpdates  chan []byte
+	outboundUpdates chan []byte
 }
 
-var inboundUpdates chan []byte
-var outboundUpdates chan []byte
+func NewPGComm() *PGComm {
+	pgc := &PGComm{}
 
-// Package initializer
-func init() {
-	inboundUpdates = make(chan []byte, 2)
-	outboundUpdates = make(chan []byte, 2)
+	pgc.inboundUpdates = make(chan []byte, 2)
+	pgc.outboundUpdates = make(chan []byte, 2)
+
+	return pgc
 }
 
 // Called as a GO routine, this function pulls updates from a channel and streams them to app.
-func streamOutboundUpdates(cancel chan bool, stream pb.PGService_StreamUpdatesServer) {
+func (pgc *PGComm) streamOutboundUpdates(cancel chan bool, stream pb.PGService_StreamUpdatesServer) {
 
 	// Loop for every udpate streamed back to caller...
 	for {
@@ -42,7 +44,7 @@ func streamOutboundUpdates(cancel chan bool, stream pb.PGService_StreamUpdatesSe
 			return
 
 		// When a new update is queued up or channel is closed...
-		case cbor, ok := <-outboundUpdates:
+		case cbor, ok := <-pgc.outboundUpdates:
 			if !ok {
 				return
 			}
@@ -55,40 +57,37 @@ func streamOutboundUpdates(cancel chan bool, stream pb.PGService_StreamUpdatesSe
 }
 
 // Sends an update (as CBOR) to the app and waits for an update to come back.
-func ExchangeUpdates(updateOut interface{}) (interface{}, error) {
-
-	cborOut, err := cbor.Marshal(updateOut)
-	if err != nil {
-		return nil, err
-	}
+func (pgc *PGComm) ExchangeUpdates(updateOut []byte) ([]byte, error) {
 
 	// Queue the update to be streamed to app
-	outboundUpdates <- cborOut
+	pgc.outboundUpdates <- updateOut
 
 	// Wait for an update from app
-	updateIn, ok := <-inboundUpdates
+	updateIn, ok := <-pgc.inboundUpdates
 	if !ok {
 		return nil, errors.New("inboundUpdates channel is invalid")
 	}
 
-	var cborIn interface{}
+	/*
+		var cborIn interface{}
 
-	err = cbor.Unmarshal(updateIn, &cborIn)
-	if err != nil {
-		return nil, err
-	}
+		err = cbor.Unmarshal(updateIn, &cborIn)
+		if err != nil {
+			return nil, err
+		}
+	*/
 
-	return cborIn, nil
+	return updateIn, nil
 }
 
 // Implementation of PGServer.StreamUpdates API call.
 // TODO:  properly handle simultaneous calls to this API, e.g. two different apps connected
 // at same time.
-func (s *PGServerImpl) StreamUpdates(stream pb.PGService_StreamUpdatesServer) error {
+func (pgc *PGComm) StreamUpdates(stream pb.PGService_StreamUpdatesServer) error {
 
 	// Launch a Go routine to stream mutations back to caller
 	cancel := make(chan bool)
-	go streamOutboundUpdates(cancel, stream)
+	go pgc.streamOutboundUpdates(cancel, stream)
 
 	// Receive mutations and process them
 	var err error
@@ -105,7 +104,7 @@ func (s *PGServerImpl) StreamUpdates(stream pb.PGService_StreamUpdatesServer) er
 		// TODO:  This is mainly a debugging aid.  It should be removed for production.
 		fmt.Printf("Update received with %d bytes.\n", len(uxs.Cbor))
 
-		inboundUpdates <- uxs.Cbor
+		pgc.inboundUpdates <- uxs.Cbor
 	}
 
 	// End the GO routine for streaming outbound updates
@@ -120,7 +119,7 @@ func (s *PGServerImpl) StreamUpdates(stream pb.PGService_StreamUpdatesServer) er
 
 // Starts serving for gRPC calls at specified address and port.  Returns an error if it has
 // problems opening a port for listening.
-func StartServing(addr string, port int) error {
+func (pgc *PGComm) StartServing(addr string, port int) error {
 
 	address := fmt.Sprintf("%s:%d", addr, port)
 
@@ -131,14 +130,14 @@ func StartServing(addr string, port int) error {
 		return err
 	}
 
-	active_server := grpc.NewServer()
+	pgc.active_server = grpc.NewServer()
 
-	pb.RegisterPGServiceServer(active_server, &PGServerImpl{})
+	pb.RegisterPGServiceServer(pgc.active_server, pgc)
 
 	slog.Info("server is now listening", "address", address)
 
 	go func() {
-		if err := active_server.Serve(lis); err != nil {
+		if err := pgc.active_server.Serve(lis); err != nil {
 			slog.Error("error occurred while serving", "address", address, "error", err)
 		}
 	}()
@@ -147,12 +146,8 @@ func StartServing(addr string, port int) error {
 }
 
 // Stops serving of gRPC calls.
-func StopServing() {
-	if active_server != nil {
-		active_server.GracefulStop()
+func (pgc *PGComm) StopServing() {
+	if pgc.active_server != nil {
+		pgc.active_server.GracefulStop()
 	}
 }
-
-// Function to show a new GUI and wait for an update.
-
-// Function to update the GUI with any changes and wait for the next update.
