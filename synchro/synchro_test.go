@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	cbor "github.com/fxamacker/cbor/v2"
-	"github.com/prontogui/golib/coreprimitives"
+	"github.com/prontogui/golib/golib"
 	// "github.com/prontogui/golib/testhelp"
 )
 
@@ -61,10 +61,10 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...any) {
 func Test_FullUpdate(t *testing.T) {
 
 	s := NewSynchro()
-	s.SetTopPrimitives(&coreprimitives.Command{})
+	s.SetTopPrimitives(&golib.Command{})
 
 	// Verify there is a full update pending
-	ec := &coreprimitives.Command{}
+	ec := &golib.Command{}
 	verifyFullUpdate(t, s.GetFullUpdate(), ec)
 }
 
@@ -104,9 +104,9 @@ func verifyUpdateItemMap(t *testing.T, item any, m map[string]any) {
 
 func Test_PartialUpdate1(t *testing.T) {
 
-	cmd1 := &coreprimitives.Command{}
-	cmd2 := &coreprimitives.Command{}
-	cmd3 := &coreprimitives.Command{}
+	cmd1 := &golib.Command{}
+	cmd2 := &golib.Command{}
+	cmd3 := &golib.Command{}
 
 	s := NewSynchro()
 	s.SetTopPrimitives(cmd1, cmd2, cmd3)

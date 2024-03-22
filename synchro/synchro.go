@@ -2,7 +2,7 @@ package synchro
 
 import (
 	cbor "github.com/fxamacker/cbor/v2"
-	"github.com/prontogui/golib/coreprimitives"
+	"github.com/prontogui/golib/golib"
 	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
 )
@@ -143,7 +143,7 @@ func (s *Synchro) GetPartialUpdate() ([]byte, error) {
 
 func (s *Synchro) GetFullUpdate() []byte {
 
-	cmd := coreprimitives.Command{}
+	cmd := golib.Command{}
 	cmd.Label.Set("Ha!")
 	l := []any{true, &cmd}
 	cbor, _ := cbor.Marshal(l)

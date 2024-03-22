@@ -1,4 +1,4 @@
-package coreprimitives
+package golib
 
 import (
 	"github.com/prontogui/golib/field"

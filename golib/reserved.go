@@ -1,4 +1,4 @@
-package coreprimitives
+package golib
 
 const (
 	// The maximum number of fields in any given primitive.  TODO:  check for accuracy of this in unit testing,
