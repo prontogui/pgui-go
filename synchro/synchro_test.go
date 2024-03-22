@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	cbor "github.com/fxamacker/cbor/v2"
-	"github.com/prontogui/golib/golib"
+	"github.com/prontogui/golib"
 	// "github.com/prontogui/golib/testhelp"
 )
 
