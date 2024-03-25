@@ -18,7 +18,7 @@ func Test_BlobSetAndGet(t *testing.T) {
 func Test_BlobPrepareForUpdates(t *testing.T) {
 	f := Blob{}
 
-	f.PrepareForUpdates(0, 50, getTestOnsetFunc())
+	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 

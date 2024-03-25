@@ -49,7 +49,7 @@ func generateTestData2D() ([][]primitive.Interface, [][]*TestPrimitive) {
 
 func verifyStashUpdateInfo(t *testing.T, f *Reserved) {
 
-	if f.fkey != key.FKeyFor("Abc") {
+	if f.fkey != 10 {
 		t.Error("fkey was not stashed correctly")
 	}
 	if f.pkey != 50 {
