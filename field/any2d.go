@@ -22,9 +22,9 @@ func (f *Any2D) Set(ary [][]primitive.Interface) {
 	f.OnSet(true)
 }
 
-func (f *Any2D) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
+func (f *Any2D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
 
-	f.StashUpdateInfo(fieldname, pkey, onset)
+	f.StashUpdateInfo(fkey, pkey, onset)
 
 	// Prepare the children too
 	for i, p1 := range f.ary {

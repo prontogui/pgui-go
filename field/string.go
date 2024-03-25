@@ -20,8 +20,12 @@ func (f *String) Set(s string) {
 	f.OnSet(false)
 }
 
-func (f *String) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
-	f.StashUpdateInfo(fieldname, pkey, onset)
+func (f *String) GetAsAny() any {
+	return f.s
+}
+
+func (f *String) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
 func (f *String) IngestUpdate(update any) error {

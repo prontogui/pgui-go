@@ -17,7 +17,7 @@ func Test_IntegerSetAndGet(t *testing.T) {
 func Test_IntegerPrepareForUpdates(t *testing.T) {
 	f := Integer{}
 
-	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
+	f.PrepareForUpdates(0, 50, getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 
@@ -31,7 +31,7 @@ func Test_IntegerPrepareForUpdates(t *testing.T) {
 func Test_IntegerIngestUpdate(t *testing.T) {
 
 	f := Integer{}
-	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
+	f.PrepareForUpdates(0, 50, getTestOnsetFunc())
 
 	err := f.IngestUpdate(3400)
 
@@ -46,7 +46,7 @@ func Test_IntegerIngestUpdateZero(t *testing.T) {
 
 	f := Integer{}
 	f.Set(290)
-	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
+	f.PrepareForUpdates(0, 50, getTestOnsetFunc())
 
 	err := f.IngestUpdate(0)
 

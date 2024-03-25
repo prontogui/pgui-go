@@ -15,23 +15,24 @@ type testcommand struct {
 }
 
 func (cmd *testcommand) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+
 	// Prepare all the field for updates
-	cmd.Label.PrepareForUpdates("Label", pkey, onset)
-	cmd.Issued.PrepareForUpdates("Issued", pkey, onset)
-	cmd.Status.PrepareForUpdates("Status", pkey, onset)
+	cmd.Label.PrepareForUpdates(0, pkey, onset)
+	cmd.Issued.PrepareForUpdates(1, pkey, onset)
+	cmd.Status.PrepareForUpdates(2, pkey, onset)
 }
 
 func (cmd *testcommand) GetChildPrimitive(index int) primitive.Interface {
 	return nil
 }
 
-func (cmd *testcommand) GetFieldValue(fieldname string) any {
-	switch fieldname {
-	case "Label":
+func (cmd *testcommand) GetFieldValue(fkey key.FKey) any {
+	switch fkey {
+	case 0:
 		return cmd.Label.Get()
-	case "Issued":
+	case 1:
 		return cmd.Issued.Get()
-	case "Status":
+	case 2:
 		return cmd.Status.Get()
 	}
 	return nil

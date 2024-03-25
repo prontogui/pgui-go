@@ -20,7 +20,7 @@ func (tp *TestPrimitive) GetChildPrimitive(index int) primitive.Interface {
 	return nil
 }
 
-func (tp *TestPrimitive) GetFieldValue(fieldname string) any {
+func (tp *TestPrimitive) GetFieldValue(fkey key.FKey) any {
 	return nil
 }
 

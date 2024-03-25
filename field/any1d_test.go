@@ -25,7 +25,7 @@ func Test_Any1DPrepareForUpdates(t *testing.T) {
 
 	f.Set(values_i)
 
-	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
+	f.PrepareForUpdates(0, 50, getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 

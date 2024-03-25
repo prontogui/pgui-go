@@ -113,7 +113,7 @@ func marshalFieldsToMap(p primitive.Interface, fields []key.FKey) map[string]any
 
 	for _, fkey := range fields {
 		fieldname := key.FieldnameFor(fkey)
-		m[fieldname] = p.GetFieldValue(fieldname)
+		m[fieldname] = p.GetFieldValue(fkey)
 	}
 
 	return m

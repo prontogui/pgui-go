@@ -11,6 +11,10 @@ type Boolean struct {
 	b bool
 }
 
+func (f *Boolean) GetAsAny() any {
+	return f.b
+}
+
 func (f *Boolean) Get() bool {
 	return f.b
 }
@@ -20,8 +24,8 @@ func (f *Boolean) Set(b bool) {
 	f.OnSet(false)
 }
 
-func (f *Boolean) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
-	f.StashUpdateInfo(fieldname, pkey, onset)
+func (f *Boolean) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
 func (f *Boolean) IngestUpdate(update any) error {

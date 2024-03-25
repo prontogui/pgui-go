@@ -20,8 +20,8 @@ func (f *Blob) Set(blob []byte) {
 	f.OnSet(false)
 }
 
-func (f *Blob) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
-	f.StashUpdateInfo(fieldname, pkey, onset)
+func (f *Blob) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
 func (f *Blob) IngestUpdate(update any) error {

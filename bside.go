@@ -1,14 +1,14 @@
 package golib
 
 import (
-	"errors"
-
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
 )
 
 type BSide struct {
+	Reserved
+
 	// The row index (0-based) where the primitive resides in a container (usually a table).
 	// This is assigned automatically by the container primitive, or in the case of a
 	// template row, by a mutation from the App after an event occured.
@@ -25,35 +25,10 @@ type BSide struct {
 }
 
 func (bs *BSide) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	bs.Row.PrepareForUpdates("Row", pkey, onset)
-	bs.Col.PrepareForUpdates("Col", pkey, onset)
-	bs.Embodiment.PrepareForUpdates("Embodiment", pkey, onset)
+	bs.AttachField("Row", &bs.Row)
+
 }
 
 func (bs *BSide) GetChildPrimitive(index int) primitive.Interface {
 	return nil
-}
-
-func (bs *BSide) GetFieldValue(fieldname string) any {
-	switch fieldname {
-	case "Row":
-		return bs.Row
-	case "Col":
-		return bs.Col
-	case "Embodiment":
-		return bs.Embodiment
-	}
-	return nil
-}
-
-func (bs *BSide) IngestFieldUpdate(fieldname string, update any) error {
-	switch fieldname {
-	case "Row":
-		return bs.Row.IngestUpdate(update)
-	case "Col":
-		return bs.Col.IngestUpdate(update)
-	case "Embodiment":
-		return bs.Embodiment.IngestUpdate(update)
-	}
-	return errors.New("field not found")
 }

@@ -11,6 +11,10 @@ type Integer struct {
 	i int
 }
 
+func (f *Integer) GetAsAny() any {
+	return f.i
+}
+
 func (f *Integer) Get() int {
 	return f.i
 }
@@ -20,8 +24,8 @@ func (f *Integer) Set(i int) {
 	f.OnSet(false)
 }
 
-func (f *Integer) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
-	f.StashUpdateInfo(fieldname, pkey, onset)
+func (f *Integer) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
 func (f *Integer) IngestUpdate(update any) error {

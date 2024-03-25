@@ -10,8 +10,8 @@ type Reserved struct {
 	onset func(key.PKey, key.FKey, bool)
 }
 
-func (f *Reserved) StashUpdateInfo(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
-	f.fkey = key.FKeyFor(fieldname)
+func (f *Reserved) StashUpdateInfo(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+	f.fkey = fkey
 	f.pkey = pkey
 	f.onset = onset
 }

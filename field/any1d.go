@@ -21,9 +21,9 @@ func (f *Any1D) Set(ary []primitive.Interface) {
 	f.OnSet(true)
 }
 
-func (f *Any1D) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
+func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
 
-	f.StashUpdateInfo(fieldname, pkey, onset)
+	f.StashUpdateInfo(fkey, pkey, onset)
 
 	// Prepare the children too
 	for i, p := range f.ary {

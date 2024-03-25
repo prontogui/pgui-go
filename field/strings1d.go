@@ -20,8 +20,8 @@ func (f *Strings1D) Set(sa []string) {
 	f.OnSet(false)
 }
 
-func (f *Strings1D) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
-	f.StashUpdateInfo(fieldname, pkey, onset)
+func (f *Strings1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
 func (f *Strings1D) IngestUpdate(update any) error {
