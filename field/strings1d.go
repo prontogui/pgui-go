@@ -1,6 +1,8 @@
 package field
 
 import (
+	"errors"
+
 	"github.com/prontogui/golib/key"
 )
 
@@ -20,4 +22,8 @@ func (f *Strings1D) Set(sa []string) {
 
 func (f *Strings1D) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
 	f.StashUpdateInfo(fieldname, pkey, onset)
+}
+
+func (f *Strings1D) IngestUpdate(update any) error {
+	return errors.New("ingesting field update for Strings1D is not supported")
 }

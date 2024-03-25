@@ -1,6 +1,8 @@
 package synchro
 
 import (
+	"errors"
+
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
@@ -33,4 +35,16 @@ func (cmd *testcommand) GetFieldValue(fieldname string) any {
 		return cmd.Status.Get()
 	}
 	return nil
+}
+
+func (cmd *testcommand) IngestFieldUpdate(fieldname string, update any) error {
+	switch fieldname {
+	case "Label":
+		return cmd.Label.IngestUpdate(update)
+	case "Issued":
+		return cmd.Issued.IngestUpdate(update)
+	case "Status":
+		return cmd.Status.IngestUpdate(update)
+	}
+	return errors.New("field not found")
 }

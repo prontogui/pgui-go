@@ -18,7 +18,7 @@ func Test_BlobSetAndGet(t *testing.T) {
 func Test_BlobPrepareForUpdates(t *testing.T) {
 	f := Blob{}
 
-	f.PrepareForUpdates("Abc", 50, testOnset)
+	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 
@@ -26,5 +26,14 @@ func Test_BlobPrepareForUpdates(t *testing.T) {
 
 	if !testOnsetCalled {
 		t.Error("onset was not called")
+	}
+}
+
+func Test_BlobIngestUpdate(t *testing.T) {
+
+	f := Blob{}
+	err := f.IngestUpdate([]byte{})
+	if err == nil || err.Error() != "ingesting field update for Blob is not supported" {
+		t.Fatal("ingesting update for Blob should not be supported yet")
 	}
 }

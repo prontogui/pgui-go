@@ -1,6 +1,8 @@
 package golib
 
 import (
+	"errors"
+
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
@@ -42,4 +44,16 @@ func (bs *BSide) GetFieldValue(fieldname string) any {
 		return bs.Embodiment
 	}
 	return nil
+}
+
+func (bs *BSide) IngestFieldUpdate(fieldname string, update any) error {
+	switch fieldname {
+	case "Row":
+		return bs.Row.IngestUpdate(update)
+	case "Col":
+		return bs.Col.IngestUpdate(update)
+	case "Embodiment":
+		return bs.Embodiment.IngestUpdate(update)
+	}
+	return errors.New("field not found")
 }

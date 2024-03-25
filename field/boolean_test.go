@@ -27,7 +27,7 @@ func Test_BooleanSetAndGetTrue(t *testing.T) {
 func Test_BooleanPrepareForUpdates(t *testing.T) {
 	f := Boolean{}
 
-	f.PrepareForUpdates("Abc", 50, testOnset)
+	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 
@@ -36,4 +36,40 @@ func Test_BooleanPrepareForUpdates(t *testing.T) {
 	if !testOnsetCalled {
 		t.Error("onset was not called")
 	}
+}
+
+func Test_BooleanIngestUpdateTrue(t *testing.T) {
+
+	f := Boolean{}
+	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
+
+	err := f.IngestUpdate(true)
+
+	testfunc := func() bool {
+		return f.Get() == true
+	}
+
+	verifyIngestUpdateSuccessful(t, err, testfunc)
+}
+
+func Test_BooleanIngestUpdateFalse(t *testing.T) {
+
+	f := Boolean{}
+	f.Set(true)
+	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
+
+	err := f.IngestUpdate(false)
+
+	testfunc := func() bool {
+		return f.Get() == false
+	}
+
+	verifyIngestUpdateSuccessful(t, err, testfunc)
+}
+
+func Test_BooleanIngestUpdateInvalid(t *testing.T) {
+
+	f := Boolean{}
+	err := f.IngestUpdate(10)
+	verifyIngestUpdateInvalid(t, err)
 }

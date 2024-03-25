@@ -1,6 +1,8 @@
 package synchro
 
 import (
+	"errors"
+
 	cbor "github.com/fxamacker/cbor/v2"
 	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
@@ -101,6 +103,10 @@ func (s *Synchro) SetTopPrimitives(primitives ...primitive.Interface) {
 	}
 }
 
+func (s *Synchro) GetTopPrimitives() []primitive.Interface {
+	return s.primitives
+}
+
 func marshalFieldsToMap(p primitive.Interface, fields []key.FKey) map[string]any {
 
 	m := make(map[string]any, len(fields))
@@ -155,6 +161,52 @@ func (s *Synchro) GetFullUpdate() ([]byte, error) {
 	return cbor.Marshal(l)
 }
 
-func (s *Synchro) IngestUpdates(cbor []byte) {
+func (s *Synchro) IngestPartialUpdates(updatesCbor []byte) error {
 
+	var updates any
+
+	err := cbor.Unmarshal(updatesCbor, &updates)
+	if err != nil {
+		return err
+	}
+
+	var ok bool
+
+	// Expecting a list of interfaces
+	updatesList, ok := updates.([]any)
+	if !ok {
+		return errors.New("the unmarshalled updates do not represent a list.  Expecting a list of updates")
+	}
+
+	// Must have length >= 1
+	if len(updatesList) < 1 {
+		return errors.New("update must have atleast one value, the full/partial update flag")
+	}
+
+	// Parse the full/partial update flag
+	isfull, ok := updatesList[0].(bool)
+	if !ok {
+		return errors.New("update value for full/partial flag is incorrect.  Expecting a bool")
+	}
+
+	if isfull {
+		return errors.New("ingestion of full updates is not supported")
+	}
+	/*
+		for i, updateItem := range updatesList {
+
+			// Convert updateAny to an map[any]any
+
+			// Get the type of primitive
+
+			if isfull {
+
+			} else {
+
+			}
+		}
+	*/
+
+	return nil
+	//return errors.New("unable to injest update")
 }

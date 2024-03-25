@@ -20,7 +20,7 @@ func Test_String1DSetAndGet(t *testing.T) {
 func Test_String1DPrepareForUpdates(t *testing.T) {
 	f := Strings1D{}
 
-	f.PrepareForUpdates("Abc", 50, testOnset)
+	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 
@@ -28,5 +28,14 @@ func Test_String1DPrepareForUpdates(t *testing.T) {
 
 	if !testOnsetCalled {
 		t.Error("onset was not called")
+	}
+}
+
+func Test_Strings1DIngestUpdate(t *testing.T) {
+
+	f := Strings1D{}
+	err := f.IngestUpdate([]byte{})
+	if err == nil || err.Error() != "ingesting field update for Strings1D is not supported" {
+		t.Fatal("ingesting update for Strings1D should not be supported yet")
 	}
 }

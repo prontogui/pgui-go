@@ -24,7 +24,7 @@ func Test_Any2DPrepareForUpdates(t *testing.T) {
 	values_i, values_p := generateTestData2D()
 	f.Set(values_i)
 
-	f.PrepareForUpdates("Abc", 50, testOnset)
+	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 
@@ -40,5 +40,14 @@ func Test_Any2DPrepareForUpdates(t *testing.T) {
 
 	if !testOnsetCalled {
 		t.Error("onset was not called")
+	}
+}
+
+func Test_Any2DIngestUpdate(t *testing.T) {
+
+	f := Any2D{}
+	err := f.IngestUpdate([][]any{})
+	if err == nil || err.Error() != "ingesting field update for Any2D is not supported" {
+		t.Fatal("ingesting update for Any2D should not be supported yet")
 	}
 }

@@ -1,6 +1,8 @@
 package field
 
 import (
+	"errors"
+
 	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
 )
@@ -27,4 +29,8 @@ func (f *Any1D) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnS
 	for i, p := range f.ary {
 		p.PrepareForUpdates(pkey.AddLevel(i), onset)
 	}
+}
+
+func (f *Any1D) IngestUpdate(update any) error {
+	return errors.New("ingesting field update for Any1D is not supported")
 }

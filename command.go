@@ -1,15 +1,14 @@
 package golib
 
 import (
+	"errors"
+
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 type Command struct {
 	Reserved
-
-	BSide BSide
 
 	Label  field.String
 	Issued field.Boolean
@@ -24,13 +23,6 @@ func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	cmd.Status.PrepareForUpdates("Status", pkey, onset)
 }
 
-func (cmd *Command) GetChildPrimitive(index int) primitive.Interface {
-	if index == 0 {
-		return &cmd.BSide
-	}
-	return nil
-}
-
 func (cmd *Command) GetFieldValue(fieldname string) any {
 	switch fieldname {
 	case "Label":
@@ -41,4 +33,17 @@ func (cmd *Command) GetFieldValue(fieldname string) any {
 		return cmd.Status.Get()
 	}
 	return nil
+}
+
+func (cmd *Command) IngestFieldUpdate(fieldname string, update any) error {
+
+	switch fieldname {
+	case "Label":
+		return cmd.Label.IngestUpdate(update)
+	case "Issued":
+		return cmd.Issued.IngestUpdate(update)
+	case "Status":
+		return cmd.Status.IngestUpdate(update)
+	}
+	return errors.New("field not found")
 }

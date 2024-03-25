@@ -25,7 +25,7 @@ func Test_Any1DPrepareForUpdates(t *testing.T) {
 
 	f.Set(values_i)
 
-	f.PrepareForUpdates("Abc", 50, testOnset)
+	f.PrepareForUpdates("Abc", 50, getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 
@@ -39,5 +39,14 @@ func Test_Any1DPrepareForUpdates(t *testing.T) {
 
 	if !testOnsetCalled {
 		t.Error("onset was not called")
+	}
+}
+
+func Test_Any1DIngestUpdate(t *testing.T) {
+
+	f := Any1D{}
+	err := f.IngestUpdate([]any{})
+	if err == nil || err.Error() != "ingesting field update for Any1D is not supported" {
+		t.Fatal("ingesting update for Any1D should not be supported yet")
 	}
 }

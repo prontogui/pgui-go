@@ -24,6 +24,10 @@ func (tp *TestPrimitive) GetFieldValue(fieldname string) any {
 	return nil
 }
 
+func (tp *TestPrimitive) IngestFieldUpdate(fieldname string, update any) error {
+	return nil
+}
+
 func generateTestData1D() ([]primitive.Interface, []*TestPrimitive) {
 
 	act1 := &TestPrimitive{s: "abc"}
@@ -56,8 +60,41 @@ func verifyStashUpdateInfo(t *testing.T, f *Reserved) {
 	}
 }
 
+// Using a method to get a test function for onset in order to insure test state is reset in between
+// tests.  Otherwise, the command-line tests will behave differently than those
+// run in the IDE.
+func getTestOnsetFunc() key.OnSetFunction {
+	testOnsetCalled = false
+	return _testOnset
+}
+
 var testOnsetCalled = false
 
-func testOnset(key.PKey, key.FKey, bool) {
+func _testOnset(key.PKey, key.FKey, bool) {
 	testOnsetCalled = true
+}
+
+func verifyIngestUpdateSuccessful(t *testing.T, err error, testfunc func() bool) {
+
+	if err != nil {
+		t.Fatalf("ingesting update returned error:  %s", err.Error())
+	}
+
+	if !testfunc() {
+		t.Error("update not ingested correctly.  Expecting field value to be set correctly")
+	}
+
+	if testOnsetCalled {
+		t.Error("onset was unexpectedly called while injesting update")
+	}
+
+}
+
+func verifyIngestUpdateInvalid(t *testing.T, err error) {
+	if err == nil {
+		t.Fatal("no error returned after attemping to ingest invalid field value")
+	}
+	if err.Error() != "unable to convert update (any) to field value" {
+		t.Fatal("wrong error was returned after attemping to ingest invalid field value")
+	}
 }

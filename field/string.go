@@ -1,6 +1,8 @@
 package field
 
 import (
+	"errors"
+
 	"github.com/prontogui/golib/key"
 )
 
@@ -20,4 +22,17 @@ func (f *String) Set(s string) {
 
 func (f *String) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
 	f.StashUpdateInfo(fieldname, pkey, onset)
+}
+
+func (f *String) IngestUpdate(update any) error {
+
+	s, ok := update.(string)
+
+	if !ok {
+		return errors.New("unable to convert update (any) to field value")
+	}
+
+	f.s = s
+
+	return nil
 }

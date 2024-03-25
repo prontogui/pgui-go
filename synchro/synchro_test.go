@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	cbor "github.com/fxamacker/cbor/v2"
+	"github.com/prontogui/golib/primitive"
 	// "github.com/prontogui/golib/testhelp"
 )
 
@@ -172,6 +173,46 @@ func Test_PartialUpdate1(t *testing.T) {
 
 	m2 := map[string]any{"Status": uint64(2)}
 	verifyUpdateItemMap(t, updates[4], m2)
+}
+
+func verifyPrimitivesEqual(t *testing.T, a []primitive.Interface, b []primitive.Interface) {
+
+	lena, lenb := len(a), len(b)
+
+	if lena != lenb {
+		t.Fatalf("first set of primitives (a) has length of %d and second set (b) has length of %d.  Expecting equal number of primitives", lena, lenb)
+	}
+
+	for i, p := range a {
+		if !reflect.DeepEqual(p, b[i]) {
+			t.Errorf("primitives a[%d] and b[%d] are not equal.  Expecting them to be identical", i, i)
+		}
+	}
+}
+
+func Test_IngestPartialUpdate(t *testing.T) {
+	cmd1 := &testcommand{}
+	cmd2 := &testcommand{}
+	cmd3 := &testcommand{}
+
+	s1 := NewSynchro()
+	s1.SetTopPrimitives(cmd1, cmd2, cmd3)
+
+	var err error
+
+	fullupdate, err := s1.GetFullUpdate()
+	if err != nil {
+		t.Fatal("error getting a full update from synchro")
+	}
+
+	s2 := NewSynchro()
+	err = s2.IngestPartialUpdates(fullupdate)
+	if err != nil {
+		t.Fatalf("IngestUpdates returned error:  %s", err.Error())
+	}
+
+	// Are top primitives the same?
+	verifyPrimitivesEqual(t, s1.GetTopPrimitives(), s2.GetTopPrimitives())
 }
 
 // TODO

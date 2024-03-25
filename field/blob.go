@@ -1,6 +1,8 @@
 package field
 
 import (
+	"errors"
+
 	"github.com/prontogui/golib/key"
 )
 
@@ -20,4 +22,8 @@ func (f *Blob) Set(blob []byte) {
 
 func (f *Blob) PrepareForUpdates(fieldname string, pkey key.PKey, onset key.OnSetFunction) {
 	f.StashUpdateInfo(fieldname, pkey, onset)
+}
+
+func (f *Blob) IngestUpdate(update any) error {
+	return errors.New("ingesting field update for Blob is not supported")
 }
