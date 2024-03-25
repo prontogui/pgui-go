@@ -9,7 +9,7 @@ import (
 	// "github.com/prontogui/golib/testhelp"
 )
 
-func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...any) {
+func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*testcommand) {
 
 	if cborUpdate == nil {
 		t.Fatal("no update (nil) was returned.  Expecting a CBOR-encoded update.")
@@ -46,14 +46,33 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...any) {
 		t.Fatalf("there are %d items in update.  Expecting %d.", len_p, len_e)
 	}
 
-	for i, v := range updateList[1:] {
-		// Marshal both items to CBOR in order to compare them
-		exp_c, _ := cbor.Marshal(expecting[i])
-		actual_c, _ := cbor.Marshal(v)
+	for i, ulitem := range updateList[1:] {
 
-		if !reflect.DeepEqual(actual_c, exp_c) {
+		// Narrow down to a map
+		m1 := ulitem.(map[any]any)
+		tc := expecting[i]
+
+		// Does every field in testcommand equal the same value in map? (this should be commutative)
+		if tc.Label.Get() != m1["Label"].(string) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
+		if tc.Status.Get() != m1["Status"].(int) {
+			t.Fatalf("update item %d is not equal to what's expected", i)
+		}
+		if tc.Issued.Get() != m1["Issued"].(bool) {
+			t.Fatalf("update item %d is not equal to what's expected", i)
+		}
+
+		/*
+			// Marshal both items to CBOR in order to compare them
+			exp_c, _ := cbor.Marshal(expecting[i])
+			actual_c, _ := cbor.Marshal(v)
+
+			if !reflect.DeepEqual(actual_c, exp_c) {
+				fmt.Printf("\nexp_c:  %v\nactual_c:  %v\n", exp_c, actual_c)
+				t.Fatalf("update item %d is not equal to what's expected", i)
+			}
+		*/
 	}
 
 }
@@ -187,6 +206,31 @@ func verifyPrimitivesEqual(t *testing.T, a []primitive.Interface, b []primitive.
 		if !reflect.DeepEqual(p, b[i]) {
 			t.Errorf("primitives a[%d] and b[%d] are not equal.  Expecting them to be identical", i, i)
 		}
+	}
+}
+
+func Test_IngestFullUpdate(t *testing.T) {
+
+	cmd1 := &testcommand{}
+	cmd2 := &testcommand{}
+	cmd3 := &testcommand{}
+
+	s1 := NewSynchro()
+	s1.SetTopPrimitives(cmd1, cmd2, cmd3)
+
+	fullupdate, _ := s1.GetFullUpdate()
+
+	s2 := NewSynchro()
+	err := s2.IngestPartialUpdates(fullupdate)
+
+	if err == nil {
+		t.Fatal("ingestion of full update should not be supported at this time")
+	}
+
+	errMsg := err.Error()
+	expMsg := "this ain't possible!"
+	if errMsg != expMsg {
+		t.Fatalf("a different error than expected was returned:  '%s'.  Expecting:  '%s'", errMsg, expMsg)
 	}
 }
 
