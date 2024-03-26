@@ -5,7 +5,7 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-type TestPrimitive struct {
+type ComplexPrimitive struct {
 	Reserved
 
 	BSide BSide
@@ -18,7 +18,7 @@ type TestPrimitive struct {
 	BL    field.Blob
 }
 
-func (tp *TestPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+func (tp *ComplexPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	tp.AttachField("B", &tp.B)
 	tp.AttachField("S", &tp.S)
 	tp.AttachField("I", &tp.I)
@@ -26,6 +26,24 @@ func (tp *TestPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunctio
 	tp.AttachField("A1D", &tp.A1D)
 	tp.AttachField("A2D", &tp.A2D)
 	tp.AttachField("BL", &tp.BL)
+
+	// Prepare all the field for updates
+	tp.Reserved.PrepareForUpdates(pkey, onset, &tp.BSide)
+}
+
+type SimplePrimitive struct {
+	Reserved
+
+	BSide BSide
+	B     field.Boolean
+	S     field.String
+	I     field.Integer
+}
+
+func (tp *SimplePrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+	tp.AttachField("B", &tp.B)
+	tp.AttachField("S", &tp.S)
+	tp.AttachField("I", &tp.I)
 
 	// Prepare all the field for updates
 	tp.Reserved.PrepareForUpdates(pkey, onset, &tp.BSide)

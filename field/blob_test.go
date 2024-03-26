@@ -29,6 +29,21 @@ func Test_BlobPrepareForUpdates(t *testing.T) {
 	}
 }
 
+func Test_BlobEgestValue(t *testing.T) {
+
+	f := Blob{}
+	f.Set([]byte{10, 20, 30})
+
+	v := f.EgestValue()
+	ba, ok := v.([]byte)
+	if !ok {
+		t.Fatal("unable to convert value to []byte")
+	}
+	if !reflect.DeepEqual(ba, []byte{10, 20, 30}) {
+		t.Fatal("incorrect value returned")
+	}
+}
+
 func Test_BlobIngestUpdate(t *testing.T) {
 
 	f := Blob{}

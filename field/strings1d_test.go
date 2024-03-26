@@ -31,6 +31,21 @@ func Test_String1DPrepareForUpdates(t *testing.T) {
 	}
 }
 
+func Test_Strings1DEgestValue(t *testing.T) {
+
+	f := Strings1D{}
+	f.Set([]string{"x", "y", "z"})
+
+	v := f.EgestValue()
+	sa, ok := v.([]string)
+	if !ok {
+		t.Fatal("unable to convert value to []string")
+	}
+	if !reflect.DeepEqual(sa, []string{"x", "y", "z"}) {
+		t.Fatal("incorrect value returned")
+	}
+}
+
 func Test_Strings1DIngestUpdate(t *testing.T) {
 
 	f := Strings1D{}

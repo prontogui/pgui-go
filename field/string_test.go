@@ -28,6 +28,19 @@ func Test_StringPrepareForUpdates(t *testing.T) {
 	}
 }
 
+func Test_StringEgestValue(t *testing.T) {
+	f := String{}
+	f.Set("yabadabadoo!")
+	v := f.EgestValue()
+	s, ok := v.(string)
+	if !ok {
+		t.Fatal("cannot convert return value to string")
+	}
+	if s != "yabadabadoo!" {
+		t.Fatal("incorrect value returned")
+	}
+}
+
 func Test_StringIngestUpdate(t *testing.T) {
 
 	f := String{}

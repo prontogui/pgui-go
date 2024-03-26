@@ -25,7 +25,7 @@ func (f *Blob) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFu
 }
 
 func (f *Blob) EgestValue() any {
-	return nil
+	return f.blob
 }
 
 func (f *Blob) IngestValue(value any) error {

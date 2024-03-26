@@ -3,6 +3,8 @@ package field
 import (
 	"reflect"
 	"testing"
+
+	"github.com/prontogui/golib/primitive"
 )
 
 func Test_Any1DSetAndGet(t *testing.T) {
@@ -39,6 +41,41 @@ func Test_Any1DPrepareForUpdates(t *testing.T) {
 
 	if !testOnsetCalled {
 		t.Error("onset was not called")
+	}
+}
+
+func Test_Any1DEgestValue(t *testing.T) {
+	f := Any1D{}
+	f.Set([]primitive.Interface{&TestPrimitive{s: "abc"}, &TestPrimitive{s: "xyz"}})
+	v := f.EgestValue()
+	a, ok := v.([]any)
+	if !ok {
+		t.Fatal("cannot convert value to []any")
+	}
+	if len(a) != 2 {
+		t.Fatal("wrong number of elements returned.  Expecting 2 elements")
+	}
+	m1, ok := a[0].(map[string]any)
+	if !ok {
+		t.Fatal("cannot convert element to map[string]any")
+	}
+	m1v, ok := m1["s"].(string)
+	if !ok {
+		t.Fatal("cannot convert element map item to string")
+	}
+	if m1v != "abc" {
+		t.Fatal("wrong string value for element")
+	}
+	m2, ok := a[1].(map[string]any)
+	if !ok {
+		t.Fatal("cannot convert element to map[string]any")
+	}
+	m2v, ok := m2["s"].(string)
+	if !ok {
+		t.Fatal("cannot convert element map item to string")
+	}
+	if m2v != "xyz" {
+		t.Fatal("wrong string value for element")
 	}
 }
 

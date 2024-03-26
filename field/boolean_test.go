@@ -38,6 +38,19 @@ func Test_BooleanPrepareForUpdates(t *testing.T) {
 	}
 }
 
+func Test_BooleanEgestValue(t *testing.T) {
+	f := Boolean{}
+	f.Set(true)
+	v := f.EgestValue()
+	b, ok := v.(bool)
+	if !ok {
+		t.Fatal("cannot convert return value to bool")
+	}
+	if b != true {
+		t.Fatal("incorrect value returned")
+	}
+}
+
 func Test_BooleanIngestUpdateTrue(t *testing.T) {
 
 	f := Boolean{}

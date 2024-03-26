@@ -28,6 +28,19 @@ func Test_IntegerPrepareForUpdates(t *testing.T) {
 	}
 }
 
+func Test_IntegerEgestValue(t *testing.T) {
+	f := Integer{}
+	f.Set(12345)
+	v := f.EgestValue()
+	i, ok := v.(int)
+	if !ok {
+		t.Fatal("cannot convert return value to int")
+	}
+	if i != 12345 {
+		t.Fatal("incorrect value returned")
+	}
+}
+
 func Test_IntegerIngestUpdate(t *testing.T) {
 
 	f := Integer{}

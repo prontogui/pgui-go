@@ -38,7 +38,19 @@ func (f *Any2D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetF
 }
 
 func (f *Any2D) EgestValue() any {
-	return nil
+	ary := [][]any{}
+
+	for _, row := range f.ary {
+		ary2 := []any{}
+
+		for _, cell := range row {
+			ary2 = append(ary2, cell.EgestUpdate(true, nil))
+		}
+
+		ary = append(ary, ary2)
+	}
+
+	return ary
 }
 
 func (f *Any2D) IngestValue(value any) error {

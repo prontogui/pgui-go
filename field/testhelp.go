@@ -21,7 +21,7 @@ func (tp *TestPrimitive) GetChildPrimitive(index int) primitive.Interface {
 }
 
 func (tp *TestPrimitive) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[string]any {
-	return nil
+	return map[string]any{"s": tp.s}
 }
 
 func (tp *TestPrimitive) IngestUpdate(update map[string]any) error {

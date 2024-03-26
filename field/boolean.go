@@ -29,7 +29,7 @@ func (f *Boolean) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSe
 }
 
 func (f *Boolean) EgestValue() any {
-	return nil
+	return f.b
 }
 
 func (f *Boolean) IngestValue(value any) error {

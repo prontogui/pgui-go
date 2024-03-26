@@ -25,7 +25,7 @@ func (f *Strings1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.On
 }
 
 func (f *Strings1D) EgestValue() any {
-	return nil
+	return f.sa
 }
 
 func (f *Strings1D) IngestValue(value any) error {

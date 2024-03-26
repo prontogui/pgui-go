@@ -32,7 +32,14 @@ func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetF
 }
 
 func (f *Any1D) EgestValue() any {
-	return nil
+
+	ary := []any{}
+
+	for _, v := range f.ary {
+		ary = append(ary, v.EgestUpdate(true, nil))
+	}
+
+	return ary
 }
 
 func (f *Any1D) IngestValue(value any) error {
