@@ -5,7 +5,6 @@ import (
 
 	"github.com/prontogui/golib/pgcomm"
 	"github.com/prontogui/golib/primitive"
-	"github.com/prontogui/golib/synchro"
 )
 
 type ProntoGUI interface {
@@ -17,7 +16,7 @@ type ProntoGUI interface {
 
 type _ProntoGUI struct {
 	pgcomm     *pgcomm.PGComm
-	synchro    *synchro.Synchro
+	synchro    *Synchro
 	isgui      bool
 	fullupdate bool
 }
@@ -49,7 +48,7 @@ func (pg *_ProntoGUI) Wait() error {
 	// Need to send a full update?
 	if pg.fullupdate {
 
-		updateOut, err = synchro.NewSynchro().GetFullUpdate()
+		updateOut, err = NewSynchro().GetFullUpdate()
 		if err != nil {
 			return err
 		}
@@ -62,7 +61,7 @@ func (pg *_ProntoGUI) Wait() error {
 		return err
 	}
 
-	synchro.NewSynchro().IngestPartialUpdates(updateIn)
+	NewSynchro().IngestPartialUpdates(updateIn)
 
 	return nil
 }
@@ -71,7 +70,7 @@ func NewProntoGUI() ProntoGUI {
 	pg := &_ProntoGUI{}
 
 	pg.pgcomm = pgcomm.NewPGComm()
-	pg.synchro = synchro.NewSynchro()
+	pg.synchro = NewSynchro()
 	pg.isgui = false
 	pg.fullupdate = true
 

@@ -33,7 +33,7 @@ func Test_StringIngestUpdate(t *testing.T) {
 	f := String{}
 	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
 
-	err := f.IngestUpdate("hello, darling")
+	err := f.IngestValue("hello, darling")
 
 	testfunc := func() bool {
 		return f.Get() == "hello, darling"
@@ -48,7 +48,7 @@ func Test_StringIngestUpdateEmptyString(t *testing.T) {
 	f.Set("goodbye, dear")
 	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
 
-	err := f.IngestUpdate("")
+	err := f.IngestValue("")
 
 	testfunc := func() bool {
 		return f.Get() == ""
@@ -60,6 +60,6 @@ func Test_StringIngestUpdateEmptyString(t *testing.T) {
 func Test_StringIngestUpdateInvalid(t *testing.T) {
 
 	f := String{}
-	err := f.IngestUpdate(false)
+	err := f.IngestValue(false)
 	verifyIngestUpdateInvalid(t, err)
 }

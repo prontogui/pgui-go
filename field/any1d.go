@@ -31,6 +31,10 @@ func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetF
 	}
 }
 
-func (f *Any1D) IngestUpdate(update any) error {
-	return errors.New("ingesting field update for Any1D is not supported")
+func (f *Any1D) EgestValue() any {
+	return nil
+}
+
+func (f *Any1D) IngestValue(value any) error {
+	return errors.New("ingesting value for Any1D is not supported")
 }

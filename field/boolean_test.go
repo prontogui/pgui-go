@@ -43,7 +43,7 @@ func Test_BooleanIngestUpdateTrue(t *testing.T) {
 	f := Boolean{}
 	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
 
-	err := f.IngestUpdate(true)
+	err := f.IngestValue(true)
 
 	testfunc := func() bool {
 		return f.Get() == true
@@ -58,7 +58,7 @@ func Test_BooleanIngestUpdateFalse(t *testing.T) {
 	f.Set(true)
 	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
 
-	err := f.IngestUpdate(false)
+	err := f.IngestValue(false)
 
 	testfunc := func() bool {
 		return f.Get() == false
@@ -70,6 +70,6 @@ func Test_BooleanIngestUpdateFalse(t *testing.T) {
 func Test_BooleanIngestUpdateInvalid(t *testing.T) {
 
 	f := Boolean{}
-	err := f.IngestUpdate(10)
+	err := f.IngestValue(10)
 	verifyIngestUpdateInvalid(t, err)
 }

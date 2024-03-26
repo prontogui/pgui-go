@@ -37,6 +37,10 @@ func (f *Any2D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetF
 	}
 }
 
-func (f *Any2D) IngestUpdate(update any) error {
-	return errors.New("ingesting field update for Any2D is not supported")
+func (f *Any2D) EgestValue() any {
+	return nil
+}
+
+func (f *Any2D) IngestValue(value any) error {
+	return errors.New("ingesting value for Any2D is not supported")
 }

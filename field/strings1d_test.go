@@ -34,8 +34,8 @@ func Test_String1DPrepareForUpdates(t *testing.T) {
 func Test_Strings1DIngestUpdate(t *testing.T) {
 
 	f := Strings1D{}
-	err := f.IngestUpdate([]byte{})
-	if err == nil || err.Error() != "ingesting field update for Strings1D is not supported" {
-		t.Fatal("ingesting update for Strings1D should not be supported yet")
+	err := f.IngestValue([]byte{})
+	if err == nil || err.Error() != "ingesting value for Strings1D is not supported" {
+		t.Fatal("ingesting value for Strings1D should not be supported yet")
 	}
 }

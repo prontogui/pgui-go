@@ -45,8 +45,8 @@ func Test_Any1DPrepareForUpdates(t *testing.T) {
 func Test_Any1DIngestUpdate(t *testing.T) {
 
 	f := Any1D{}
-	err := f.IngestUpdate([]any{})
-	if err == nil || err.Error() != "ingesting field update for Any1D is not supported" {
-		t.Fatal("ingesting update for Any1D should not be supported yet")
+	err := f.IngestValue([]any{})
+	if err == nil || err.Error() != "ingesting value for Any1D is not supported" {
+		t.Fatal("ingesting value for Any1D should not be supported yet")
 	}
 }

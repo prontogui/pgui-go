@@ -32,8 +32,8 @@ func Test_BlobPrepareForUpdates(t *testing.T) {
 func Test_BlobIngestUpdate(t *testing.T) {
 
 	f := Blob{}
-	err := f.IngestUpdate([]byte{})
-	if err == nil || err.Error() != "ingesting field update for Blob is not supported" {
-		t.Fatal("ingesting update for Blob should not be supported yet")
+	err := f.IngestValue([]byte{})
+	if err == nil || err.Error() != "ingesting value for Blob is not supported" {
+		t.Fatal("ingesting value for Blob should not be supported yet")
 	}
 }

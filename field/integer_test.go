@@ -33,7 +33,7 @@ func Test_IntegerIngestUpdate(t *testing.T) {
 	f := Integer{}
 	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
 
-	err := f.IngestUpdate(3400)
+	err := f.IngestValue(3400)
 
 	testfunc := func() bool {
 		return f.Get() == 3400
@@ -48,7 +48,7 @@ func Test_IntegerIngestUpdateZero(t *testing.T) {
 	f.Set(290)
 	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
 
-	err := f.IngestUpdate(0)
+	err := f.IngestValue(0)
 
 	testfunc := func() bool {
 		return f.Get() == 0
@@ -60,6 +60,6 @@ func Test_IntegerIngestUpdateZero(t *testing.T) {
 func Test_IntegerIngestUpdateInvalid(t *testing.T) {
 
 	f := Integer{}
-	err := f.IngestUpdate(false)
+	err := f.IngestValue(false)
 	verifyIngestUpdateInvalid(t, err)
 }

@@ -24,6 +24,10 @@ func (f *Blob) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFu
 	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
-func (f *Blob) IngestUpdate(update any) error {
-	return errors.New("ingesting field update for Blob is not supported")
+func (f *Blob) EgestValue() any {
+	return nil
+}
+
+func (f *Blob) IngestValue(value any) error {
+	return errors.New("ingesting value for Blob is not supported")
 }

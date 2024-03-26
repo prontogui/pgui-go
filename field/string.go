@@ -20,20 +20,20 @@ func (f *String) Set(s string) {
 	f.OnSet(false)
 }
 
-func (f *String) GetAsAny() any {
-	return f.s
-}
-
 func (f *String) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
 	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
-func (f *String) IngestUpdate(update any) error {
+func (f *String) EgestValue() any {
+	return f.s
+}
 
-	s, ok := update.(string)
+func (f *String) IngestValue(value any) error {
+
+	s, ok := value.(string)
 
 	if !ok {
-		return errors.New("unable to convert update (any) to field value")
+		return errors.New("unable to convert value (any) to field value")
 	}
 
 	f.s = s

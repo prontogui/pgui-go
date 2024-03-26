@@ -51,23 +51,26 @@ func (r *Reserved) GetChildPrimitive(index int) primitive.Interface {
 	return nil
 }
 
-func (r *Reserved) GetFieldValue(fkey key.FKey) any {
+func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[string]any {
 
-	for _, f := range r.fields {
-		if f.fkey == fkey {
-			return f.field.GetAsAny()
-		}
-	}
-	return nil
+	update := map[string]any{}
+
+	return update
 }
 
-func (r *Reserved) IngestFieldUpdate(fieldname string, update any) error {
+func (r *Reserved) IngestUpdate(update map[string]any) error {
 
-	fkey := key.FKeyFor(fieldname)
-	for _, f := range r.fields {
-		if f.fkey == fkey {
-			return f.field.IngestUpdate(update)
+	/*
+		for k, v := range update {
+
 		}
-	}
+
+		fkey := key.FKeyFor(fieldname)
+		for _, f := range r.fields {
+			if f.fkey == fkey {
+				return f.field.IngestUpdate(update)
+			}
+		}
+	*/
 	return errors.New("field not found")
 }

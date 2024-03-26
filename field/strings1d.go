@@ -24,6 +24,10 @@ func (f *Strings1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.On
 	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
-func (f *Strings1D) IngestUpdate(update any) error {
-	return errors.New("ingesting field update for Strings1D is not supported")
+func (f *Strings1D) EgestValue() any {
+	return nil
+}
+
+func (f *Strings1D) IngestValue(value any) error {
+	return errors.New("ingesting value for Strings1D is not supported")
 }

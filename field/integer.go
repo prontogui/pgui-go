@@ -11,10 +11,6 @@ type Integer struct {
 	i int
 }
 
-func (f *Integer) GetAsAny() any {
-	return f.i
-}
-
 func (f *Integer) Get() int {
 	return f.i
 }
@@ -28,12 +24,16 @@ func (f *Integer) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSe
 	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
-func (f *Integer) IngestUpdate(update any) error {
+func (f *Integer) EgestValue() any {
+	return f.i
+}
 
-	i, ok := update.(int)
+func (f *Integer) IngestValue(value any) error {
+
+	i, ok := value.(int)
 
 	if !ok {
-		return errors.New("unable to convert update (any) to field value")
+		return errors.New("unable to convert value (any) to field value")
 	}
 
 	f.i = i

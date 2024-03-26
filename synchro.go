@@ -1,4 +1,4 @@
-package synchro
+package golib
 
 import (
 	"errors"
@@ -107,18 +107,6 @@ func (s *Synchro) GetTopPrimitives() []primitive.Interface {
 	return s.primitives
 }
 
-func marshalFieldsToMap(p primitive.Interface, fields []key.FKey) map[string]any {
-
-	m := make(map[string]any, len(fields))
-
-	for _, fkey := range fields {
-		fieldname := key.FieldnameFor(fkey)
-		m[fieldname] = p.GetFieldValue(fkey)
-	}
-
-	return m
-}
-
 func (s *Synchro) GetPartialUpdate() ([]byte, error) {
 
 	if len(s.pendingUpdates) == 0 {
@@ -133,7 +121,7 @@ func (s *Synchro) GetPartialUpdate() ([]byte, error) {
 			// Locate the primitive
 			found := locatePrimitive(s.primitives, update.pkey)
 
-			m := marshalFieldsToMap(found, update.fields)
+			m := found.EgestUpdate(false, update.fields)
 
 			// Add pkey and map to array of updates
 			updateList = append(updateList, update.pkey, m)

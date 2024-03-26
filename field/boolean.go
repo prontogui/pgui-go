@@ -28,12 +28,16 @@ func (f *Boolean) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSe
 	f.StashUpdateInfo(fkey, pkey, onset)
 }
 
-func (f *Boolean) IngestUpdate(update any) error {
+func (f *Boolean) EgestValue() any {
+	return nil
+}
 
-	b, ok := update.(bool)
+func (f *Boolean) IngestValue(value any) error {
+
+	b, ok := value.(bool)
 
 	if !ok {
-		return errors.New("unable to convert update (any) to field value")
+		return errors.New("unable to convert value (any) to field value")
 	}
 
 	f.b = b

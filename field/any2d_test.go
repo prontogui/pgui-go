@@ -46,8 +46,8 @@ func Test_Any2DPrepareForUpdates(t *testing.T) {
 func Test_Any2DIngestUpdate(t *testing.T) {
 
 	f := Any2D{}
-	err := f.IngestUpdate([][]any{})
-	if err == nil || err.Error() != "ingesting field update for Any2D is not supported" {
-		t.Fatal("ingesting update for Any2D should not be supported yet")
+	err := f.IngestValue([][]any{})
+	if err == nil || err.Error() != "ingesting value for Any2D is not supported" {
+		t.Fatal("ingesting value for Any2D should not be supported yet")
 	}
 }

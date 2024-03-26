@@ -20,11 +20,11 @@ func (tp *TestPrimitive) GetChildPrimitive(index int) primitive.Interface {
 	return nil
 }
 
-func (tp *TestPrimitive) GetFieldValue(fkey key.FKey) any {
+func (tp *TestPrimitive) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[string]any {
 	return nil
 }
 
-func (tp *TestPrimitive) IngestFieldUpdate(fieldname string, update any) error {
+func (tp *TestPrimitive) IngestUpdate(update map[string]any) error {
 	return nil
 }
 
@@ -94,7 +94,7 @@ func verifyIngestUpdateInvalid(t *testing.T, err error) {
 	if err == nil {
 		t.Fatal("no error returned after attemping to ingest invalid field value")
 	}
-	if err.Error() != "unable to convert update (any) to field value" {
+	if err.Error() != "unable to convert value (any) to field value" {
 		t.Fatal("wrong error was returned after attemping to ingest invalid field value")
 	}
 }

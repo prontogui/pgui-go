@@ -1,4 +1,4 @@
-package synchro
+package golib
 
 import (
 	"reflect"
@@ -9,7 +9,7 @@ import (
 	// "github.com/prontogui/golib/testhelp"
 )
 
-func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*testcommand) {
+func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*TestPrimitive) {
 
 	if cborUpdate == nil {
 		t.Fatal("no update (nil) was returned.  Expecting a CBOR-encoded update.")
@@ -53,13 +53,13 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*testcommand
 		tc := expecting[i]
 
 		// Does every field in testcommand equal the same value in map? (this should be commutative)
-		if tc.Label.Get() != m1["Label"].(string) {
+		if tc.S.Get() != m1["S"].(string) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
-		if tc.Status.Get() != m1["Status"].(int) {
+		if tc.I.Get() != m1["I"].(int) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
-		if tc.Issued.Get() != m1["Issued"].(bool) {
+		if tc.B.Get() != m1["B"].(bool) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
 
@@ -80,10 +80,10 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*testcommand
 func Test_FullUpdate(t *testing.T) {
 
 	s := NewSynchro()
-	s.SetTopPrimitives(&testcommand{})
+	s.SetTopPrimitives(&TestPrimitive{})
 
 	// Verify there is a full update pending
-	ec := &testcommand{}
+	ec := &TestPrimitive{}
 	fullupdate, err := s.GetFullUpdate()
 	if err != nil {
 		t.Fatalf("unexpected error:  %s", err.Error())
@@ -138,9 +138,9 @@ func verifyUpdateItemMap(t *testing.T, item any, m map[string]any) {
 
 func Test_PartialUpdate1(t *testing.T) {
 
-	cmd1 := &testcommand{}
-	cmd2 := &testcommand{}
-	cmd3 := &testcommand{}
+	cmd1 := &TestPrimitive{}
+	cmd2 := &TestPrimitive{}
+	cmd3 := &TestPrimitive{}
 
 	s := NewSynchro()
 	s.SetTopPrimitives(cmd1, cmd2, cmd3)
@@ -155,10 +155,10 @@ func Test_PartialUpdate1(t *testing.T) {
 	}
 
 	// Change command label
-	cmd1.Label.Set("Guten Tag!")
-	cmd1.Issued.Set(true)
+	cmd1.S.Set("Guten Tag!")
+	cmd1.B.Set(true)
 
-	cmd3.Status.Set(2)
+	cmd3.I.Set(2)
 
 	// Test for partial updates available
 	updatesCbor, err := s.GetPartialUpdate()
@@ -185,12 +185,12 @@ func Test_PartialUpdate1(t *testing.T) {
 
 	verifyUpdateItemPKey(t, updates[1], 0)
 
-	m1 := map[string]any{"Label": "Guten Tag!", "Issued": true}
+	m1 := map[string]any{"S": "Guten Tag!", "Issued": true}
 	verifyUpdateItemMap(t, updates[2], m1)
 
 	verifyUpdateItemPKey(t, updates[3], 2)
 
-	m2 := map[string]any{"Status": uint64(2)}
+	m2 := map[string]any{"I": uint64(2)}
 	verifyUpdateItemMap(t, updates[4], m2)
 }
 
@@ -211,9 +211,9 @@ func verifyPrimitivesEqual(t *testing.T, a []primitive.Interface, b []primitive.
 
 func Test_IngestFullUpdate(t *testing.T) {
 
-	cmd1 := &testcommand{}
-	cmd2 := &testcommand{}
-	cmd3 := &testcommand{}
+	cmd1 := &TestPrimitive{}
+	cmd2 := &TestPrimitive{}
+	cmd3 := &TestPrimitive{}
 
 	s1 := NewSynchro()
 	s1.SetTopPrimitives(cmd1, cmd2, cmd3)
@@ -235,9 +235,9 @@ func Test_IngestFullUpdate(t *testing.T) {
 }
 
 func Test_IngestPartialUpdate(t *testing.T) {
-	cmd1 := &testcommand{}
-	cmd2 := &testcommand{}
-	cmd3 := &testcommand{}
+	cmd1 := &TestPrimitive{}
+	cmd2 := &TestPrimitive{}
+	cmd3 := &TestPrimitive{}
 
 	s1 := NewSynchro()
 	s1.SetTopPrimitives(cmd1, cmd2, cmd3)
