@@ -61,7 +61,7 @@ func (pg *_ProntoGUI) Wait() error {
 		return err
 	}
 
-	NewSynchro().IngestPartialUpdates(updateIn)
+	NewSynchro().IngestUpdate(updateIn)
 
 	return nil
 }

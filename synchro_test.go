@@ -53,31 +53,21 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*SimplePrimi
 		tc := expecting[i]
 
 		// Does every field in testcommand equal the same value in map? (this should be commutative)
-		if tc.Embodiment.Get() != m1["S"].(string) {
+		if tc.Embodiment.Get() != m1["Embodiment"].(string) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
-		if tc.Status.Get() != m1["I"].(int) {
+		if uint64(tc.Status.Get()) != m1["Status"].(uint64) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
-		if tc.Issued.Get() != m1["B"].(bool) {
+		if tc.Issued.Get() != m1["Issued"].(bool) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
 
-		/*
-			// Marshal both items to CBOR in order to compare them
-			exp_c, _ := cbor.Marshal(expecting[i])
-			actual_c, _ := cbor.Marshal(v)
-
-			if !reflect.DeepEqual(actual_c, exp_c) {
-				fmt.Printf("\nexp_c:  %v\nactual_c:  %v\n", exp_c, actual_c)
-				t.Fatalf("update item %d is not equal to what's expected", i)
-			}
-		*/
 	}
 
 }
 
-func _Test_FullUpdate(t *testing.T) {
+func Test_FullUpdate(t *testing.T) {
 
 	s := NewSynchro()
 	s.SetTopPrimitives(&SimplePrimitive{})
@@ -136,7 +126,7 @@ func verifyUpdateItemMap(t *testing.T, item any, m map[string]any) {
 
 }
 
-func _Test_PartialUpdate1(t *testing.T) {
+func Test_PartialUpdate1(t *testing.T) {
 
 	cmd1 := &SimplePrimitive{}
 	cmd2 := &SimplePrimitive{}
@@ -185,12 +175,12 @@ func _Test_PartialUpdate1(t *testing.T) {
 
 	verifyUpdateItemPKey(t, updates[1], 0)
 
-	m1 := map[string]any{"S": "Guten Tag!", "Issued": true}
+	m1 := map[string]any{"Embodiment": "Guten Tag!", "Issued": true}
 	verifyUpdateItemMap(t, updates[2], m1)
 
 	verifyUpdateItemPKey(t, updates[3], 2)
 
-	m2 := map[string]any{"I": uint64(2)}
+	m2 := map[string]any{"Status": uint64(2)}
 	verifyUpdateItemMap(t, updates[4], m2)
 }
 
@@ -203,13 +193,23 @@ func verifyPrimitivesEqual(t *testing.T, a []primitive.Interface, b []primitive.
 	}
 
 	for i, p := range a {
-		if !reflect.DeepEqual(p, b[i]) {
-			t.Errorf("primitives a[%d] and b[%d] are not equal.  Expecting them to be identical", i, i)
+
+		sp1 := p.(*SimplePrimitive)
+		sp2 := b[i].(*SimplePrimitive)
+
+		if sp1.Embodiment.Get() != sp2.Embodiment.Get() {
+			t.Errorf("Embodiment fields of primitives a[%d] and b[%d] are not equal", i, i)
+		}
+		if sp1.Status.Get() != sp2.Status.Get() {
+			t.Errorf("Status fields of primitives a[%d] and b[%d] are not equal", i, i)
+		}
+		if sp1.Issued.Get() != sp2.Issued.Get() {
+			t.Errorf("Issued fields of primitives a[%d] and b[%d] are not equal", i, i)
 		}
 	}
 }
 
-func _Test_IngestFullUpdate(t *testing.T) {
+func Test_IngestFullUpdateNotSupported(t *testing.T) {
 
 	cmd1 := &SimplePrimitive{}
 	cmd2 := &SimplePrimitive{}
@@ -221,20 +221,20 @@ func _Test_IngestFullUpdate(t *testing.T) {
 	fullupdate, _ := s1.GetFullUpdate()
 
 	s2 := NewSynchro()
-	err := s2.IngestPartialUpdates(fullupdate)
+	err := s2.IngestUpdate(fullupdate)
 
 	if err == nil {
 		t.Fatal("ingestion of full update should not be supported at this time")
 	}
 
 	errMsg := err.Error()
-	expMsg := "this ain't possible!"
+	expMsg := "ingestion of full updates is not supported"
 	if errMsg != expMsg {
 		t.Fatalf("a different error than expected was returned:  '%s'.  Expecting:  '%s'", errMsg, expMsg)
 	}
 }
 
-func _Test_IngestPartialUpdate(t *testing.T) {
+func Test_IngestPartialUpdate(t *testing.T) {
 	cmd1 := &SimplePrimitive{}
 	cmd2 := &SimplePrimitive{}
 	cmd3 := &SimplePrimitive{}
@@ -242,24 +242,24 @@ func _Test_IngestPartialUpdate(t *testing.T) {
 	s1 := NewSynchro()
 	s1.SetTopPrimitives(cmd1, cmd2, cmd3)
 
+	cmd1.Issued.Set(true)
+	cmd2.Embodiment.Set("blah blah")
+
 	var err error
 
-	fullupdate, err := s1.GetFullUpdate()
+	partialupdate, err := s1.GetPartialUpdate()
 	if err != nil {
-		t.Fatal("error getting a full update from synchro")
+		t.Fatal("error getting a partial update from synchro")
 	}
 
 	s2 := NewSynchro()
-	err = s2.IngestPartialUpdates(fullupdate)
+	s2.SetTopPrimitives(&SimplePrimitive{}, &SimplePrimitive{}, &SimplePrimitive{})
+
+	err = s2.IngestUpdate(partialupdate)
 	if err != nil {
-		t.Fatalf("IngestUpdates returned error:  %s", err.Error())
+		t.Fatalf("IngestUpdate returned error:  %s", err.Error())
 	}
 
 	// Are top primitives the same?
 	verifyPrimitivesEqual(t, s1.GetTopPrimitives(), s2.GetTopPrimitives())
 }
-
-// TODO
-// Build a function that returns a somewhat sophisticated list of primitives for testing partial updates.
-// Write tests to see if partial updates are created currectly as individual and set of fields are changed.
-//

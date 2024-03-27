@@ -92,11 +92,106 @@ func Test_Any2DEgestValue(t *testing.T) {
 	}
 }
 
+func createAny2DForTest() (*Any2D, []*TestPrimitive) {
+	f := &Any2D{}
+	p11 := &TestPrimitive{}
+	p12 := &TestPrimitive{}
+	p21 := &TestPrimitive{}
+	p22 := &TestPrimitive{}
+	a := [][]primitive.Interface{{p11, p12}, {p21, p22}}
+	f.Set(a)
+	return f, []*TestPrimitive{p11, p12, p21, p22}
+}
+
 func Test_Any2DIngestUpdate(t *testing.T) {
 
-	f := Any2D{}
-	err := f.IngestValue([][]any{})
-	if err == nil || err.Error() != "ingesting value for Any2D is not supported" {
-		t.Fatal("ingesting value for Any2D should not be supported yet")
+	f, tps := createAny2DForTest()
+
+	m11 := map[string]any{"s": "Good"}
+	m12 := map[string]any{"s": "Morning"}
+	m21 := map[string]any{"s": "Guten"}
+	m22 := map[string]any{"s": "Tag"}
+	ma := [][]any{{m11, m12}, {m21, m22}}
+
+	err := f.IngestValue(ma)
+	if err != nil {
+		t.Fatalf("unexpected error returned:  %s", err.Error())
+	}
+
+	if tps[0].s != "Good" {
+		t.Fatal("primitive #1,1 not updated correctly")
+	}
+
+	if tps[1].s != "Morning" {
+		t.Fatal("primitive #1,2 not updated correctly")
+	}
+
+	if tps[2].s != "Guten" {
+		t.Fatal("primitive #2,1 not updated correctly")
+	}
+
+	if tps[3].s != "Tag" {
+		t.Fatal("primitive #2,2 not updated correctly")
+	}
+}
+
+func Test_Any2DIngestUpdateInvalid1(t *testing.T) {
+
+	f, _ := createAny2DForTest()
+
+	err := f.IngestValue(3453)
+	if err == nil {
+		t.Fatal("no error returned for an invalid update")
+	}
+	if err.Error() != "invalid update" {
+		t.Fatalf("wrong error was returned:  %s", err.Error())
+	}
+}
+
+func Test_Any2DIngestUpdateInvalid2(t *testing.T) {
+
+	f, _ := createAny2DForTest()
+
+	err := f.IngestValue([][]any{{"Hello", "World"}, {"Hello", "World"}})
+
+	if err == nil {
+		t.Fatal("no error returned for an invalid update")
+	}
+	if err.Error() != "invalid update" {
+		t.Fatalf("wrong error was returned:  %s", err.Error())
+	}
+}
+
+func Test_Any2DIngestUpdateInvalidNumRows(t *testing.T) {
+
+	f, _ := createAny2DForTest()
+
+	m1 := map[string]any{"s": "Hello"}
+	m2 := map[string]any{"s": "Hello"}
+
+	err := f.IngestValue([][]any{{m1, m2}})
+
+	if err == nil {
+		t.Fatal("no error returned for an invalid update")
+	}
+	if err.Error() != "number of primitives in update does not equal existing primitives" {
+		t.Fatalf("wrong error was returned:  %s", err.Error())
+	}
+}
+
+func Test_Any2DIngestUpdateInvalidNumCols(t *testing.T) {
+
+	f, _ := createAny2DForTest()
+
+	m1 := map[string]any{"s": "Hello"}
+	m2 := map[string]any{"s": "Hello"}
+
+	err := f.IngestValue([][]any{{m1}, {m2}})
+
+	if err == nil {
+		t.Fatal("no error returned for an invalid update")
+	}
+	if err.Error() != "number of primitives in update does not equal existing primitives" {
+		t.Fatalf("wrong error was returned:  %s", err.Error())
 	}
 }

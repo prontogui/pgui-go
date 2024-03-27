@@ -1,6 +1,7 @@
 package field
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/prontogui/golib/key"
@@ -25,6 +26,14 @@ func (tp *TestPrimitive) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[stri
 }
 
 func (tp *TestPrimitive) IngestUpdate(update map[string]any) error {
+	v, ok := update["s"]
+	if !ok {
+		return errors.New("field s not found in update")
+	}
+	tp.s, ok = v.(string)
+	if !ok {
+		return errors.New("field s in update cannot be converted to a string")
+	}
 	return nil
 }
 

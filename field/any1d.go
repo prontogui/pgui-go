@@ -43,5 +43,27 @@ func (f *Any1D) EgestValue() any {
 }
 
 func (f *Any1D) IngestValue(value any) error {
-	return errors.New("ingesting value for Any1D is not supported")
+
+	l, ok := value.([]any)
+	if !ok {
+		return errors.New("invalid update")
+	}
+
+	if len(l) != len(f.ary) {
+		return errors.New("number of primitives in update does not equal existing primitives")
+	}
+
+	for i, v := range l {
+		m, ok := v.(map[string]any)
+		if !ok {
+			return errors.New("invalid update")
+		}
+
+		err := f.ary[i].IngestUpdate(m)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

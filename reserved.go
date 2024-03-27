@@ -51,13 +51,38 @@ func (r *Reserved) GetChildPrimitive(index int) primitive.Interface {
 	return nil
 }
 
+func (r *Reserved) findField(fkey key.FKey) field.Field {
+
+	var found field.Field
+	for _, f := range r.fields {
+		if f.fkey == fkey {
+			found = f.field
+			break
+		}
+	}
+	return found
+}
+
 func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[string]any {
 
 	update := map[string]any{}
 
-	for _, v := range r.fields {
-		fieldvalue := v.field.EgestValue()
-		update[key.FieldnameFor(v.fkey)] = fieldvalue
+	if fullupdate {
+		for _, v := range r.fields {
+			fieldvalue := v.field.EgestValue()
+			update[key.FieldnameFor(v.fkey)] = fieldvalue
+		}
+	} else {
+		for _, fkey := range fkeys {
+
+			field := r.findField(fkey)
+			if field == nil {
+				panic("field not found in primitive")
+			}
+
+			fieldvalue := field.EgestValue()
+			update[key.FieldnameFor(fkey)] = fieldvalue
+		}
 	}
 
 	return update
@@ -84,20 +109,11 @@ func (r *Reserved) IngestUpdate(update map[string]any) error {
 			return errors.New("no matching field name in primitive")
 		}
 
-		found.IngestValue(v)
+		err := found.IngestValue(v)
+		if err != nil {
+			return err
+		}
 	}
 
-	/*
-		for k, v := range update {
-
-		}
-
-		fkey := key.FKeyFor(fieldname)
-		for _, f := range r.fields {
-			if f.fkey == fkey {
-				return f.field.IngestUpdate(update)
-			}
-		}
-	*/
 	return nil
 }

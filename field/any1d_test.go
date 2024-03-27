@@ -79,45 +79,83 @@ func Test_Any1DEgestValue(t *testing.T) {
 	}
 }
 
-/*
-Prelimary thoughts on how this should work...
-* - it should be possible to add one or more primitives to an existing array, e.g. adding a Text item to a GUI.
-* - new items must be added at the end of the list, after items that were created by server code.
-* - it must be possible to infer the primitive type from the signature of fields in the update item.  I want to
-*   avoid adding a type identifier field, since it really isn't necessary and its redundant information.
-* - deleting a primitive, that was created by the app, may be possible.  Deleting primitives created by the server
-*   cannot be possible, since it would break code interacting with it.   Maybe app created primitives could be
-*   marked somehow, e.g. using a reserved field like "delete-me".  A partial update could be streamed to the app once
-*   deletions are made on the server end.
-*/
-func Test_Any1DIngestUpdate(t *testing.T) {
-	/*
-	   f := Any1D{}
-	   f.Set([]primitive.Interface{&TestPrimitive{s: "a"}, &TestPrimitive{s: "b"}})
-
-	   err := f.IngestValue([]string{"abc", "def"})
-
-	   	if err != nil {
-	   		t.Fatalf("unexpected error was returned:  %s", err.Error())
-	   	}
-
-	   	if !reflect.DeepEqual(f.Get(), []string{"abc", "def"}) {
-	   		t.Fatal("value not set correctly")
-	   	}
-	*/
+func createAny1DForTest() (*Any1D, []*TestPrimitive) {
+	f := &Any1D{}
+	p1 := &TestPrimitive{}
+	p2 := &TestPrimitive{}
+	f.Set([]primitive.Interface{p1, p2})
+	return f, []*TestPrimitive{p1, p2}
 }
 
-func Test_Any1DIngestUpdateInvalid(t *testing.T) {
-	/*
-	   f := Strings1D{}
-	   err := f.IngestValue(450)
+func Test_Any1DIngestUpdate(t *testing.T) {
 
-	   	if err == nil {
-	   		t.Fatal("error was not returned")
-	   	}
+	f, tps := createAny1DForTest()
 
-	   	if err.Error() != "cannot convert value to []string" {
-	   		t.Fatal("wrong error was returned")
-	   	}
-	*/
+	m1 := map[string]any{"s": "Hello"}
+	m2 := map[string]any{"s": "World"}
+
+	err := f.IngestValue([]any{m1, m2})
+	if err != nil {
+		t.Fatalf("unexpected error returned:  %s", err.Error())
+	}
+
+	if tps[0].s != "Hello" {
+		t.Fatal("primitive #1 not updated correctly")
+	}
+
+	if tps[1].s != "World" {
+		t.Fatal("primitive #2 not updated correctly")
+	}
+}
+
+func Test_Any1DIngestUpdateInvalid1(t *testing.T) {
+
+	f := Any1D{}
+	p1 := &TestPrimitive{}
+	p2 := &TestPrimitive{}
+	f.Set([]primitive.Interface{p1, p2})
+
+	err := f.IngestValue(3453)
+	if err == nil {
+		t.Fatal("no error returned for an invalid update")
+	}
+	if err.Error() != "invalid update" {
+		t.Fatalf("wrong error was returned:  %s", err.Error())
+	}
+}
+
+func Test_Any1DIngestUpdateInvalid2(t *testing.T) {
+
+	f := Any1D{}
+	p1 := &TestPrimitive{}
+	p2 := &TestPrimitive{}
+	f.Set([]primitive.Interface{p1, p2})
+
+	err := f.IngestValue([]any{"Hello", "World"})
+
+	if err == nil {
+		t.Fatal("no error returned for an invalid update")
+	}
+	if err.Error() != "invalid update" {
+		t.Fatalf("wrong error was returned:  %s", err.Error())
+	}
+}
+
+func Test_Any1DIngestUpdateInvalidNumPrimitives(t *testing.T) {
+
+	f := Any1D{}
+	p1 := &TestPrimitive{}
+	p2 := &TestPrimitive{}
+	f.Set([]primitive.Interface{p1, p2})
+
+	m1 := map[string]any{"s": "Hello"}
+
+	err := f.IngestValue([]any{m1})
+
+	if err == nil {
+		t.Fatal("no error returned for an invalid update")
+	}
+	if err.Error() != "number of primitives in update does not equal existing primitives" {
+		t.Fatalf("wrong error was returned:  %s", err.Error())
+	}
 }

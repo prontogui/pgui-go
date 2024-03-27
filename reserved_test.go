@@ -5,12 +5,13 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
 	// "github.com/prontogui/golib/field"
 )
 
 func trueOrFalseVariation(variation int) bool {
-	if variation%1 == 0 {
+	if (variation % 2) == 0 {
 		return true
 	} else {
 		return false
@@ -117,9 +118,8 @@ func verifyValueA2D(t *testing.T, value any, checkno int) {
 	verifyValueA1D(t, a2d[1], checkno, 1)
 }
 
-func Test_EgestUpdate(t *testing.T) {
-
-	tp := ComplexPrimitive{}
+func createEgestPrimitiveForTest() *ComplexPrimitive {
+	tp := &ComplexPrimitive{}
 	tp.Issued.Set(true)
 	tp.Status.Set(100)
 	tp.Embodiment.Set("industry")
@@ -127,6 +127,12 @@ func Test_EgestUpdate(t *testing.T) {
 	tp.Data.Set([]byte{100, 150, 200})
 	tp.ListItems.Set(buildSimplePrimitiveArray(0))
 	tp.Rows.Set(buildSimplePrimitiveArray2D())
+	return tp
+}
+
+func Test_EgestFullUpdate(t *testing.T) {
+
+	tp := createEgestPrimitiveForTest()
 
 	tp.PrepareForUpdates(0, nil)
 
@@ -150,21 +156,59 @@ func Test_EgestUpdate(t *testing.T) {
 	verifyValueBL(t, update["Data"], 7, []byte{100, 150, 200})
 }
 
+func Test_EgestPartialUpdate(t *testing.T) {
+
+	tp := createEgestPrimitiveForTest()
+
+	tp.PrepareForUpdates(0, nil)
+
+	tp.Issued.Set(true)
+	tp.Status.Set(2)
+
+	update := tp.EgestUpdate(false, []key.FKey{key.FKeyFor("Issued"), key.FKeyFor("Status")})
+
+	if update == nil {
+		t.Fatal("returned nil.  Expecting a valid map")
+	}
+
+	updatelen := len(update)
+	if updatelen != 2 {
+		t.Fatalf("returned map has %d items.  Expecting 2 items", updatelen)
+	}
+
+	verifyValueB(t, update["Issued"], 1, true)
+	verifyValueI(t, update["Status"], 2, 2)
+}
+
 func Test_IngestUpdate(t *testing.T) {
 
 	choices := []string{"A", "B", "C"}
-	a1d0 := map[string]any{"Issued": false, "Embodiment": "fabricated"}
-	a1d1 := map[string]any{"Issued": true, "Embodiment": "made up"}
+	m1 := map[string]any{"Issued": false, "Embodiment": "fabricated"}
+	m2 := map[string]any{"Issued": true, "Embodiment": "made up"}
+	m11 := map[string]any{"Issued": true, "Embodiment": "contrived"}
+	m12 := map[string]any{"Issued": false, "Embodiment": "imagined"}
+	m21 := map[string]any{"Issued": false, "Embodiment": "brainstormed"}
+	m22 := map[string]any{"Issued": true, "Embodiment": "revealed"}
 
 	update := map[string]any{
 		"Issued":     true,
 		"Status":     99,
 		"Embodiment": "apple",
 		"Choices":    choices,
-		"ListItems":  []any{a1d0, a1d1},
+		"ListItems":  []any{m1, m2},
+		"Rows":       [][]any{{m11, m12}, {m21, m22}},
 	}
 
 	tp := ComplexPrimitive{}
+	p1 := &SimplePrimitive{}
+	p2 := &SimplePrimitive{}
+	p11 := &SimplePrimitive{}
+	p12 := &SimplePrimitive{}
+	p21 := &SimplePrimitive{}
+	p22 := &SimplePrimitive{}
+
+	tp.ListItems.Set([]primitive.Interface{p1, p2})
+	tp.Rows.Set([][]primitive.Interface{{p11, p12}, {p21, p22}})
 	tp.PrepareForUpdates(0, nil)
 
 	err := tp.IngestUpdate(update)
@@ -187,14 +231,21 @@ func Test_IngestUpdate(t *testing.T) {
 	if len(tp.ListItems.Get()) != 2 {
 		t.Fatal("field ListItems was not updated correctly")
 	}
-	p1 := tp.ListItems.Get()[0].(*ComplexPrimitive)
-	p2 := tp.ListItems.Get()[1].(*ComplexPrimitive)
-	if p1.Issued.Get() != false || p1.Embodiment.Get() != "fabricated" {
-		t.Error("element 0 of field ListItems was not updated correctly")
+
+	verifyPrimitiveElement := func(p *SimplePrimitive, desc string, issued bool, embodiment string) {
+
+		if p.Issued.Get() != issued || p.Embodiment.Get() != embodiment {
+			t.Errorf("%s was not updated correctly", desc)
+		}
 	}
-	if p2.Issued.Get() != true || p2.Embodiment.Get() != "made up" {
-		t.Error("element 1 of field ListItems was not updated correctly")
-	}
+
+	verifyPrimitiveElement(p1, "element #1 of ListItems", false, "fabricated")
+	verifyPrimitiveElement(p2, "element #2 of ListItems", true, "made up")
+	verifyPrimitiveElement(p11, "element #1,1 of Rows", true, "contrived")
+	verifyPrimitiveElement(p12, "element #1,2 of Rows", false, "imagined")
+	verifyPrimitiveElement(p21, "element #2,1 of Rows", false, "brainstormed")
+	verifyPrimitiveElement(p22, "element #2,2 of Rows", true, "revealed")
+
 }
 
 func Test_IngestUpdateInvalidFieldName(t *testing.T) {

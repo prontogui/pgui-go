@@ -2,6 +2,7 @@ package golib
 
 import (
 	"errors"
+	"fmt"
 
 	cbor "github.com/fxamacker/cbor/v2"
 	"github.com/prontogui/golib/key"
@@ -142,14 +143,53 @@ func (s *Synchro) GetFullUpdate() ([]byte, error) {
 
 	l := []any{true}
 
-	for _, v := range s.primitives {
-		l = append(l, v)
+	for _, p := range s.primitives {
+		p.EgestUpdate(true, nil)
+		l = append(l, p.EgestUpdate(true, nil))
 	}
 
 	return cbor.Marshal(l)
 }
 
-func (s *Synchro) IngestPartialUpdates(updatesCbor []byte) error {
+func (s *Synchro) ingestPartialUpdate(updatesList []any) error {
+	// Parse pkey
+	// locate primitive
+	// Ingest update into primitive
+
+	if len(updatesList)%2 != 0 {
+		return errors.New("expecting an even number of update items (pkey, item, pkey, item, ...)")
+	}
+
+	numupdates := len(updatesList) / 2
+
+	for i := 0; i < numupdates; i++ {
+		// Get the pkey
+		pkey, ok := updatesList[i*2].(uint64)
+		if !ok {
+			return errors.New("unable to convert pkey item to PKey")
+		}
+
+		// Get the update map
+		m, ok := updatesList[i*2+1].(map[string]any)
+		if !ok {
+			return errors.New("unable to convert update item to map[string]any")
+		}
+
+		p := locatePrimitive(s.primitives, key.PKey(pkey))
+		if p == nil {
+			return fmt.Errorf("primitive at pkey = %v was not found", pkey)
+		}
+
+		err := p.IngestUpdate(m)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *Synchro) IngestUpdate(updatesCbor []byte) error {
 
 	var updates any
 
@@ -180,21 +220,6 @@ func (s *Synchro) IngestPartialUpdates(updatesCbor []byte) error {
 	if isfull {
 		return errors.New("ingestion of full updates is not supported")
 	}
-	/*
-		for i, updateItem := range updatesList {
 
-			// Convert updateAny to an map[any]any
-
-			// Get the type of primitive
-
-			if isfull {
-
-			} else {
-
-			}
-		}
-	*/
-
-	return nil
-	//return errors.New("unable to injest update")
+	return s.ingestPartialUpdate(updatesList[1:])
 }
