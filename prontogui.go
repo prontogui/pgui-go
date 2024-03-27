@@ -32,6 +32,7 @@ func (pg *_ProntoGUI) StopServing() {
 
 func (pg *_ProntoGUI) SetGUI(primitives ...primitive.Interface) {
 	pg.fullupdate = true
+	pg.isgui = true
 	pg.synchro.SetTopPrimitives(primitives...)
 }
 
