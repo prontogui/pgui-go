@@ -67,9 +67,9 @@ func Test_Any2DEgestValue(t *testing.T) {
 			t.Fatal("wrong number of elements in row.  Expecting 2 elements")
 		}
 
-		m1, ok := row[0].(map[string]any)
+		m1, ok := row[0].(map[any]any)
 		if !ok {
-			t.Fatal("cannot convert element to map[string]any")
+			t.Fatal("cannot convert element to map[any]any")
 		}
 		m1v, ok := m1["s"].(string)
 		if !ok {
@@ -78,9 +78,9 @@ func Test_Any2DEgestValue(t *testing.T) {
 		if m1v != fmt.Sprintf("abc%d", i) {
 			t.Fatal("wrong string value for element")
 		}
-		m2, ok := row[1].(map[string]any)
+		m2, ok := row[1].(map[any]any)
 		if !ok {
-			t.Fatal("cannot convert element to map[string]any")
+			t.Fatal("cannot convert element to map[any]any")
 		}
 		m2v, ok := m2["s"].(string)
 		if !ok {
@@ -107,10 +107,10 @@ func Test_Any2DIngestUpdate(t *testing.T) {
 
 	f, tps := createAny2DForTest()
 
-	m11 := map[string]any{"s": "Good"}
-	m12 := map[string]any{"s": "Morning"}
-	m21 := map[string]any{"s": "Guten"}
-	m22 := map[string]any{"s": "Tag"}
+	m11 := map[any]any{"s": "Good"}
+	m12 := map[any]any{"s": "Morning"}
+	m21 := map[any]any{"s": "Guten"}
+	m22 := map[any]any{"s": "Tag"}
 	ma := [][]any{{m11, m12}, {m21, m22}}
 
 	err := f.IngestValue(ma)
@@ -166,8 +166,8 @@ func Test_Any2DIngestUpdateInvalidNumRows(t *testing.T) {
 
 	f, _ := createAny2DForTest()
 
-	m1 := map[string]any{"s": "Hello"}
-	m2 := map[string]any{"s": "Hello"}
+	m1 := map[any]any{"s": "Hello"}
+	m2 := map[any]any{"s": "Hello"}
 
 	err := f.IngestValue([][]any{{m1, m2}})
 
@@ -183,8 +183,8 @@ func Test_Any2DIngestUpdateInvalidNumCols(t *testing.T) {
 
 	f, _ := createAny2DForTest()
 
-	m1 := map[string]any{"s": "Hello"}
-	m2 := map[string]any{"s": "Hello"}
+	m1 := map[any]any{"s": "Hello"}
+	m2 := map[any]any{"s": "Hello"}
 
 	err := f.IngestValue([][]any{{m1}, {m2}})
 

@@ -170,9 +170,9 @@ func (s *Synchro) ingestPartialUpdate(updatesList []any) error {
 		}
 
 		// Get the update map
-		m, ok := updatesList[i*2+1].(map[string]any)
+		m, ok := updatesList[i*2+1].(map[any]any)
 		if !ok {
-			return errors.New("unable to convert update item to map[string]any")
+			return errors.New("unable to convert update item to map[any]any")
 		}
 
 		p := locatePrimitive(s.primitives, key.PKey(pkey))

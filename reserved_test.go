@@ -89,9 +89,9 @@ func verifyValueBL(t *testing.T, value any, checkno int, expecting []byte) {
 }
 
 func verifySimpleElement(t *testing.T, v any, checkno int, b bool, i int, s string) {
-	m, ok := v.(map[string]any)
+	m, ok := v.(map[any]any)
 	if !ok {
-		t.Errorf("for check #%d, unable to convert item %d to map[string]any", checkno, i)
+		t.Errorf("for check #%d, unable to convert item %d to map[any]any", checkno, i)
 	}
 	verifyValueB(t, m["Issued"], checkno, b)
 	verifyValueI(t, m["Status"], checkno, i)
@@ -183,14 +183,14 @@ func Test_EgestPartialUpdate(t *testing.T) {
 func Test_IngestUpdate(t *testing.T) {
 
 	choices := []string{"A", "B", "C"}
-	m1 := map[string]any{"Issued": false, "Embodiment": "fabricated"}
-	m2 := map[string]any{"Issued": true, "Embodiment": "made up"}
-	m11 := map[string]any{"Issued": true, "Embodiment": "contrived"}
-	m12 := map[string]any{"Issued": false, "Embodiment": "imagined"}
-	m21 := map[string]any{"Issued": false, "Embodiment": "brainstormed"}
-	m22 := map[string]any{"Issued": true, "Embodiment": "revealed"}
+	m1 := map[any]any{"Issued": false, "Embodiment": "fabricated"}
+	m2 := map[any]any{"Issued": true, "Embodiment": "made up"}
+	m11 := map[any]any{"Issued": true, "Embodiment": "contrived"}
+	m12 := map[any]any{"Issued": false, "Embodiment": "imagined"}
+	m21 := map[any]any{"Issued": false, "Embodiment": "brainstormed"}
+	m22 := map[any]any{"Issued": true, "Embodiment": "revealed"}
 
-	update := map[string]any{
+	update := map[any]any{
 		"Issued":     true,
 		"Status":     99,
 		"Embodiment": "apple",
@@ -250,7 +250,7 @@ func Test_IngestUpdate(t *testing.T) {
 
 func Test_IngestUpdateInvalidFieldName(t *testing.T) {
 
-	update := map[string]any{
+	update := map[any]any{
 		"ASDFLKHMN2KJESRHFNASDFASDFGCVC": true,
 	}
 
@@ -268,7 +268,7 @@ func Test_IngestUpdateInvalidFieldName(t *testing.T) {
 
 func Test_IngestUpdateNoMatchingFieldInPrimitive(t *testing.T) {
 
-	update := map[string]any{
+	update := map[any]any{
 		"Choices": []string{},
 	}
 

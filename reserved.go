@@ -63,9 +63,9 @@ func (r *Reserved) findField(fkey key.FKey) field.Field {
 	return found
 }
 
-func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[string]any {
+func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[any]any {
 
-	update := map[string]any{}
+	update := map[any]any{}
 
 	if fullupdate {
 		for _, v := range r.fields {
@@ -88,11 +88,16 @@ func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[string]any
 	return update
 }
 
-func (r *Reserved) IngestUpdate(update map[string]any) error {
+func (r *Reserved) IngestUpdate(update map[any]any) error {
 
 	for k, v := range update {
 
-		fkey := key.FKeyFor(k)
+		ks, ok := k.(string)
+		if !ok {
+			return errors.New("invalid key type.  Expecting a string")
+		}
+
+		fkey := key.FKeyFor(ks)
 		if fkey == key.INVALID_FIELDNAME {
 			return errors.New("invalid field name")
 		}

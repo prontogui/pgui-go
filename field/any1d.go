@@ -54,7 +54,7 @@ func (f *Any1D) IngestValue(value any) error {
 	}
 
 	for i, v := range l {
-		m, ok := v.(map[string]any)
+		m, ok := v.(map[any]any)
 		if !ok {
 			return errors.New("invalid update")
 		}

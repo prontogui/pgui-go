@@ -55,9 +55,9 @@ func Test_Any1DEgestValue(t *testing.T) {
 	if len(a) != 2 {
 		t.Fatal("wrong number of elements returned.  Expecting 2 elements")
 	}
-	m1, ok := a[0].(map[string]any)
+	m1, ok := a[0].(map[any]any)
 	if !ok {
-		t.Fatal("cannot convert element to map[string]any")
+		t.Fatal("cannot convert element to map[any]any")
 	}
 	m1v, ok := m1["s"].(string)
 	if !ok {
@@ -66,9 +66,9 @@ func Test_Any1DEgestValue(t *testing.T) {
 	if m1v != "abc" {
 		t.Fatal("wrong string value for element")
 	}
-	m2, ok := a[1].(map[string]any)
+	m2, ok := a[1].(map[any]any)
 	if !ok {
-		t.Fatal("cannot convert element to map[string]any")
+		t.Fatal("cannot convert element to map[any]any")
 	}
 	m2v, ok := m2["s"].(string)
 	if !ok {
@@ -91,8 +91,8 @@ func Test_Any1DIngestUpdate(t *testing.T) {
 
 	f, tps := createAny1DForTest()
 
-	m1 := map[string]any{"s": "Hello"}
-	m2 := map[string]any{"s": "World"}
+	m1 := map[any]any{"s": "Hello"}
+	m2 := map[any]any{"s": "World"}
 
 	err := f.IngestValue([]any{m1, m2})
 	if err != nil {
@@ -148,7 +148,7 @@ func Test_Any1DIngestUpdateInvalidNumPrimitives(t *testing.T) {
 	p2 := &TestPrimitive{}
 	f.Set([]primitive.Interface{p1, p2})
 
-	m1 := map[string]any{"s": "Hello"}
+	m1 := map[any]any{"s": "Hello"}
 
 	err := f.IngestValue([]any{m1})
 

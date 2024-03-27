@@ -21,11 +21,11 @@ func (tp *TestPrimitive) GetChildPrimitive(index int) primitive.Interface {
 	return nil
 }
 
-func (tp *TestPrimitive) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[string]any {
-	return map[string]any{"s": tp.s}
+func (tp *TestPrimitive) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[any]any {
+	return map[any]any{"s": tp.s}
 }
 
-func (tp *TestPrimitive) IngestUpdate(update map[string]any) error {
+func (tp *TestPrimitive) IngestUpdate(update map[any]any) error {
 	v, ok := update["s"]
 	if !ok {
 		return errors.New("field s not found in update")

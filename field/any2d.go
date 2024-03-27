@@ -72,7 +72,7 @@ func (f *Any2D) IngestValue(value any) error {
 
 		for j, v := range row {
 
-			m, ok := v.(map[string]any)
+			m, ok := v.(map[any]any)
 			if !ok {
 				return errors.New("invalid update")
 			}
