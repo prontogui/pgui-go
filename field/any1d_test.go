@@ -79,11 +79,45 @@ func Test_Any1DEgestValue(t *testing.T) {
 	}
 }
 
+/*
+Prelimary thoughts on how this should work...
+* - it should be possible to add one or more primitives to an existing array, e.g. adding a Text item to a GUI.
+* - new items must be added at the end of the list, after items that were created by server code.
+* - it must be possible to infer the primitive type from the signature of fields in the update item.  I want to
+*   avoid adding a type identifier field, since it really isn't necessary and its redundant information.
+* - deleting a primitive, that was created by the app, may be possible.  Deleting primitives created by the server
+*   cannot be possible, since it would break code interacting with it.   Maybe app created primitives could be
+*   marked somehow, e.g. using a reserved field like "delete-me".  A partial update could be streamed to the app once
+*   deletions are made on the server end.
+*/
 func Test_Any1DIngestUpdate(t *testing.T) {
+	/*
+	   f := Any1D{}
+	   f.Set([]primitive.Interface{&TestPrimitive{s: "a"}, &TestPrimitive{s: "b"}})
 
-	f := Any1D{}
-	err := f.IngestValue([]any{})
-	if err == nil || err.Error() != "ingesting value for Any1D is not supported" {
-		t.Fatal("ingesting value for Any1D should not be supported yet")
-	}
+	   err := f.IngestValue([]string{"abc", "def"})
+
+	   	if err != nil {
+	   		t.Fatalf("unexpected error was returned:  %s", err.Error())
+	   	}
+
+	   	if !reflect.DeepEqual(f.Get(), []string{"abc", "def"}) {
+	   		t.Fatal("value not set correctly")
+	   	}
+	*/
+}
+
+func Test_Any1DIngestUpdateInvalid(t *testing.T) {
+	/*
+	   f := Strings1D{}
+	   err := f.IngestValue(450)
+
+	   	if err == nil {
+	   		t.Fatal("error was not returned")
+	   	}
+
+	   	if err.Error() != "cannot convert value to []string" {
+	   		t.Fatal("wrong error was returned")
+	   	}
+	*/
 }

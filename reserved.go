@@ -55,10 +55,37 @@ func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[string]any
 
 	update := map[string]any{}
 
+	for _, v := range r.fields {
+		fieldvalue := v.field.EgestValue()
+		update[key.FieldnameFor(v.fkey)] = fieldvalue
+	}
+
 	return update
 }
 
 func (r *Reserved) IngestUpdate(update map[string]any) error {
+
+	for k, v := range update {
+
+		fkey := key.FKeyFor(k)
+		if fkey == key.INVALID_FIELDNAME {
+			return errors.New("invalid field name")
+		}
+
+		var found field.Field
+		for _, f := range r.fields {
+			if f.fkey == fkey {
+				found = f.field
+				break
+			}
+		}
+
+		if found == nil {
+			return errors.New("no matching field name in primitive")
+		}
+
+		found.IngestValue(v)
+	}
 
 	/*
 		for k, v := range update {
@@ -72,5 +99,5 @@ func (r *Reserved) IngestUpdate(update map[string]any) error {
 			}
 		}
 	*/
-	return errors.New("field not found")
+	return nil
 }

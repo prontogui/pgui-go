@@ -49,8 +49,23 @@ func Test_Strings1DEgestValue(t *testing.T) {
 func Test_Strings1DIngestUpdate(t *testing.T) {
 
 	f := Strings1D{}
-	err := f.IngestValue([]byte{})
-	if err == nil || err.Error() != "ingesting value for Strings1D is not supported" {
-		t.Fatal("ingesting value for Strings1D should not be supported yet")
+	err := f.IngestValue([]string{"abc", "def"})
+	if err != nil {
+		t.Fatalf("unexpected error was returned:  %s", err.Error())
+	}
+	if !reflect.DeepEqual(f.Get(), []string{"abc", "def"}) {
+		t.Fatal("value not set correctly")
+	}
+}
+
+func Test_Strings1DIngestUpdateInvalid(t *testing.T) {
+
+	f := Strings1D{}
+	err := f.IngestValue(450)
+	if err == nil {
+		t.Fatal("error was not returned")
+	}
+	if err.Error() != "cannot convert value to []string" {
+		t.Fatal("wrong error was returned")
 	}
 }

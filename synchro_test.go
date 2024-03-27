@@ -53,13 +53,13 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*SimplePrimi
 		tc := expecting[i]
 
 		// Does every field in testcommand equal the same value in map? (this should be commutative)
-		if tc.S.Get() != m1["S"].(string) {
+		if tc.Embodiment.Get() != m1["S"].(string) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
-		if tc.I.Get() != m1["I"].(int) {
+		if tc.Status.Get() != m1["I"].(int) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
-		if tc.B.Get() != m1["B"].(bool) {
+		if tc.Issued.Get() != m1["B"].(bool) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
 
@@ -155,10 +155,10 @@ func _Test_PartialUpdate1(t *testing.T) {
 	}
 
 	// Change command label
-	cmd1.S.Set("Guten Tag!")
-	cmd1.B.Set(true)
+	cmd1.Embodiment.Set("Guten Tag!")
+	cmd1.Issued.Set(true)
 
-	cmd3.I.Set(2)
+	cmd3.Status.Set(2)
 
 	// Test for partial updates available
 	updatesCbor, err := s.GetPartialUpdate()

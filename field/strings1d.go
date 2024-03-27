@@ -29,5 +29,10 @@ func (f *Strings1D) EgestValue() any {
 }
 
 func (f *Strings1D) IngestValue(value any) error {
-	return errors.New("ingesting value for Strings1D is not supported")
+	sa, ok := value.([]string)
+	if !ok {
+		return errors.New("cannot convert value to []string")
+	}
+	f.sa = sa
+	return nil
 }

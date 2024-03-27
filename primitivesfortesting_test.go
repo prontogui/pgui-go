@@ -8,24 +8,24 @@ import (
 type ComplexPrimitive struct {
 	Reserved
 
-	BSide BSide
-	B     field.Boolean
-	S     field.String
-	I     field.Integer
-	SA    field.Strings1D
-	A1D   field.Any1D
-	A2D   field.Any2D
-	BL    field.Blob
+	BSide      BSide
+	Issued     field.Boolean
+	Embodiment field.String
+	Status     field.Integer
+	Choices    field.Strings1D
+	ListItems  field.Any1D
+	Rows       field.Any2D
+	Data       field.Blob
 }
 
 func (tp *ComplexPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	tp.AttachField("B", &tp.B)
-	tp.AttachField("S", &tp.S)
-	tp.AttachField("I", &tp.I)
-	tp.AttachField("SA", &tp.SA)
-	tp.AttachField("A1D", &tp.A1D)
-	tp.AttachField("A2D", &tp.A2D)
-	tp.AttachField("BL", &tp.BL)
+	tp.AttachField("Issued", &tp.Issued)
+	tp.AttachField("Embodiment", &tp.Embodiment)
+	tp.AttachField("Status", &tp.Status)
+	tp.AttachField("Choices", &tp.Choices)
+	tp.AttachField("ListItems", &tp.ListItems)
+	tp.AttachField("Rows", &tp.Rows)
+	tp.AttachField("Data", &tp.Data)
 
 	// Prepare all the field for updates
 	tp.Reserved.PrepareForUpdates(pkey, onset, &tp.BSide)
@@ -34,16 +34,16 @@ func (tp *ComplexPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunc
 type SimplePrimitive struct {
 	Reserved
 
-	BSide BSide
-	B     field.Boolean
-	S     field.String
-	I     field.Integer
+	BSide      BSide
+	Issued     field.Boolean
+	Embodiment field.String
+	Status     field.Integer
 }
 
 func (tp *SimplePrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	tp.AttachField("B", &tp.B)
-	tp.AttachField("S", &tp.S)
-	tp.AttachField("I", &tp.I)
+	tp.AttachField("Issued", &tp.Issued)
+	tp.AttachField("Embodiment", &tp.Embodiment)
+	tp.AttachField("Status", &tp.Status)
 
 	// Prepare all the field for updates
 	tp.Reserved.PrepareForUpdates(pkey, onset, &tp.BSide)

@@ -2,6 +2,11 @@ package key
 
 type FKey uint8
 
+const (
+	INVALID_FIELDNAME = 255
+	INVALID_FKEY      = ""
+)
+
 func FKeyFor(fieldname string) FKey {
 
 	// TODO:  very temporary.  Eventually need to build a static map of all field names upon program initialization.
@@ -19,8 +24,16 @@ func FKeyFor(fieldname string) FKey {
 		return 5
 	case "Status":
 		return 6
+	case "Choices":
+		return 7
+	case "Data":
+		return 8
+	case "ListItems":
+		return 9
+	case "Rows":
+		return 10
 	default:
-		return 255
+		return INVALID_FIELDNAME
 	}
 }
 
@@ -40,7 +53,15 @@ func FieldnameFor(fkey FKey) string {
 		return "Issued"
 	case 6:
 		return "Status"
+	case 7:
+		return "Choices"
+	case 8:
+		return "Data"
+	case 9:
+		return "ListItems"
+	case 10:
+		return "Rows"
 	default:
-		return ""
+		return INVALID_FKEY
 	}
 }
