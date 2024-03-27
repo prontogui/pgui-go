@@ -48,7 +48,7 @@ func (pg *_ProntoGUI) Wait() error {
 	// Need to send a full update?
 	if pg.fullupdate {
 
-		updateOut, err = NewSynchro().GetFullUpdate()
+		updateOut, err = pg.synchro.GetFullUpdate()
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ func (pg *_ProntoGUI) Wait() error {
 		return err
 	}
 
-	NewSynchro().IngestUpdate(updateIn)
+	pg.synchro.IngestUpdate(updateIn)
 
 	return nil
 }
