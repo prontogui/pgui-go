@@ -48,13 +48,13 @@ func (pg *_ProntoGUI) Wait() error {
 
 	// Need to send a full update?
 	if pg.fullupdate {
-
 		updateOut, err = pg.synchro.GetFullUpdate()
-		if err != nil {
-			return err
-		}
-
 		pg.fullupdate = false
+	} else {
+		updateOut, err = pg.synchro.GetPartialUpdate()
+	}
+	if err != nil {
+		return err
 	}
 
 	updateIn, err = pg.pgcomm.ExchangeUpdates(updateOut)
