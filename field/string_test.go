@@ -2,6 +2,8 @@ package field
 
 import (
 	"testing"
+
+	"github.com/prontogui/golib/key"
 )
 
 func Test_StringSetAndGet(t *testing.T) {
@@ -17,7 +19,7 @@ func Test_StringSetAndGet(t *testing.T) {
 func Test_StringPrepareForUpdates(t *testing.T) {
 	f := String{}
 
-	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
+	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc())
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 
@@ -44,7 +46,7 @@ func Test_StringEgestValue(t *testing.T) {
 func Test_StringIngestUpdate(t *testing.T) {
 
 	f := String{}
-	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
+	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc())
 
 	err := f.IngestValue("hello, darling")
 
@@ -59,7 +61,7 @@ func Test_StringIngestUpdateEmptyString(t *testing.T) {
 
 	f := String{}
 	f.Set("goodbye, dear")
-	f.PrepareForUpdates(10, 50, getTestOnsetFunc())
+	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc())
 
 	err := f.IngestValue("")
 

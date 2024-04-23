@@ -61,7 +61,7 @@ func verifyStashUpdateInfo(t *testing.T, f *Reserved) {
 	if f.fkey != 10 {
 		t.Error("fkey was not stashed correctly")
 	}
-	if f.pkey != 50 {
+	if !f.pkey.EqualTo(key.NewPKey(50)) {
 		t.Error("pkey was not stashed correctly")
 	}
 	if f.onset == nil {

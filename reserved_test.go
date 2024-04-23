@@ -134,7 +134,7 @@ func Test_EgestFullUpdate(t *testing.T) {
 
 	tp := createEgestPrimitiveForTest()
 
-	tp.PrepareForUpdates(0, nil)
+	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
 	update := tp.EgestUpdate(true, nil)
 
@@ -160,7 +160,7 @@ func Test_EgestPartialUpdate(t *testing.T) {
 
 	tp := createEgestPrimitiveForTest()
 
-	tp.PrepareForUpdates(0, nil)
+	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
 	tp.Issued.Set(true)
 	tp.Status.Set(2)
@@ -209,7 +209,7 @@ func Test_IngestUpdate(t *testing.T) {
 
 	tp.ListItems.Set([]primitive.Interface{p1, p2})
 	tp.Rows.Set([][]primitive.Interface{{p11, p12}, {p21, p22}})
-	tp.PrepareForUpdates(0, nil)
+	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
 	err := tp.IngestUpdate(update)
 	if err != nil {
@@ -255,7 +255,7 @@ func Test_IngestUpdateInvalidFieldName(t *testing.T) {
 	}
 
 	tp := ComplexPrimitive{}
-	tp.PrepareForUpdates(0, nil)
+	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
 	err := tp.IngestUpdate(update)
 	if err == nil {
@@ -273,7 +273,7 @@ func Test_IngestUpdateNoMatchingFieldInPrimitive(t *testing.T) {
 	}
 
 	tp := SimplePrimitive{}
-	tp.PrepareForUpdates(0, nil)
+	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
 	err := tp.IngestUpdate(update)
 	if err == nil {

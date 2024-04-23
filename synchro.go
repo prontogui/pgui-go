@@ -27,7 +27,7 @@ func NewSynchro() *Synchro {
 
 func findPendingUpdate(updates []*Update, pkey key.PKey) *Update {
 	for _, update := range updates {
-		if update.pkey == pkey && !update.ignored {
+		if update.pkey.EqualTo(pkey) && !update.ignored {
 			return update
 		}
 	}
@@ -164,7 +164,7 @@ func (s *Synchro) ingestPartialUpdate(updatesList []any) error {
 
 	for i := 0; i < numupdates; i++ {
 		// Get the pkey
-		pkey, ok := updatesList[i*2].(uint64)
+		pkeyany, ok := updatesList[i*2].([]any)
 		if !ok {
 			return errors.New("unable to convert pkey item to PKey")
 		}
@@ -175,7 +175,8 @@ func (s *Synchro) ingestPartialUpdate(updatesList []any) error {
 			return errors.New("unable to convert update item to map[any]any")
 		}
 
-		p := locatePrimitive(s.primitives, key.PKey(pkey))
+		pkey := key.NewPKeyFromAny(pkeyany...)
+		p := locatePrimitive(s.primitives, pkey)
 		if p == nil {
 			return fmt.Errorf("primitive at pkey = %v was not found", pkey)
 		}

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	cbor "github.com/fxamacker/cbor/v2"
+	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
 	// "github.com/prontogui/golib/testhelp"
 )
@@ -92,13 +93,14 @@ func verifyUpdateItemFalse(t *testing.T, item any) {
 	}
 }
 
-func verifyUpdateItemPKey(t *testing.T, item any, pkey uint64) {
-	itemPKey, ok := item.(uint64)
+func verifyUpdateItemPKey(t *testing.T, item any, pkey key.PKey) {
+	itemPKeyAny, ok := item.([]any)
 	if !ok {
 		t.Fatal("update item cannot be converted to PKey")
 	}
 
-	if itemPKey != pkey {
+	itemPKey := key.NewPKeyFromAny(itemPKeyAny...)
+	if !key.NewPKey(itemPKey...).EqualTo(pkey) {
 		t.Fatal("update item does not match expected PKey")
 	}
 }
@@ -173,12 +175,12 @@ func Test_PartialUpdate1(t *testing.T) {
 
 	verifyUpdateItemFalse(t, updates[0])
 
-	verifyUpdateItemPKey(t, updates[1], 0)
+	verifyUpdateItemPKey(t, updates[1], key.NewPKey(0))
 
 	m1 := map[string]any{"Embodiment": "Guten Tag!", "Issued": true}
 	verifyUpdateItemMap(t, updates[2], m1)
 
-	verifyUpdateItemPKey(t, updates[3], 2)
+	verifyUpdateItemPKey(t, updates[3], key.NewPKey(2))
 
 	m2 := map[string]any{"Status": uint64(2)}
 	verifyUpdateItemMap(t, updates[4], m2)
