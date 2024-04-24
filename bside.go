@@ -2,12 +2,9 @@ package golib
 
 import (
 	"github.com/prontogui/golib/field"
-	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 type BSide struct {
-	Reserved
 
 	// The row index (0-based) where the primitive resides in a container (usually a table).
 	// This is assigned automatically by the container primitive, or in the case of a
@@ -24,14 +21,10 @@ type BSide struct {
 	embodiment field.String
 }
 
-func (bs *BSide) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	bs.AttachField("Row", &bs.row)
-	bs.AttachField("Col", &bs.col)
-	bs.AttachField("Embodiemnt", &bs.embodiment)
-}
-
-func (bs *BSide) GetChildPrimitive(index int) primitive.Interface {
-	return nil
+func (bs *BSide) AttachFields(res *Reserved) {
+	res.AttachField("B.Row", &bs.row)
+	res.AttachField("B.Col", &bs.col)
+	res.AttachField("B.Embodiment", &bs.embodiment)
 }
 
 func (bs *BSide) Row() int {

@@ -24,12 +24,12 @@ func buildSimplePrimitiveArray(variation int) []primitive.Interface {
 
 	p1.Issued.Set(trueOrFalseVariation(variation))
 	p1.Status.Set(100 + variation)
-	p1.Embodiment.Set(fmt.Sprintf("apple%d", variation))
+	p1.Label.Set(fmt.Sprintf("apple%d", variation))
 
 	p2 := &SimplePrimitive{}
 	p2.Issued.Set(trueOrFalseVariation(variation))
 	p2.Status.Set(150 + variation)
-	p2.Embodiment.Set(fmt.Sprintf("orange%d", variation))
+	p2.Label.Set(fmt.Sprintf("orange%d", variation))
 
 	return []primitive.Interface{p1, p2}
 }
@@ -95,7 +95,7 @@ func verifySimpleElement(t *testing.T, v any, checkno int, b bool, i int, s stri
 	}
 	verifyValueB(t, m["Issued"], checkno, b)
 	verifyValueI(t, m["Status"], checkno, i)
-	verifyValueS(t, m["Embodiment"], checkno, s)
+	verifyValueS(t, m["Label"], checkno, s)
 }
 
 func verifyValueA1D(t *testing.T, value any, checkno int, variation int) {
@@ -120,9 +120,11 @@ func verifyValueA2D(t *testing.T, value any, checkno int) {
 
 func createEgestPrimitiveForTest() *ComplexPrimitive {
 	tp := &ComplexPrimitive{}
+	tp.B().SetRow(34)
+	tp.B().SetCol(19)
+	tp.B().SetEmbodiment("industry")
 	tp.Issued.Set(true)
 	tp.Status.Set(100)
-	tp.Embodiment.Set("industry")
 	tp.Choices.Set([]string{"abc", "def", "xyz"})
 	tp.Data.Set([]byte{100, 150, 200})
 	tp.ListItems.Set(buildSimplePrimitiveArray(0))
@@ -143,17 +145,19 @@ func Test_EgestFullUpdate(t *testing.T) {
 	}
 
 	updatelen := len(update)
-	if updatelen != 7 {
-		t.Fatalf("returned map has %d items.  Expecting 7 items", updatelen)
+	if updatelen != 9 {
+		t.Fatalf("returned map has %d items.  Expecting 9 items", updatelen)
 	}
 
 	verifyValueB(t, update["Issued"], 1, true)
 	verifyValueI(t, update["Status"], 2, 100)
-	verifyValueS(t, update["Embodiment"], 3, "industry")
-	verifyValueSA(t, update["Choices"], 4, []string{"abc", "def", "xyz"})
-	verifyValueA1D(t, update["ListItems"], 5, 0)
-	verifyValueA2D(t, update["Rows"], 6)
-	verifyValueBL(t, update["Data"], 7, []byte{100, 150, 200})
+	verifyValueS(t, update["B.Embodiment"], 3, "industry")
+	verifyValueI(t, update["B.Row"], 4, 34)
+	verifyValueI(t, update["B.Col"], 5, 19)
+	verifyValueSA(t, update["Choices"], 6, []string{"abc", "def", "xyz"})
+	verifyValueA1D(t, update["ListItems"], 7, 0)
+	verifyValueA2D(t, update["Rows"], 8)
+	verifyValueBL(t, update["Data"], 9, []byte{100, 150, 200})
 }
 
 func Test_EgestPartialUpdate(t *testing.T) {
@@ -183,20 +187,19 @@ func Test_EgestPartialUpdate(t *testing.T) {
 func Test_IngestUpdate(t *testing.T) {
 
 	choices := []string{"A", "B", "C"}
-	m1 := map[any]any{"Issued": false, "Embodiment": "fabricated"}
-	m2 := map[any]any{"Issued": true, "Embodiment": "made up"}
-	m11 := map[any]any{"Issued": true, "Embodiment": "contrived"}
-	m12 := map[any]any{"Issued": false, "Embodiment": "imagined"}
-	m21 := map[any]any{"Issued": false, "Embodiment": "brainstormed"}
-	m22 := map[any]any{"Issued": true, "Embodiment": "revealed"}
+	m1 := map[any]any{"Issued": false, "Label": "fabricated"}
+	m2 := map[any]any{"Issued": true, "Label": "made up"}
+	m11 := map[any]any{"Issued": true, "Label": "contrived"}
+	m12 := map[any]any{"Issued": false, "Label": "imagined"}
+	m21 := map[any]any{"Issued": false, "Label": "brainstormed"}
+	m22 := map[any]any{"Issued": true, "Label": "revealed"}
 
 	update := map[any]any{
-		"Issued":     true,
-		"Status":     99,
-		"Embodiment": "apple",
-		"Choices":    choices,
-		"ListItems":  []any{m1, m2},
-		"Rows":       [][]any{{m11, m12}, {m21, m22}},
+		"Issued":    true,
+		"Status":    99,
+		"Choices":   choices,
+		"ListItems": []any{m1, m2},
+		"Rows":      [][]any{{m11, m12}, {m21, m22}},
 	}
 
 	tp := ComplexPrimitive{}
@@ -222,9 +225,7 @@ func Test_IngestUpdate(t *testing.T) {
 	if tp.Status.Get() != 99 {
 		t.Error("field Status was not updated correctly")
 	}
-	if tp.Embodiment.Get() != "apple" {
-		t.Error("field Embodiment was not updated correctly")
-	}
+
 	if !reflect.DeepEqual(tp.Choices.Get(), choices) {
 		t.Error("field Choices was not updated correctly")
 	}
@@ -232,9 +233,9 @@ func Test_IngestUpdate(t *testing.T) {
 		t.Fatal("field ListItems was not updated correctly")
 	}
 
-	verifyPrimitiveElement := func(p *SimplePrimitive, desc string, issued bool, embodiment string) {
+	verifyPrimitiveElement := func(p *SimplePrimitive, desc string, issued bool, label string) {
 
-		if p.Issued.Get() != issued || p.Embodiment.Get() != embodiment {
+		if p.Issued.Get() != issued || p.Label.Get() != label {
 			t.Errorf("%s was not updated correctly", desc)
 		}
 	}

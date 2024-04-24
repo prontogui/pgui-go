@@ -2,10 +2,10 @@ package golib
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 const (
@@ -24,31 +24,30 @@ Reserved fields for primitive updates.
 */
 type Reserved struct {
 	fields []FieldRef
-	bside  primitive.Interface
+	bside  BSide
+}
+
+func (r *Reserved) B() *BSide {
+	return &r.bside
 }
 
 func (r *Reserved) AttachField(fieldname string, field field.Field) {
 
 	fkey := key.FKeyFor(fieldname)
+	if fkey == key.INVALID_FIELDNAME {
+		panic(fmt.Sprintf("Field name '%s' is not registered in key package.", fieldname))
+	}
 
 	r.fields = append(r.fields, FieldRef{fkey: fkey, field: field})
 }
 
-func (r *Reserved) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction, bside primitive.Interface) {
+func (r *Reserved) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
-	r.bside = bside
+	r.bside.AttachFields(r)
 
 	for _, f := range r.fields {
 		f.field.PrepareForUpdates(f.fkey, pkey, onset)
 	}
-}
-
-func (r *Reserved) GetChildPrimitive(index int) primitive.Interface {
-
-	if index == 0 {
-		return r.bside
-	}
-	return nil
 }
 
 func (r *Reserved) findField(fkey key.FKey) field.Field {

@@ -3,15 +3,20 @@ package golib
 import (
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
+	"github.com/prontogui/golib/primitive"
 )
 
 type Command struct {
+	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
 	Reserved
 
-	BSide  BSide
 	label  field.String
 	issued field.Boolean
 	status field.Integer
+}
+
+func (r *Reserved) GetChildPrimitive(index int) primitive.Interface {
+	return nil
 }
 
 func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
@@ -21,7 +26,7 @@ func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	cmd.AttachField("Status", &cmd.status)
 
 	// Prepare all fields for updates
-	cmd.Reserved.PrepareForUpdates(pkey, onset, &cmd.BSide)
+	cmd.Reserved.PrepareForUpdates(pkey, onset)
 }
 
 func (cmd *Command) Label() string {

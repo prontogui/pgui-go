@@ -54,7 +54,7 @@ func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*SimplePrimi
 		tc := expecting[i]
 
 		// Does every field in testcommand equal the same value in map? (this should be commutative)
-		if tc.Embodiment.Get() != m1["Embodiment"].(string) {
+		if tc.Label.Get() != m1["Label"].(string) {
 			t.Fatalf("update item %d is not equal to what's expected", i)
 		}
 		if uint64(tc.Status.Get()) != m1["Status"].(uint64) {
@@ -147,7 +147,7 @@ func Test_PartialUpdate1(t *testing.T) {
 	}
 
 	// Change command label
-	cmd1.Embodiment.Set("Guten Tag!")
+	cmd1.Label.Set("Guten Tag!")
 	cmd1.Issued.Set(true)
 
 	cmd3.Status.Set(2)
@@ -177,7 +177,7 @@ func Test_PartialUpdate1(t *testing.T) {
 
 	verifyUpdateItemPKey(t, updates[1], key.NewPKey(0))
 
-	m1 := map[string]any{"Embodiment": "Guten Tag!", "Issued": true}
+	m1 := map[string]any{"Label": "Guten Tag!", "Issued": true}
 	verifyUpdateItemMap(t, updates[2], m1)
 
 	verifyUpdateItemPKey(t, updates[3], key.NewPKey(2))
@@ -199,8 +199,8 @@ func verifyPrimitivesEqual(t *testing.T, a []primitive.Interface, b []primitive.
 		sp1 := p.(*SimplePrimitive)
 		sp2 := b[i].(*SimplePrimitive)
 
-		if sp1.Embodiment.Get() != sp2.Embodiment.Get() {
-			t.Errorf("Embodiment fields of primitives a[%d] and b[%d] are not equal", i, i)
+		if sp1.Label.Get() != sp2.Label.Get() {
+			t.Errorf("Label fields of primitives a[%d] and b[%d] are not equal", i, i)
 		}
 		if sp1.Status.Get() != sp2.Status.Get() {
 			t.Errorf("Status fields of primitives a[%d] and b[%d] are not equal", i, i)
@@ -245,7 +245,7 @@ func Test_IngestPartialUpdate(t *testing.T) {
 	s1.SetTopPrimitives(cmd1, cmd2, cmd3)
 
 	cmd1.Issued.Set(true)
-	cmd2.Embodiment.Set("blah blah")
+	cmd2.Label.Set("blah blah")
 
 	var err error
 

@@ -12,11 +12,11 @@ func FKeyFor(fieldname string) FKey {
 	// TODO:  very temporary.  Eventually need to build a static map of all field names upon program initialization.
 	switch fieldname {
 	// NOTE:  FKey = 0 is reserved!  Do not use.
-	case "Row":
+	case "B.Row":
 		return 1
-	case "Col":
+	case "B.Col":
 		return 2
-	case "Embodiment":
+	case "B.Embodiment":
 		return 3
 	case "Label":
 		return 4
@@ -42,11 +42,11 @@ func FieldnameFor(fkey FKey) string {
 	switch fkey {
 	// NOTE:  FKey = 0 is reserved!  Do not use.
 	case 1:
-		return "Row"
+		return "B.Row"
 	case 2:
-		return "Col"
+		return "B.Col"
 	case 3:
-		return "Embodiment"
+		return "B.Embodiment"
 	case 4:
 		return "Label"
 	case 5:
