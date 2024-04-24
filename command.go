@@ -20,7 +20,7 @@ func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	cmd.AttachField("Issued", &cmd.issued)
 	cmd.AttachField("Status", &cmd.status)
 
-	// Prepare all the field for updates
+	// Prepare all fields for updates
 	cmd.Reserved.PrepareForUpdates(pkey, onset, &cmd.BSide)
 }
 
