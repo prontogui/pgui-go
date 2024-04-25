@@ -6,6 +6,7 @@ import (
 
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
+	"github.com/prontogui/golib/primitive"
 )
 
 const (
@@ -39,6 +40,10 @@ func (r *Reserved) AttachField(fieldname string, field field.Field) {
 	}
 
 	r.fields = append(r.fields, FieldRef{fkey: fkey, field: field})
+}
+
+func (r *Reserved) GetChildPrimitive(index int) primitive.Interface {
+	return nil
 }
 
 func (r *Reserved) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

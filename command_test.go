@@ -6,13 +6,13 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-func Test_Attach(t *testing.T) {
+func Test_CommandAttach(t *testing.T) {
 	cmd := &Command{}
 	cmd.PrepareForUpdates(key.NewPKey(), nil)
 	verifyAllFieldsAttached(t, cmd.Reserved, "Label", "Issued", "Status")
 }
 
-func Test_FieldSetting(t *testing.T) {
+func Test_CommandFieldSetting(t *testing.T) {
 	cmd := &Command{}
 	cmd.SetIssued(true)
 	if !cmd.Issued() {

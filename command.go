@@ -3,7 +3,6 @@ package golib
 import (
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 type Command struct {
@@ -13,10 +12,6 @@ type Command struct {
 	label  field.String
 	issued field.Boolean
 	status field.Integer
-}
-
-func (r *Reserved) GetChildPrimitive(index int) primitive.Interface {
-	return nil
 }
 
 func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

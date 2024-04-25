@@ -32,6 +32,8 @@ func FKeyFor(fieldname string) FKey {
 		return 9
 	case "Rows":
 		return 10
+	case "Content":
+		return 11
 	default:
 		return INVALID_FIELDNAME
 	}
@@ -61,6 +63,8 @@ func FieldnameFor(fkey FKey) string {
 		return "ListItems"
 	case 10:
 		return "Rows"
+	case 11:
+		return "Content"
 	default:
 		return INVALID_FKEY
 	}
