@@ -34,7 +34,7 @@ func findPendingUpdate(updates []*Update, pkey key.PKey) *Update {
 	return nil
 }
 
-func ignoreDescendentUpdates(updates []*Update, pkey key.PKey) {
+func ignoreDescendantUpdates(updates []*Update, pkey key.PKey) {
 	for _, update := range updates {
 		if update.pkey.DescendsFrom(pkey) {
 			update.ignored = true
@@ -88,7 +88,7 @@ func (s *Synchro) OnSet(pkey key.PKey, fkey key.FKey, structural bool) {
 	}
 
 	if structural {
-		ignoreDescendentUpdates(s.pendingUpdates, pkey)
+		ignoreDescendantUpdates(s.pendingUpdates, pkey)
 	}
 }
 
