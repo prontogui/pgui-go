@@ -6,7 +6,7 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-func Test_CommandAttach(t *testing.T) {
+func Test_CommandAttachedFields(t *testing.T) {
 	cmd := &Command{}
 	cmd.PrepareForUpdates(key.NewPKey(), nil)
 	verifyAllFieldsAttached(t, cmd.Reserved, "Label", "Issued", "Status")

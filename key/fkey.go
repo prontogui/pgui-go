@@ -34,6 +34,14 @@ func FKeyFor(fieldname string) FKey {
 		return 10
 	case "Content":
 		return 11
+	case "Choice":
+		return 12
+	case "State":
+		return 13
+	case "Checked":
+		return 14
+	case "GroupItems":
+		return 15
 	default:
 		return INVALID_FIELDNAME
 	}
@@ -65,6 +73,14 @@ func FieldnameFor(fkey FKey) string {
 		return "Rows"
 	case 11:
 		return "Content"
+	case 12:
+		return "Choice"
+	case 13:
+		return "State"
+	case 14:
+		return "Checked"
+	case 15:
+		return "GroupItems"
 	default:
 		return INVALID_FKEY
 	}
