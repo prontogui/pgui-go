@@ -36,10 +36,6 @@ func (cmd *Command) Issued() bool {
 	return cmd.issued.Get()
 }
 
-func (cmd *Command) SetIssued(b bool) {
-	cmd.issued.Set(b)
-}
-
 func (cmd *Command) Status() int {
 	return cmd.status.Get()
 }

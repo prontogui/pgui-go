@@ -10,14 +10,14 @@ type Choice struct {
 	Reserved
 
 	choice  field.String
-	issued  field.Boolean
+	changed field.Boolean
 	choices field.Strings1D
 }
 
 func (choice *Choice) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
 	choice.AttachField("Choice", &choice.choice)
-	choice.AttachField("Issued", &choice.issued)
+	choice.AttachField("Issued", &choice.changed)
 	choice.AttachField("Choices", &choice.choices)
 
 	// Prepare all fields for updates
@@ -32,12 +32,8 @@ func (choice *Choice) SetChoice(s string) {
 	choice.choice.Set(s)
 }
 
-func (choice *Choice) Issued() bool {
-	return choice.issued.Get()
-}
-
-func (choice *Choice) SetIssued(b bool) {
-	choice.issued.Set(b)
+func (choice *Choice) Changed() bool {
+	return choice.changed.Get()
 }
 
 func (choice *Choice) Choices() []string {

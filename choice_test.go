@@ -21,9 +21,9 @@ func Test_ChoiceFieldSettings(t *testing.T) {
 		t.Error("Could not set Choice field.")
 	}
 
-	choice.SetIssued(true)
-	if !choice.Issued() {
-		t.Error("Could not set Issued field.")
+	choice.changed.Set(true)
+	if !choice.Changed() {
+		t.Error("Could not get Changed field correctly.")
 	}
 
 	choice.SetChoices([]string{"mary", "john", "paul"})

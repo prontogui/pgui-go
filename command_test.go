@@ -14,9 +14,9 @@ func Test_CommandAttachedFields(t *testing.T) {
 
 func Test_CommandFieldSetting(t *testing.T) {
 	cmd := &Command{}
-	cmd.SetIssued(true)
+	cmd.issued.Set(true)
 	if !cmd.Issued() {
-		t.Error("Could not set Issued field.")
+		t.Error("Could not get Issued field correctly.")
 	}
 
 	cmd.SetLabel("My label")
