@@ -60,3 +60,22 @@ func Test_GruopFieldSettings(t *testing.T) {
 	}
 
 }
+
+func Test_GroupGetChildPrimitive(t *testing.T) {
+
+	grp := &Group{}
+
+	grp.SetGroupItems([]primitive.Interface{&Command{}, &Command{}})
+
+	if grp.GetChildPrimitive(0) == nil {
+		t.Fatal("GetChildPrimitve doesn't return a child for index = 0.")
+	}
+
+	if grp.GetChildPrimitive(1) == nil {
+		t.Fatal("GetChildPrimitve doesn't return a child for index = 1.")
+	}
+
+	if grp.GetChildPrimitive(2) != nil {
+		t.Fatal("GetChildPrimitve shouldn't return a child for index = 2.")
+	}
+}
