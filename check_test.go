@@ -13,7 +13,7 @@ func Test_CheckAttachedFields(t *testing.T) {
 }
 
 func Test_CheckMake(t *testing.T) {
-	check := CheckWith{label: "Option", checked: true}.Make()
+	check := CheckWith{Label: "Option", Checked: true}.Make()
 
 	if check.Label() != "Option" {
 		t.Error("Could not initialize Label field.")

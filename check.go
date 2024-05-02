@@ -6,15 +6,15 @@ import (
 )
 
 type CheckWith struct {
-	label   string
-	checked bool
+	Label   string
+	Checked bool
 }
 
 // Makes a new Check with specified field values.
 func (w CheckWith) Make() *Check {
 	cmd := &Check{}
-	cmd.label.Set(w.label)
-	cmd.checked.Set(w.checked)
+	cmd.label.Set(w.Label)
+	cmd.checked.Set(w.Checked)
 	return cmd
 }
 
