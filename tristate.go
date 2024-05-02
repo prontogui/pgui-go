@@ -5,13 +5,25 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
+type TristateWith struct {
+	label string
+	state int
+}
+
+func (w TristateWith) Make() *Tristate {
+	tri := &Tristate{}
+	tri.label.Set(w.label)
+	tri.state.Set(w.state)
+	return tri
+}
+
 type Tristate struct {
 	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
 	Reserved
 
 	label   field.String
 	state   field.Integer
-	changed field.Boolean
+	changed field.Event
 }
 
 func (tri *Tristate) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

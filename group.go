@@ -6,6 +6,16 @@ import (
 	"github.com/prontogui/golib/primitive"
 )
 
+type GroupWith struct {
+	groupItems []primitive.Interface
+}
+
+func (w GroupWith) Make() *Group {
+	grp := &Group{}
+	grp.groupItems.Set(w.groupItems)
+	return grp
+}
+
 type Group struct {
 	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
 	Reserved

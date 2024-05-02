@@ -5,13 +5,26 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
+type CommandWith struct {
+	label  string
+	status int
+}
+
+// Makes a new Command with specified field values.
+func (w CommandWith) Make() *Command {
+	cmd := &Command{}
+	cmd.label.Set(w.label)
+	cmd.status.Set(w.status)
+	return cmd
+}
+
 type Command struct {
 	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
 	Reserved
 
 	label  field.String
-	issued field.Boolean
 	status field.Integer
+	issued field.Event
 }
 
 func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
@@ -32,14 +45,14 @@ func (cmd *Command) SetLabel(s string) {
 	cmd.label.Set(s)
 }
 
-func (cmd *Command) Issued() bool {
-	return cmd.issued.Get()
-}
-
 func (cmd *Command) Status() int {
 	return cmd.status.Get()
 }
 
 func (cmd *Command) SetStatus(i int) {
 	cmd.status.Set(i)
+}
+
+func (cmd *Command) Issued() bool {
+	return cmd.issued.Get()
 }

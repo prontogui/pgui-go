@@ -5,13 +5,26 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
+type CheckWith struct {
+	label   string
+	checked bool
+}
+
+// Makes a new Check with specified field values.
+func (w CheckWith) Make() *Check {
+	cmd := &Check{}
+	cmd.label.Set(w.label)
+	cmd.checked.Set(w.checked)
+	return cmd
+}
+
 type Check struct {
 	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
 	Reserved
 
 	label   field.String
 	checked field.Boolean
-	changed field.Boolean
+	changed field.Event
 }
 
 func (check *Check) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

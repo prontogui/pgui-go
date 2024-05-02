@@ -46,3 +46,17 @@ func (tp *SimplePrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunct
 	// Prepare all the field for updates
 	tp.Reserved.PrepareForUpdates(pkey, onset)
 }
+
+type SimplePrimitiveWithEvent struct {
+	Reserved
+
+	BSide   BSide
+	Changed field.Event
+}
+
+func (tp *SimplePrimitiveWithEvent) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+	tp.AttachField("Changed", &tp.Changed)
+
+	// Prepare all the field for updates
+	tp.Reserved.PrepareForUpdates(pkey, onset)
+}

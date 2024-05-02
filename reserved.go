@@ -74,7 +74,10 @@ func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[any]any {
 	if fullupdate {
 		for _, v := range r.fields {
 			fieldvalue := v.field.EgestValue()
-			update[key.FieldnameFor(v.fkey)] = fieldvalue
+
+			if fieldvalue != nil {
+				update[key.FieldnameFor(v.fkey)] = fieldvalue
+			}
 		}
 	} else {
 		for _, fkey := range fkeys {
@@ -85,7 +88,10 @@ func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[any]any {
 			}
 
 			fieldvalue := field.EgestValue()
-			update[key.FieldnameFor(fkey)] = fieldvalue
+
+			if fieldvalue != nil {
+				update[key.FieldnameFor(fkey)] = fieldvalue
+			}
 		}
 	}
 

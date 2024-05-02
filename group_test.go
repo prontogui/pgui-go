@@ -13,6 +13,14 @@ func Test_GroupAttachedFields(t *testing.T) {
 	verifyAllFieldsAttached(t, grp.Reserved, "GroupItems")
 }
 
+func Test_GroupMake(t *testing.T) {
+	grp := GroupWith{groupItems: []primitive.Interface{&Command{}, &Command{}}}.Make()
+
+	if len(grp.GroupItems()) != 2 {
+		t.Error("'GroupItems' field was not initialized correctly")
+	}
+}
+
 func Test_GruopFieldSettings(t *testing.T) {
 
 	grp := &Group{}
