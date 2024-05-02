@@ -6,15 +6,15 @@ import (
 )
 
 type CommandWith struct {
-	label  string
-	status int
+	Label  string
+	Status int
 }
 
 // Makes a new Command with specified field values.
 func (w CommandWith) Make() *Command {
 	cmd := &Command{}
-	cmd.label.Set(w.label)
-	cmd.status.Set(w.status)
+	cmd.label.Set(w.Label)
+	cmd.status.Set(w.Status)
 	return cmd
 }
 

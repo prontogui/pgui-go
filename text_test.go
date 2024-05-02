@@ -13,7 +13,7 @@ func Test_TextAttach(t *testing.T) {
 }
 
 func Test_TextMake(t *testing.T) {
-	txt := TextWith{content: "This is a piece of text"}.Make()
+	txt := TextWith{Content: "This is a piece of text"}.Make()
 
 	if txt.Content() != "This is a piece of text" {
 		t.Error("Could not initialize Content field.")

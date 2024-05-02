@@ -7,12 +7,12 @@ import (
 )
 
 type GroupWith struct {
-	groupItems []primitive.Interface
+	GroupItems []primitive.Interface
 }
 
 func (w GroupWith) Make() *Group {
 	grp := &Group{}
-	grp.groupItems.Set(w.groupItems)
+	grp.groupItems.Set(w.GroupItems)
 	return grp
 }
 

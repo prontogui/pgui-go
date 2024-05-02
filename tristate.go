@@ -6,14 +6,14 @@ import (
 )
 
 type TristateWith struct {
-	label string
-	state int
+	Label string
+	State int
 }
 
 func (w TristateWith) Make() *Tristate {
 	tri := &Tristate{}
-	tri.label.Set(w.label)
-	tri.state.Set(w.state)
+	tri.label.Set(w.Label)
+	tri.state.Set(w.State)
 	return tri
 }
 

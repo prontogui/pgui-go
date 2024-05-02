@@ -6,12 +6,12 @@ import (
 )
 
 type TextWith struct {
-	content string
+	Content string
 }
 
 func (w TextWith) Make() *Text {
 	text := &Text{}
-	text.content.Set(w.content)
+	text.content.Set(w.Content)
 	return text
 }
 

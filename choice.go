@@ -6,14 +6,14 @@ import (
 )
 
 type ChoiceWith struct {
-	choice  string
-	choices []string
+	Choice  string
+	Choices []string
 }
 
 func (w ChoiceWith) Make() *Choice {
 	choice := &Choice{}
-	choice.choice.Set(w.choice)
-	choice.choices.Set(w.choices)
+	choice.choice.Set(w.Choice)
+	choice.choices.Set(w.Choices)
 	return choice
 }
 

@@ -13,7 +13,7 @@ func Test_CommandAttachedFields(t *testing.T) {
 }
 
 func Test_CommandMake(t *testing.T) {
-	cmd := CommandWith{label: "Press Me", status: 1}.Make()
+	cmd := CommandWith{Label: "Press Me", Status: 1}.Make()
 
 	if cmd.Label() != "Press Me" {
 		t.Error("Could not initialize Label field.")

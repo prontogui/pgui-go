@@ -14,7 +14,7 @@ func Test_ChoiceAttachedFields(t *testing.T) {
 }
 
 func Test_ChoiceMake(t *testing.T) {
-	choice := ChoiceWith{choice: "Apple", choices: []string{"Apple", "Orange"}}.Make()
+	choice := ChoiceWith{Choice: "Apple", Choices: []string{"Apple", "Orange"}}.Make()
 
 	if choice.Choice() != "Apple" {
 		t.Error("Could not initialize Choice field.")

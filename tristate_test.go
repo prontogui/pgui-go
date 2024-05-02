@@ -13,7 +13,7 @@ func Test_TristateAttachedFields(t *testing.T) {
 }
 
 func Test_TristateMake(t *testing.T) {
-	tri := TristateWith{label: "Maybe, Yes, or No", state: 1}.Make()
+	tri := TristateWith{Label: "Maybe, Yes, or No", State: 1}.Make()
 
 	if tri.Label() != "Maybe, Yes, or No" {
 		t.Error("Could not initialize Label field.")
