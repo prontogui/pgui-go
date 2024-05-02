@@ -5,6 +5,16 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
+type TextWith struct {
+	content string
+}
+
+func (w TextWith) Make() *Text {
+	text := &Text{}
+	text.content.Set(w.content)
+	return text
+}
+
 type Text struct {
 	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
 	Reserved
