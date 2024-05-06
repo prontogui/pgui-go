@@ -11,7 +11,7 @@ type ProntoGUI interface {
 	StartServing(addr string, port int) error
 	StopServing()
 	SetGUI(primitives ...primitive.Interface)
-	Wait() (updatedPrimitive primitive.Interface, updateReason int, waitError error)
+	Wait() (updatedPrimitive primitive.Interface, waitError error)
 }
 
 type _ProntoGUI struct {
@@ -36,10 +36,10 @@ func (pg *_ProntoGUI) SetGUI(primitives ...primitive.Interface) {
 	pg.synchro.SetTopPrimitives(primitives...)
 }
 
-func (pg *_ProntoGUI) Wait() (updatedPrimitive primitive.Interface, updateReason int, waitError error) {
+func (pg *_ProntoGUI) Wait() (updatedPrimitive primitive.Interface, waitError error) {
 
 	if !pg.isgui {
-		return nil, 0, errors.New("no GUI has been set")
+		return nil, errors.New("no GUI has been set")
 	}
 
 	var updateOut []byte

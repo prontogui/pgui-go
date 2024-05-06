@@ -59,7 +59,7 @@ func (f *Any1D) IngestValue(value any) error {
 			return errors.New("invalid update")
 		}
 
-		_, err := f.ary[i].IngestUpdate(m)
+		err := f.ary[i].IngestUpdate(m)
 		if err != nil {
 			return err
 		}

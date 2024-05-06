@@ -195,7 +195,6 @@ func Test_IngestUpdate(t *testing.T) {
 	m22 := map[any]any{"Issued": true, "Label": "revealed"}
 
 	update := map[any]any{
-		"#Reason":   1,
 		"Issued":    true,
 		"Status":    99,
 		"Choices":   choices,
@@ -215,13 +214,9 @@ func Test_IngestUpdate(t *testing.T) {
 	tp.Rows.Set([][]primitive.Interface{{p11, p12}, {p21, p22}})
 	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
-	reason, err := tp.IngestUpdate(update)
+	err := tp.IngestUpdate(update)
 	if err != nil {
 		t.Fatalf("unexpected error returned:  %s", err.Error())
-	}
-
-	if reason != 1 {
-		t.Error("meta field '#Reason' was not parsed correctly")
 	}
 
 	if tp.Issued.Get() != true {
@@ -263,7 +258,7 @@ func Test_IngestUpdateInvalidFieldName(t *testing.T) {
 	tp := ComplexPrimitive{}
 	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
-	_, err := tp.IngestUpdate(update)
+	err := tp.IngestUpdate(update)
 	if err == nil {
 		t.Fatal("no error returned.  Expected an error since update specifies a field that doesn't exist")
 	}
@@ -281,7 +276,7 @@ func Test_IngestUpdateNoMatchingFieldInPrimitive(t *testing.T) {
 	tp := SimplePrimitive{}
 	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
-	_, err := tp.IngestUpdate(update)
+	err := tp.IngestUpdate(update)
 	if err == nil {
 		t.Fatal("no error returned.  Expected an error since update specifies a field that doesn't exist in primitive")
 	}

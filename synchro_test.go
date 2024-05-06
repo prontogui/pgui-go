@@ -223,7 +223,7 @@ func Test_IngestFullUpdateNotSupported(t *testing.T) {
 	fullupdate, _ := s1.GetFullUpdate()
 
 	s2 := NewSynchro()
-	_, _, err := s2.IngestUpdate(fullupdate)
+	_, err := s2.IngestUpdate(fullupdate)
 
 	if err == nil {
 		t.Fatal("ingestion of full update should not be supported at this time")
@@ -257,7 +257,7 @@ func Test_IngestPartialUpdateMultiplePrimitivesNotSupported(t *testing.T) {
 	s2 := NewSynchro()
 	s2.SetTopPrimitives(&SimplePrimitive{}, &SimplePrimitive{}, &SimplePrimitive{})
 
-	_, _, err = s2.IngestUpdate(partialupdate)
+	_, err = s2.IngestUpdate(partialupdate)
 	if err == nil {
 		t.Fatalf("expecting an error when attempting a partial update of mulitple primitives")
 	}
@@ -286,7 +286,7 @@ func Test_IngestPartialUpdate(t *testing.T) {
 	s2 := NewSynchro()
 	s2.SetTopPrimitives(&SimplePrimitive{}, &SimplePrimitive{})
 
-	_, _, err = s2.IngestUpdate(partialupdate)
+	_, err = s2.IngestUpdate(partialupdate)
 	if err != nil {
 		t.Fatalf("IngestUpdate returned error:  %s", err.Error())
 	}

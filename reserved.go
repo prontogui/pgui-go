@@ -98,31 +98,19 @@ func (r *Reserved) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[any]any {
 	return update
 }
 
-func (r *Reserved) IngestUpdate(update map[any]any) (int, error) {
-
-	reason := 0
+func (r *Reserved) IngestUpdate(update map[any]any) error {
 
 	for k, v := range update {
 		var ok bool
 
 		ks, ok := k.(string)
 		if !ok {
-			return 0, errors.New("invalid key type.  Expecting a string")
-		}
-
-		if ks == "#Reason" {
-			reason, ok = v.(int)
-
-			if !ok {
-				return 0, errors.New("unable to convert field value to integer")
-			}
-
-			continue
+			return errors.New("invalid key type.  Expecting a string")
 		}
 
 		fkey := key.FKeyFor(ks)
 		if fkey == key.INVALID_FIELDNAME {
-			return 0, errors.New("invalid field name")
+			return errors.New("invalid field name")
 		}
 
 		var found field.Field
@@ -134,14 +122,14 @@ func (r *Reserved) IngestUpdate(update map[any]any) (int, error) {
 		}
 
 		if found == nil {
-			return 0, errors.New("no matching field name in primitive")
+			return errors.New("no matching field name in primitive")
 		}
 
 		err := found.IngestValue(v)
 		if err != nil {
-			return 0, err
+			return err
 		}
 	}
 
-	return reason, nil
+	return nil
 }

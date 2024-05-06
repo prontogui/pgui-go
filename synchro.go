@@ -151,7 +151,7 @@ func (s *Synchro) GetFullUpdate() ([]byte, error) {
 	return cbor.Marshal(l)
 }
 
-func (s *Synchro) IngestUpdate(updatesCbor []byte) (updatedPrimitive primitive.Interface, updateReason int, updateError error) {
+func (s *Synchro) IngestUpdate(updatesCbor []byte) (updatedPrimitive primitive.Interface, updateError error) {
 
 	var updates any
 
@@ -220,7 +220,7 @@ func (s *Synchro) IngestUpdate(updatesCbor []byte) (updatedPrimitive primitive.I
 		return
 	}
 
-	updateReason, updateError = updatedPrimitive.IngestUpdate(m)
+	updateError = updatedPrimitive.IngestUpdate(m)
 
 	return
 
