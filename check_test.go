@@ -9,7 +9,7 @@ import (
 func Test_CheckAttachedFields(t *testing.T) {
 	check := &Check{}
 	check.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, check.Reserved, "Label", "Checked", "Changed")
+	verifyAllFieldsAttached(t, check.Reserved, "Label", "Checked")
 }
 
 func Test_CheckMake(t *testing.T) {
@@ -39,11 +39,5 @@ func Test_CheckFieldSettings(t *testing.T) {
 
 	if !check.Checked() {
 		t.Error("Could not set Checked field.")
-	}
-
-	check.IngestUpdate(map[any]any{"Changed": true})
-
-	if !check.Changed() {
-		t.Error("Could not get event field 'Changed' correctly.")
 	}
 }

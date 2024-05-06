@@ -10,7 +10,7 @@ import (
 func Test_ChoiceAttachedFields(t *testing.T) {
 	cmd := &Choice{}
 	cmd.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, cmd.Reserved, "Choice", "Changed", "Choices")
+	verifyAllFieldsAttached(t, cmd.Reserved, "Choice", "Choices")
 }
 
 func Test_ChoiceMake(t *testing.T) {
@@ -42,10 +42,5 @@ func Test_ChoiceFieldSettings(t *testing.T) {
 	choice.SetChoicesVA("nancy", "tom", "bob")
 	if !reflect.DeepEqual(choice.Choices(), []string{"nancy", "tom", "bob"}) {
 		t.Error("Could not set Choices field using variadic arguments.")
-	}
-
-	choice.IngestUpdate(map[any]any{"Changed": true})
-	if !choice.Changed() {
-		t.Error("Could not get event field 'Changed' correctly.")
 	}
 }

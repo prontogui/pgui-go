@@ -25,16 +25,16 @@ func (tp *TestPrimitive) EgestUpdate(fullupdate bool, fkeys []key.FKey) map[any]
 	return map[any]any{"s": tp.s}
 }
 
-func (tp *TestPrimitive) IngestUpdate(update map[any]any) error {
+func (tp *TestPrimitive) IngestUpdate(update map[any]any) (int, error) {
 	v, ok := update["s"]
 	if !ok {
-		return errors.New("field s not found in update")
+		return 0, errors.New("field s not found in update")
 	}
 	tp.s, ok = v.(string)
 	if !ok {
-		return errors.New("field s in update cannot be converted to a string")
+		return 0, errors.New("field s in update cannot be converted to a string")
 	}
-	return nil
+	return 0, nil
 }
 
 func generateTestData1D() ([]primitive.Interface, []*TestPrimitive) {

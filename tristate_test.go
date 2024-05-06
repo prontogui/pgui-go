@@ -9,7 +9,7 @@ import (
 func Test_TristateAttachedFields(t *testing.T) {
 	tri := &Tristate{}
 	tri.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, tri.Reserved, "Label", "State", "Changed")
+	verifyAllFieldsAttached(t, tri.Reserved, "Label", "State")
 }
 
 func Test_TristateMake(t *testing.T) {
@@ -38,10 +38,5 @@ func Test_TristateFieldSettings(t *testing.T) {
 
 	if tri.State() != 2 {
 		t.Error("Could not set State field.")
-	}
-
-	tri.IngestUpdate(map[any]any{"Changed": true})
-	if !tri.Changed() {
-		t.Error("Could not get Changed field correctly.")
 	}
 }

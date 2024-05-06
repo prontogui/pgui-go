@@ -9,7 +9,7 @@ import (
 func Test_CommandAttachedFields(t *testing.T) {
 	cmd := &Command{}
 	cmd.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, cmd.Reserved, "Label", "Issued", "Status")
+	verifyAllFieldsAttached(t, cmd.Reserved, "Label", "Status")
 }
 
 func Test_CommandMake(t *testing.T) {
@@ -36,10 +36,5 @@ func Test_CommandFieldSetting(t *testing.T) {
 	cmd.SetStatus(2)
 	if cmd.Status() != 2 {
 		t.Error("Could not set Status field.")
-	}
-
-	cmd.IngestUpdate(map[any]any{"Issued": true})
-	if !cmd.Issued() {
-		t.Error("Could not get Issued field correctly.")
 	}
 }

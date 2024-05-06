@@ -23,14 +23,12 @@ type Choice struct {
 
 	choice  field.String
 	choices field.Strings1D
-	changed field.Event
 }
 
 func (choice *Choice) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
 	choice.AttachField("Choice", &choice.choice)
 	choice.AttachField("Choices", &choice.choices)
-	choice.AttachField("Changed", &choice.changed)
 
 	// Prepare all fields for updates
 	choice.Reserved.PrepareForUpdates(pkey, onset)
@@ -55,8 +53,4 @@ func (choice *Choice) SetChoices(sa []string) {
 // Set the Choices field using variadic string arguments.
 func (choice *Choice) SetChoicesVA(sa ...string) {
 	choice.choices.Set(sa)
-}
-
-func (choice *Choice) Changed() bool {
-	return choice.changed.Get()
 }

@@ -223,7 +223,7 @@ func Test_IngestFullUpdateNotSupported(t *testing.T) {
 	fullupdate, _ := s1.GetFullUpdate()
 
 	s2 := NewSynchro()
-	err := s2.IngestUpdate(fullupdate)
+	_, _, err := s2.IngestUpdate(fullupdate)
 
 	if err == nil {
 		t.Fatal("ingestion of full update should not be supported at this time")
@@ -236,7 +236,7 @@ func Test_IngestFullUpdateNotSupported(t *testing.T) {
 	}
 }
 
-func Test_IngestPartialUpdate(t *testing.T) {
+func Test_IngestPartialUpdateMultiplePrimitivesNotSupported(t *testing.T) {
 	cmd1 := &SimplePrimitive{}
 	cmd2 := &SimplePrimitive{}
 	cmd3 := &SimplePrimitive{}
@@ -257,7 +257,36 @@ func Test_IngestPartialUpdate(t *testing.T) {
 	s2 := NewSynchro()
 	s2.SetTopPrimitives(&SimplePrimitive{}, &SimplePrimitive{}, &SimplePrimitive{})
 
-	err = s2.IngestUpdate(partialupdate)
+	_, _, err = s2.IngestUpdate(partialupdate)
+	if err == nil {
+		t.Fatalf("expecting an error when attempting a partial update of mulitple primitives")
+	}
+
+	if err.Error() != "partial update is limited to one primitive" {
+		t.Fatalf("wrong error was returned")
+	}
+}
+
+func Test_IngestPartialUpdate(t *testing.T) {
+	cmd1 := &SimplePrimitive{}
+	cmd2 := &SimplePrimitive{}
+
+	s1 := NewSynchro()
+	s1.SetTopPrimitives(cmd1, cmd2)
+
+	cmd2.Label.Set("blah blah")
+
+	var err error
+
+	partialupdate, err := s1.GetPartialUpdate()
+	if err != nil {
+		t.Fatal("error getting a partial update from synchro")
+	}
+
+	s2 := NewSynchro()
+	s2.SetTopPrimitives(&SimplePrimitive{}, &SimplePrimitive{})
+
+	_, _, err = s2.IngestUpdate(partialupdate)
 	if err != nil {
 		t.Fatalf("IngestUpdate returned error:  %s", err.Error())
 	}

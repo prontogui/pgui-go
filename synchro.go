@@ -151,52 +151,13 @@ func (s *Synchro) GetFullUpdate() ([]byte, error) {
 	return cbor.Marshal(l)
 }
 
-func (s *Synchro) ingestPartialUpdate(updatesList []any) error {
-	// Parse pkey
-	// locate primitive
-	// Ingest update into primitive
-
-	if len(updatesList)%2 != 0 {
-		return errors.New("expecting an even number of update items (pkey, item, pkey, item, ...)")
-	}
-
-	numupdates := len(updatesList) / 2
-
-	for i := 0; i < numupdates; i++ {
-		// Get the pkey
-		pkeyany, ok := updatesList[i*2].([]any)
-		if !ok {
-			return errors.New("unable to convert pkey item to PKey")
-		}
-
-		// Get the update map
-		m, ok := updatesList[i*2+1].(map[any]any)
-		if !ok {
-			return errors.New("unable to convert update item to map[any]any")
-		}
-
-		pkey := key.NewPKeyFromAny(pkeyany...)
-		p := locatePrimitive(s.primitives, pkey)
-		if p == nil {
-			return fmt.Errorf("primitive at pkey = %v was not found", pkey)
-		}
-
-		err := p.IngestUpdate(m)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (s *Synchro) IngestUpdate(updatesCbor []byte) error {
+func (s *Synchro) IngestUpdate(updatesCbor []byte) (updatedPrimitive primitive.Interface, updateReason int, updateError error) {
 
 	var updates any
 
-	err := cbor.Unmarshal(updatesCbor, &updates)
-	if err != nil {
-		return err
+	updateError = cbor.Unmarshal(updatesCbor, &updates)
+	if updateError != nil {
+		return
 	}
 
 	var ok bool
@@ -204,23 +165,63 @@ func (s *Synchro) IngestUpdate(updatesCbor []byte) error {
 	// Expecting a list of interfaces
 	updatesList, ok := updates.([]any)
 	if !ok {
-		return errors.New("the unmarshalled updates do not represent a list.  Expecting a list of updates")
+		updateError = errors.New("the unmarshalled updates do not represent a list.  Expecting a list of updates")
+		return
 	}
 
+	numitems := len(updatesList)
+
 	// Must have length >= 1
-	if len(updatesList) < 1 {
-		return errors.New("update must have atleast one value, the full/partial update flag")
+	if len(updatesList) == 0 {
+		updateError = errors.New("update must have atleast one value, the full/partial update flag")
+		return
 	}
 
 	// Parse the full/partial update flag
 	isfull, ok := updatesList[0].(bool)
 	if !ok {
-		return errors.New("update value for full/partial flag is incorrect.  Expecting a bool")
+		updateError = errors.New("update value for full/partial flag is incorrect.  Expecting a bool")
+		return
 	}
 
 	if isfull {
-		return errors.New("ingestion of full updates is not supported")
+		updateError = errors.New("ingestion of full updates is not supported")
+		return
 	}
 
-	return s.ingestPartialUpdate(updatesList[1:])
+	// It's okay to have an empty partial update
+	if numitems == 1 {
+		return
+	}
+
+	if numitems != 3 {
+		updateError = errors.New("partial update is limited to one primitive")
+		return
+	}
+
+	// Get the pkey
+	pkeyany, ok := updatesList[1].([]any)
+	if !ok {
+		updateError = errors.New("unable to convert pkey item to PKey")
+		return
+	}
+
+	// Get the update map
+	m, ok := updatesList[2].(map[any]any)
+	if !ok {
+		updateError = errors.New("unable to convert update item to map[any]any")
+		return
+	}
+
+	pkey := key.NewPKeyFromAny(pkeyany...)
+	updatedPrimitive = locatePrimitive(s.primitives, pkey)
+	if updatedPrimitive == nil {
+		updateError = fmt.Errorf("primitive at pkey = %v was not found", pkey)
+		return
+	}
+
+	updateReason, updateError = updatedPrimitive.IngestUpdate(m)
+
+	return
+
 }

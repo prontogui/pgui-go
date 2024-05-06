@@ -24,13 +24,11 @@ type Command struct {
 
 	label  field.String
 	status field.Integer
-	issued field.Event
 }
 
 func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
 	cmd.AttachField("Label", &cmd.label)
-	cmd.AttachField("Issued", &cmd.issued)
 	cmd.AttachField("Status", &cmd.status)
 
 	// Prepare all fields for updates
@@ -51,8 +49,4 @@ func (cmd *Command) Status() int {
 
 func (cmd *Command) SetStatus(i int) {
 	cmd.status.Set(i)
-}
-
-func (cmd *Command) Issued() bool {
-	return cmd.issued.Get()
 }

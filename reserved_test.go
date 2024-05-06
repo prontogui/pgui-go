@@ -160,25 +160,6 @@ func Test_EgestFullUpdate(t *testing.T) {
 	verifyValueBL(t, update["Data"], 9, []byte{100, 150, 200})
 }
 
-func Test_EgestFullUpdateWithEventField(t *testing.T) {
-
-	tp := &SimplePrimitiveWithEvent{}
-
-	tp.PrepareForUpdates(key.NewPKey(0), nil)
-
-	update := tp.EgestUpdate(true, nil)
-
-	if update == nil {
-		t.Fatal("returned nil.  Expecting a valid map")
-	}
-
-	// Not expecting Changed to be egested
-	_, exists := update["Changed"]
-	if exists {
-		t.Error("the event field Changed was egested.  This is not expected")
-	}
-}
-
 func Test_EgestPartialUpdate(t *testing.T) {
 
 	tp := createEgestPrimitiveForTest()
@@ -203,25 +184,6 @@ func Test_EgestPartialUpdate(t *testing.T) {
 	verifyValueI(t, update["Status"], 2, 2)
 }
 
-func Test_EgestPartialUpdateWithEventField(t *testing.T) {
-
-	tp := &SimplePrimitiveWithEvent{}
-
-	tp.PrepareForUpdates(key.NewPKey(0), nil)
-
-	update := tp.EgestUpdate(false, []key.FKey{key.FKeyFor("Changed")})
-
-	if update == nil {
-		t.Fatal("returned nil.  Expecting a valid map")
-	}
-
-	// Not expecting Changed to be egested
-	_, exists := update["Changed"]
-	if exists {
-		t.Error("the event field Changed was egested.  This is not expected")
-	}
-}
-
 func Test_IngestUpdate(t *testing.T) {
 
 	choices := []string{"A", "B", "C"}
@@ -233,6 +195,7 @@ func Test_IngestUpdate(t *testing.T) {
 	m22 := map[any]any{"Issued": true, "Label": "revealed"}
 
 	update := map[any]any{
+		"#Reason":   1,
 		"Issued":    true,
 		"Status":    99,
 		"Choices":   choices,
@@ -252,9 +215,13 @@ func Test_IngestUpdate(t *testing.T) {
 	tp.Rows.Set([][]primitive.Interface{{p11, p12}, {p21, p22}})
 	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
-	err := tp.IngestUpdate(update)
+	reason, err := tp.IngestUpdate(update)
 	if err != nil {
 		t.Fatalf("unexpected error returned:  %s", err.Error())
+	}
+
+	if reason != 1 {
+		t.Error("meta field '#Reason' was not parsed correctly")
 	}
 
 	if tp.Issued.Get() != true {
@@ -287,28 +254,6 @@ func Test_IngestUpdate(t *testing.T) {
 
 }
 
-func Test_IngestUpdateWithEvent(t *testing.T) {
-
-	update := map[any]any{"Changed": true}
-
-	tp := SimplePrimitiveWithEvent{}
-
-	if tp.Changed.Get() {
-		t.Fatal("inital value of event field 'Change' is true.  Expecting this to be false for a proper test")
-	}
-
-	tp.PrepareForUpdates(key.NewPKey(0), nil)
-
-	err := tp.IngestUpdate(update)
-	if err != nil {
-		t.Fatalf("unexpected error returned:  %s", err.Error())
-	}
-
-	if tp.Changed.Get() != true {
-		t.Error("event field 'Changed' was not updated correctly")
-	}
-}
-
 func Test_IngestUpdateInvalidFieldName(t *testing.T) {
 
 	update := map[any]any{
@@ -318,7 +263,7 @@ func Test_IngestUpdateInvalidFieldName(t *testing.T) {
 	tp := ComplexPrimitive{}
 	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
-	err := tp.IngestUpdate(update)
+	_, err := tp.IngestUpdate(update)
 	if err == nil {
 		t.Fatal("no error returned.  Expected an error since update specifies a field that doesn't exist")
 	}
@@ -336,7 +281,7 @@ func Test_IngestUpdateNoMatchingFieldInPrimitive(t *testing.T) {
 	tp := SimplePrimitive{}
 	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
-	err := tp.IngestUpdate(update)
+	_, err := tp.IngestUpdate(update)
 	if err == nil {
 		t.Fatal("no error returned.  Expected an error since update specifies a field that doesn't exist in primitive")
 	}

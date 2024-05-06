@@ -24,14 +24,12 @@ type Check struct {
 
 	label   field.String
 	checked field.Boolean
-	changed field.Event
 }
 
 func (check *Check) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
 	check.AttachField("Label", &check.label)
 	check.AttachField("Checked", &check.checked)
-	check.AttachField("Changed", &check.changed)
 
 	// Prepare all fields for updates
 	check.Reserved.PrepareForUpdates(pkey, onset)
@@ -51,8 +49,4 @@ func (check *Check) Checked() bool {
 
 func (check *Check) SetChecked(b bool) {
 	check.checked.Set(b)
-}
-
-func (check *Check) Changed() bool {
-	return check.changed.Get()
 }

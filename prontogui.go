@@ -11,7 +11,7 @@ type ProntoGUI interface {
 	StartServing(addr string, port int) error
 	StopServing()
 	SetGUI(primitives ...primitive.Interface)
-	Wait() error
+	Wait() (updatedPrimitive primitive.Interface, updateReason int, waitError error)
 }
 
 type _ProntoGUI struct {
@@ -36,35 +36,32 @@ func (pg *_ProntoGUI) SetGUI(primitives ...primitive.Interface) {
 	pg.synchro.SetTopPrimitives(primitives...)
 }
 
-func (pg *_ProntoGUI) Wait() error {
+func (pg *_ProntoGUI) Wait() (updatedPrimitive primitive.Interface, updateReason int, waitError error) {
 
 	if !pg.isgui {
-		return errors.New("no GUI has been set")
+		return nil, 0, errors.New("no GUI has been set")
 	}
 
 	var updateOut []byte
-	var err error
 	var updateIn []byte
 
 	// Need to send a full update?
 	if pg.fullupdate {
-		updateOut, err = pg.synchro.GetFullUpdate()
+		updateOut, waitError = pg.synchro.GetFullUpdate()
 		pg.fullupdate = false
 	} else {
-		updateOut, err = pg.synchro.GetPartialUpdate()
+		updateOut, waitError = pg.synchro.GetPartialUpdate()
 	}
-	if err != nil {
-		return err
-	}
-
-	updateIn, err = pg.pgcomm.ExchangeUpdates(updateOut)
-	if err != nil {
-		return err
+	if waitError != nil {
+		return
 	}
 
-	pg.synchro.IngestUpdate(updateIn)
+	updateIn, waitError = pg.pgcomm.ExchangeUpdates(updateOut)
+	if waitError != nil {
+		return
+	}
 
-	return nil
+	return pg.synchro.IngestUpdate(updateIn)
 }
 
 func NewProntoGUI() ProntoGUI {
