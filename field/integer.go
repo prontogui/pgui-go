@@ -30,13 +30,68 @@ func (f *Integer) EgestValue() any {
 
 func (f *Integer) IngestValue(value any) error {
 
-	i, ok := value.(int)
+	// Unfortunately, CBOR encodes different sizes of integers based on optimum space usage.  It's not deterministic
+	// what we are converting from.  So we have to test each case until a successful conversion happens.
 
-	if !ok {
-		return errors.New("unable to convert value (any) to field value")
+	ui64, ok := value.(uint64)
+	if ok {
+		f.i = int(ui64)
+		return nil
 	}
 
-	f.i = i
+	i64, ok := value.(int64)
+	if ok {
+		f.i = int(i64)
+		return nil
+	}
 
-	return nil
+	i, ok := value.(int)
+	if ok {
+		f.i = i
+		return nil
+	}
+
+	ui, ok := value.(uint)
+	if ok {
+		f.i = int(ui)
+		return nil
+	}
+
+	ui32, ok := value.(uint32)
+	if ok {
+		f.i = int(ui32)
+		return nil
+	}
+
+	i32, ok := value.(int32)
+	if ok {
+		f.i = int(i32)
+		return nil
+	}
+
+	ui16, ok := value.(uint16)
+	if ok {
+		f.i = int(ui16)
+		return nil
+	}
+
+	i16, ok := value.(int16)
+	if ok {
+		f.i = int(i16)
+		return nil
+	}
+
+	ui8, ok := value.(uint8)
+	if ok {
+		f.i = int(ui8)
+		return nil
+	}
+
+	i8, ok := value.(int8)
+	if ok {
+		f.i = int(i8)
+		return nil
+	}
+
+	return errors.New("unable to convert value (any) to field value")
 }

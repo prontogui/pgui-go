@@ -43,18 +43,41 @@ func Test_IntegerEgestValue(t *testing.T) {
 	}
 }
 
-func Test_IntegerIngestUpdate(t *testing.T) {
+func Test_IntegerIngestUpdatePositive(t *testing.T) {
 
 	f := Integer{}
 	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc())
 
-	err := f.IngestValue(3400)
-
 	testfunc := func() bool {
-		return f.Get() == 3400
+		return f.Get() == 34
 	}
 
-	verifyIngestUpdateSuccessful(t, err, testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(uint8(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int8(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(uint16(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int16(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(uint32(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int32(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(uint64(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int64(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(uint(34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int(34)), testfunc)
+}
+
+func Test_IntegerIngestUpdateNegative(t *testing.T) {
+
+	f := Integer{}
+	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc())
+
+	testfunc := func() bool {
+		return f.Get() == -34
+	}
+
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int8(-34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int16(-34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int32(-34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int64(-34)), testfunc)
+	verifyIngestUpdateSuccessful(t, f.IngestValue(int(-34)), testfunc)
 }
 
 func Test_IntegerIngestUpdateZero(t *testing.T) {
