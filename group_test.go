@@ -21,7 +21,7 @@ func Test_GroupMake(t *testing.T) {
 	}
 }
 
-func Test_GruopFieldSettings(t *testing.T) {
+func Test_GroupFieldSettings(t *testing.T) {
 
 	grp := &Group{}
 
