@@ -10,11 +10,15 @@ import (
 func Test_ListAttachedFields(t *testing.T) {
 	list := &List{}
 	list.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, list.Reserved, "ListItems", "Selected")
+	verifyAllFieldsAttached(t, list.Reserved, "ListItems", "Selected", "ItemEmbodiment")
 }
 
 func Test_ListMake(t *testing.T) {
-	list := ListWith{ListItems: []primitive.Interface{&Command{}, &Command{}}, Selected: 1}.Make()
+	list := ListWith{
+		ListItems:      []primitive.Interface{&Command{}, &Command{}},
+		Selected:       1,
+		ItemEmbodiment: "some-embodiment",
+	}.Make()
 
 	if len(list.ListItems()) != 2 {
 		t.Error("'ListItems' field was not initialized correctly")
@@ -22,6 +26,10 @@ func Test_ListMake(t *testing.T) {
 
 	if list.Selected() != 1 {
 		t.Error("List selection not initialized properly")
+	}
+
+	if list.ItemEmbodiment() != "some-embodiment" {
+		t.Error("ItemEmbodiment is not initialized properly")
 	}
 }
 
@@ -82,6 +90,12 @@ func Test_ListFieldSettings(t *testing.T) {
 	list.SetSelected(1)
 	if list.Selected() != 1 {
 		t.Error("Unable to set seletion to 1")
+	}
+
+	// ItemEmbodiment field tests
+	list.SetItemEmbodiment("some-thing")
+	if list.ItemEmbodiment() != "some-thing" {
+		t.Error("Unable to set item embodiment to 'some-thing'")
 	}
 }
 

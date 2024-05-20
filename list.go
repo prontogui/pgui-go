@@ -7,14 +7,16 @@ import (
 )
 
 type ListWith struct {
-	ListItems []primitive.Interface
-	Selected  int
+	ListItems      []primitive.Interface
+	Selected       int
+	ItemEmbodiment string
 }
 
 func (w ListWith) Make() *List {
 	list := &List{}
 	list.listItems.Set(w.ListItems)
 	list.SetSelected(w.Selected)
+	list.SetItemEmbodiment(w.ItemEmbodiment)
 	return list
 }
 
@@ -22,14 +24,16 @@ type List struct {
 	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
 	Reserved
 
-	listItems field.Any1D
-	selected  field.Integer
+	listItems      field.Any1D
+	selected       field.Integer
+	itemEmbodiment field.String
 }
 
 func (list *List) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
 	list.AttachField("ListItems", &list.listItems)
 	list.AttachField("Selected", &list.selected)
+	list.AttachField("ItemEmbodiment", &list.itemEmbodiment)
 
 	// Prepare all fields for updates
 	list.Reserved.PrepareForUpdates(pkey, onset)
@@ -58,9 +62,17 @@ func (list *List) SetListItemsVA(items ...primitive.Interface) {
 }
 
 func (list *List) Selected() int {
-	return -1
+	return list.selected.Get()
 }
 
 func (list *List) SetSelected(selected int) {
+	list.selected.Set(selected)
+}
 
+func (list *List) ItemEmbodiment() string {
+	return list.itemEmbodiment.Get()
+}
+
+func (list *List) SetItemEmbodiment(embodiment string) {
+	list.itemEmbodiment.Set(embodiment)
 }
