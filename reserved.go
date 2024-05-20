@@ -42,7 +42,7 @@ func (r *Reserved) AttachField(fieldname string, field field.Field) {
 	r.fields = append(r.fields, FieldRef{fkey: fkey, field: field})
 }
 
-func (r *Reserved) GetChildPrimitive(index int) primitive.Interface {
+func (r *Reserved) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
 	return nil
 }
 
@@ -50,8 +50,13 @@ func (r *Reserved) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
 	r.bside.AttachFields(r)
 
+	containerIndex := 0
+
+	// Fields should be attached in alphabetical order (TODO:  write a unit test to verify this)
 	for _, f := range r.fields {
-		f.field.PrepareForUpdates(f.fkey, pkey, onset)
+		if f.field.PrepareForUpdates(f.fkey, pkey, onset, containerIndex) {
+			containerIndex = containerIndex + 1
+		}
 	}
 }
 

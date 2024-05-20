@@ -20,8 +20,10 @@ func (f *Integer) Set(i int) {
 	f.OnSet(false)
 }
 
-func (f *Integer) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+func (f *Integer) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction, nextContainerIndex int) (isContainer bool) {
+	isContainer = false
 	f.StashUpdateInfo(fkey, pkey, onset)
+	return
 }
 
 func (f *Integer) EgestValue() any {

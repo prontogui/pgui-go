@@ -17,7 +17,7 @@ func (tp *TestPrimitive) PrepareForUpdates(key.PKey, key.OnSetFunction) {
 	tp.prepped = true
 }
 
-func (tp *TestPrimitive) GetChildPrimitive(index int) primitive.Interface {
+func (tp *TestPrimitive) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
 	return nil
 }
 

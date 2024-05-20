@@ -22,19 +22,25 @@ func (f *Any2D) Set(ary [][]primitive.Interface) {
 	f.OnSet(true)
 }
 
-func (f *Any2D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+func (f *Any2D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction, nextContainerIndex int) (isContainer bool) {
+
+	isContainer = true
 
 	f.StashUpdateInfo(fkey, pkey, onset)
 
+	containerPkey := pkey.AddLevel(nextContainerIndex)
+
 	// Prepare the children too
 	for i, p1 := range f.ary {
-		pkeyi := pkey.AddLevel(i)
+		pkeyi := containerPkey.AddLevel(i)
 
 		for j, p2 := range p1 {
 			pkeyj := pkeyi.AddLevel(j)
 			p2.PrepareForUpdates(pkeyj, onset)
 		}
 	}
+
+	return
 }
 
 func (f *Any2D) EgestValue() any {

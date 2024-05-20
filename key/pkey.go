@@ -57,3 +57,30 @@ func (pk PKey) IndexAtLevel(level int) int {
 	}
 	return pk[level]
 }
+
+type PKeyLocator struct {
+	PKey          PKey
+	LocationLevel int
+}
+
+func NewPKeyLocator(pkey PKey) *PKeyLocator {
+	loc := &PKeyLocator{}
+	loc.PKey = pkey
+	loc.LocationLevel = -1
+	return loc
+}
+
+func (loc *PKeyLocator) NextIndex() int {
+
+	if loc.LocationLevel >= (len(loc.PKey) - 1) {
+		panic("PKeyLocator went out of bounds")
+	}
+
+	loc.LocationLevel = loc.LocationLevel + 1
+
+	return loc.PKey[loc.LocationLevel]
+}
+
+func (loc *PKeyLocator) Located() bool {
+	return loc.LocationLevel == (len(loc.PKey) - 1)
+}

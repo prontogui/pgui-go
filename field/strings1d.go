@@ -20,8 +20,10 @@ func (f *Strings1D) Set(sa []string) {
 	f.OnSet(false)
 }
 
-func (f *Strings1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+func (f *Strings1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction, nextContainerIndex int) (isContainer bool) {
+	isContainer = false
 	f.StashUpdateInfo(fkey, pkey, onset)
+	return
 }
 
 func (f *Strings1D) EgestValue() any {

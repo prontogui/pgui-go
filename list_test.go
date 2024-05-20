@@ -1,6 +1,7 @@
 package golib
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/prontogui/golib/key"
@@ -10,14 +11,14 @@ import (
 func Test_ListAttachedFields(t *testing.T) {
 	list := &List{}
 	list.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, list.Reserved, "ListItems", "Selected", "ItemEmbodiment")
+	verifyAllFieldsAttached(t, list.Reserved, "ListItems", "Selected", "TemplateItem")
 }
 
 func Test_ListMake(t *testing.T) {
 	list := ListWith{
-		ListItems:      []primitive.Interface{&Command{}, &Command{}},
-		Selected:       1,
-		ItemEmbodiment: "some-embodiment",
+		ListItems:    []primitive.Interface{&Command{}, &Command{}},
+		Selected:     1,
+		TemplateItem: &Command{},
 	}.Make()
 
 	if len(list.ListItems()) != 2 {
@@ -28,8 +29,8 @@ func Test_ListMake(t *testing.T) {
 		t.Error("List selection not initialized properly")
 	}
 
-	if list.ItemEmbodiment() != "some-embodiment" {
-		t.Error("ItemEmbodiment is not initialized properly")
+	if !reflect.DeepEqual(list.TemplateItem(), &Command{}) {
+		t.Error("TemplateItem is not initialized properly")
 	}
 }
 
@@ -92,10 +93,10 @@ func Test_ListFieldSettings(t *testing.T) {
 		t.Error("Unable to set seletion to 1")
 	}
 
-	// ItemEmbodiment field tests
-	list.SetItemEmbodiment("some-thing")
-	if list.ItemEmbodiment() != "some-thing" {
-		t.Error("Unable to set item embodiment to 'some-thing'")
+	// TemplateItem field tests
+	list.SetTemplateItem(&Text{})
+	if !reflect.DeepEqual(list.TemplateItem(), &Text{}) {
+		t.Error("Unable to set template item to a Text primitive")
 	}
 }
 
@@ -103,17 +104,27 @@ func Test_ListGetChildPrimitive(t *testing.T) {
 
 	list := &List{}
 
-	list.SetListItems([]primitive.Interface{&Command{}, &Command{}})
+	cmd1 := CommandWith{Label: "a"}.Make()
+	cmd2 := CommandWith{Label: "b"}.Make()
+	cmd3 := CommandWith{Label: "c"}.Make()
 
-	if list.GetChildPrimitive(0) == nil {
-		t.Fatal("GetChildPrimitve doesn't return a child for index = 0.")
+	list.SetListItemsVA(cmd1, cmd2)
+	list.SetTemplateItem(cmd3)
+
+	locate := func(pkey key.PKey) *Command {
+		locator := key.NewPKeyLocator(pkey)
+		return list.LocateNextDescendant(locator).(*Command)
 	}
 
-	if list.GetChildPrimitive(1) == nil {
-		t.Fatal("GetChildPrimitve doesn't return a child for index = 1.")
+	if locate(key.NewPKey(0, 0)).Label() != "a" {
+		t.Fatal("LocateNextDescendant doesn't return a child for pkey 0, 0.")
 	}
 
-	if list.GetChildPrimitive(2) != nil {
-		t.Fatal("GetChildPrimitve shouldn't return a child for index = 2.")
+	if locate(key.NewPKey(0, 1)).Label() != "b" {
+		t.Fatal("LocateNextDescendant doesn't return a child for pkey 0, 1.")
+	}
+
+	if locate(key.NewPKey(1)).Label() != "c" {
+		t.Fatal("LocateNextDescendant doesn't return a child for pkey 1. ")
 	}
 }

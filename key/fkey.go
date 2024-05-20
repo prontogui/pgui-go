@@ -46,7 +46,7 @@ func FKeyFor(fieldname string) FKey {
 		return 16
 	case "Selected":
 		return 17
-	case "ItemEmbodiment":
+	case "TemplateItem":
 		return 18
 	default:
 		return INVALID_FIELDNAME
@@ -92,7 +92,7 @@ func FieldnameFor(fkey FKey) string {
 	case 17:
 		return "Selected"
 	case 18:
-		return "ItemEmbodiment"
+		return "TemplateItem"
 	default:
 		return INVALID_FKEY
 	}

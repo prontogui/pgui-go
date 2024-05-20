@@ -21,14 +21,18 @@ func (f *Any1D) Set(ary []primitive.Interface) {
 	f.OnSet(true)
 }
 
-func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction, nextContainerIndex int) (isContainer bool) {
+
+	isContainer = true
 
 	f.StashUpdateInfo(fkey, pkey, onset)
 
 	// Prepare the children too
 	for i, p := range f.ary {
-		p.PrepareForUpdates(pkey.AddLevel(i), onset)
+		p.PrepareForUpdates(pkey.AddLevel(nextContainerIndex).AddLevel(i), onset)
 	}
+
+	return
 }
 
 func (f *Any1D) EgestValue() any {

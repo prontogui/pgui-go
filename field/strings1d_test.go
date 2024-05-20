@@ -22,7 +22,7 @@ func Test_String1DSetAndGet(t *testing.T) {
 func Test_String1DPrepareForUpdates(t *testing.T) {
 	f := Strings1D{}
 
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc())
+	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
 
 	verifyStashUpdateInfo(t, &f.Reserved)
 

@@ -1,10 +1,23 @@
 package golib
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/prontogui/golib/key"
 )
+
+func _areFieldsAttachedAlphabetically(t *testing.T, res Reserved) bool {
+
+	attachedOrder := []string{}
+
+	for _, fr := range res.fields {
+		fieldName := key.FieldnameFor(fr.fkey)
+		attachedOrder = append(attachedOrder, fieldName)
+	}
+
+	return slices.IsSorted(attachedOrder)
+}
 
 func verifyAllFieldsAttached(t *testing.T, res Reserved, fields ...string) {
 
@@ -18,4 +31,8 @@ func verifyAllFieldsAttached(t *testing.T, res Reserved, fields ...string) {
 
 	verifyFieldAttached("B.Col", "B.Row", "B.Embodiment")
 	verifyFieldAttached(fields...)
+
+	if !_areFieldsAttachedAlphabetically(t, res) {
+		t.Error("fields were not attached in alphabetical order")
+	}
 }

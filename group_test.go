@@ -63,19 +63,21 @@ func Test_GroupFieldSettings(t *testing.T) {
 
 func Test_GroupGetChildPrimitive(t *testing.T) {
 
-	grp := &Group{}
+	cmd1 := CommandWith{Label: "a"}.Make()
+	cmd2 := CommandWith{Label: "b"}.Make()
 
-	grp.SetGroupItems([]primitive.Interface{&Command{}, &Command{}})
+	grp := GroupWith{GroupItems: []primitive.Interface{cmd1, cmd2}}.Make()
 
-	if grp.GetChildPrimitive(0) == nil {
-		t.Fatal("GetChildPrimitve doesn't return a child for index = 0.")
+	locate := func(pkey key.PKey) *Command {
+		locator := key.NewPKeyLocator(pkey)
+		return grp.LocateNextDescendant(locator).(*Command)
 	}
 
-	if grp.GetChildPrimitive(1) == nil {
-		t.Fatal("GetChildPrimitve doesn't return a child for index = 1.")
+	if locate(key.NewPKey(0)).Label() != "a" {
+		t.Fatal("LocateNextDescendant doesn't return a child for pkey 0.")
 	}
 
-	if grp.GetChildPrimitive(2) != nil {
-		t.Fatal("GetChildPrimitve shouldn't return a child for index = 2.")
+	if locate(key.NewPKey(1)).Label() != "b" {
+		t.Fatal("LocateNextDescendant doesn't return a child for pkey 1.")
 	}
 }

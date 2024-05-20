@@ -31,14 +31,8 @@ func (grp *Group) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	grp.Reserved.PrepareForUpdates(pkey, onset)
 }
 
-func (grp *Group) GetChildPrimitive(index int) primitive.Interface {
-	groupItems := grp.groupItems.Get()
-
-	if index < len(groupItems) {
-		return groupItems[index]
-	}
-
-	return nil
+func (grp *Group) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
+	return grp.GroupItems()[locator.NextIndex()]
 }
 
 func (grp *Group) GroupItems() []primitive.Interface {

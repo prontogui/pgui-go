@@ -28,8 +28,8 @@ type Check struct {
 
 func (check *Check) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
-	check.AttachField("Label", &check.label)
 	check.AttachField("Checked", &check.checked)
+	check.AttachField("Label", &check.label)
 
 	// Prepare all fields for updates
 	check.Reserved.PrepareForUpdates(pkey, onset)

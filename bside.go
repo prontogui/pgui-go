@@ -22,9 +22,9 @@ type BSide struct {
 }
 
 func (bs *BSide) AttachFields(res *Reserved) {
-	res.AttachField("B.Row", &bs.row)
 	res.AttachField("B.Col", &bs.col)
 	res.AttachField("B.Embodiment", &bs.embodiment)
+	res.AttachField("B.Row", &bs.row)
 }
 
 func (bs *BSide) Row() int {

@@ -56,22 +56,17 @@ func appendFieldToUpdate(update *Update, fkey key.FKey) {
 
 func locatePrimitive(primitives []primitive.Interface, pkey key.PKey) primitive.Interface {
 
-	level := 0
-
-	var found primitive.Interface
+	locator := key.NewPKeyLocator(pkey)
 
 	// Get one of the top-level primitives to start with
-	next := primitives[pkey.IndexAtLevel(level)]
+	next := primitives[locator.NextIndex()]
 
-	for next != nil {
-		found = next
-
-		// Try finding a child at the next level down
-		level = level + 1
-		next = found.GetChildPrimitive(pkey.IndexAtLevel(level))
+	for !locator.Located() {
+		// Try finding a descendant at the next level down
+		next = next.LocateNextDescendant(locator)
 	}
 
-	return found
+	return next
 }
 
 func (s *Synchro) OnSet(pkey key.PKey, fkey key.FKey, structural bool) {
