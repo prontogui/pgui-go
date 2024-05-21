@@ -6,14 +6,16 @@ import (
 )
 
 type ChoiceWith struct {
-	Choice  string
-	Choices []string
+	Choice     string
+	Choices    []string
+	Embodiment string
 }
 
 func (w ChoiceWith) Make() *Choice {
 	choice := &Choice{}
 	choice.choice.Set(w.Choice)
 	choice.choices.Set(w.Choices)
+	choice.embodiment.Set(w.Embodiment)
 	return choice
 }
 
@@ -21,14 +23,20 @@ type Choice struct {
 	// Mix-in the common guts for primitives
 	Reserved
 
-	choice  field.String
-	choices field.Strings1D
+	choice     field.String
+	choices    field.Strings1D
+	embodiment field.String
 }
 
 func (choice *Choice) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
-	choice.AttachField("Choice", &choice.choice, pkey, PKeyIndexDontCare, onset)
-	choice.AttachField("Choices", &choice.choices, pkey, PKeyIndexDontCare, onset)
+	choice.InternalPrepareForUpdates(pkey, onset, func() []FieldRef {
+		return []FieldRef{
+			{key.FKey_Choice, &choice.choice},
+			{key.FKey_Choices, &choice.choices},
+			{key.FKey_Embodiment, &choice.embodiment},
+		}
+	})
 }
 
 func (choice *Choice) Choice() string {
@@ -50,4 +58,12 @@ func (choice *Choice) SetChoices(sa []string) {
 // Set the Choices field using variadic string arguments.
 func (choice *Choice) SetChoicesVA(sa ...string) {
 	choice.choices.Set(sa)
+}
+
+func (choice *Choice) Embodiment() string {
+	return choice.embodiment.Get()
+}
+
+func (choice *Choice) SetEmbodiment(s string) {
+	choice.embodiment.Set(s)
 }

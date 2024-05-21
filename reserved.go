@@ -2,25 +2,16 @@ package golib
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 	"github.com/prontogui/golib/primitive"
 )
 
-const (
-	// The maximum number of fields in any given primitive.  TODO:  check for accuracy of this in unit testing,
-	// in case a primitive is updated or added without changing this number.
-	MaxPrimitiveFields = 4
-
-	// Use the following constants when calling AttachField.  It is mainly
-	// for readability and clarity of intent.
-	PKeyIndexDontCare = -1
-	PKeyIndex_0       = 0
-	PKeyIndex_1       = 1
-	PKeyIndex_2       = 2
-)
+// Reserved fields for primitive updates.
+type Reserved struct {
+	fields []FieldRef
+}
 
 type FieldRef struct {
 	// The field's key
@@ -30,28 +21,20 @@ type FieldRef struct {
 	field field.Field
 }
 
-/*
-Reserved fields for primitive updates.
-*/
-type Reserved struct {
-	fields []FieldRef
-	bside  BSide
-}
+func (r *Reserved) InternalPrepareForUpdates(pkey key.PKey, onset key.OnSetFunction, getFields func() []FieldRef) {
 
-func (r *Reserved) B() *BSide {
-	return &r.bside
-}
-
-func (r *Reserved) AttachField(fieldname string, field field.Field, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
-
-	fkey := key.FKeyFor(fieldname)
-	if fkey == key.INVALID_FIELDNAME {
-		panic(fmt.Sprintf("Field name '%s' is not registered in key package.", fieldname))
+	// Attach fields (if not done already)
+	if len(r.fields) == 0 {
+		r.fields = getFields()
 	}
 
-	r.fields = append(r.fields, FieldRef{fkey: fkey, field: field})
-
-	field.PrepareForUpdates(fkey, pkey, fieldPKeyIndex, onset)
+	// Prepare each field for updates
+	fieldPKeyIndex := 0
+	for _, f := range r.fields {
+		if f.field.PrepareForUpdates(f.fkey, pkey, fieldPKeyIndex, onset) {
+			fieldPKeyIndex = fieldPKeyIndex + 1
+		}
+	}
 }
 
 func (r *Reserved) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {

@@ -6,13 +6,15 @@ import (
 )
 
 type CommandWith struct {
-	Label  string
-	Status int
+	Embodiment string
+	Label      string
+	Status     int
 }
 
 // Makes a new Command with specified field values.
 func (w CommandWith) Make() *Command {
 	cmd := &Command{}
+	cmd.embodiment.Set(w.Embodiment)
 	cmd.label.Set(w.Label)
 	cmd.status.Set(w.Status)
 	return cmd
@@ -22,13 +24,28 @@ type Command struct {
 	// Mix-in the common guts for primitives
 	Reserved
 
-	label  field.String
-	status field.Integer
+	embodiment field.String
+	label      field.String
+	status     field.Integer
 }
 
 func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	cmd.AttachField("Label", &cmd.label, pkey, PKeyIndexDontCare, onset)
-	cmd.AttachField("Status", &cmd.status, pkey, PKeyIndexDontCare, onset)
+
+	cmd.InternalPrepareForUpdates(pkey, onset, func() []FieldRef {
+		return []FieldRef{
+			{key.FKey_Embodiment, &cmd.embodiment},
+			{key.FKey_Label, &cmd.label},
+			{key.FKey_Status, &cmd.status},
+		}
+	})
+}
+
+func (cmd *Command) Embodiment() string {
+	return cmd.embodiment.Get()
+}
+
+func (cmd *Command) SetEmbodiment(s string) {
+	cmd.embodiment.Set(s)
 }
 
 func (cmd *Command) Label() string {

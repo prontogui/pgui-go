@@ -1,7 +1,6 @@
 package golib
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/prontogui/golib/key"
@@ -11,15 +10,20 @@ import (
 func Test_ListAttachedFields(t *testing.T) {
 	list := &List{}
 	list.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, list.Reserved, "ListItems", "Selected", "TemplateItem")
+	verifyAllFieldsAttached(t, list.Reserved, "Embodiment", "ListItems", "Selected", "TemplateItem")
 }
 
 func Test_ListMake(t *testing.T) {
 	list := ListWith{
+		Embodiment:   "scrolling",
 		ListItems:    []primitive.Interface{&Command{}, &Command{}},
 		Selected:     1,
 		TemplateItem: &Command{},
 	}.Make()
+
+	if list.Embodiment() != "scrolling" {
+		t.Error("'Embodiment' field was not initialized correctly")
+	}
 
 	if len(list.ListItems()) != 2 {
 		t.Error("'ListItems' field was not initialized correctly")
@@ -29,7 +33,8 @@ func Test_ListMake(t *testing.T) {
 		t.Error("List selection not initialized properly")
 	}
 
-	if !reflect.DeepEqual(list.TemplateItem(), &Command{}) {
+	_, ok := list.TemplateItem().(*Command)
+	if !ok {
 		t.Error("TemplateItem is not initialized properly")
 	}
 }
@@ -37,6 +42,12 @@ func Test_ListMake(t *testing.T) {
 func Test_ListFieldSettings(t *testing.T) {
 
 	list := &List{}
+
+	// Embodiment field
+	list.SetEmbodiment("scrolling")
+	if list.Embodiment() != "scrolling" {
+		t.Error("Unable to properly set the Embodiment field")
+	}
 
 	// ListItems field (as array)
 
@@ -95,7 +106,10 @@ func Test_ListFieldSettings(t *testing.T) {
 
 	// TemplateItem field tests
 	list.SetTemplateItem(&Text{})
-	if !reflect.DeepEqual(list.TemplateItem(), &Text{}) {
+
+	_, ok := list.TemplateItem().(*Text)
+
+	if !ok {
 		t.Error("Unable to set template item to a Text primitive")
 	}
 }

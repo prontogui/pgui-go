@@ -5,95 +5,76 @@ type FKey uint8
 const (
 	INVALID_FIELDNAME = 255
 	INVALID_FKEY      = ""
+
+	// ADD NEW FIELDS TO THIS BLOCK - ALPHABETICAL ORDER PLEASE!
+	FKey_Changed FKey = iota
+	FKey_Checked
+	FKey_Choice
+	FKey_Choices
+	FKey_Content
+	FKey_Data
+	FKey_Embodiment
+	FKey_GroupItems
+	FKey_Issued
+	FKey_Label
+	FKey_ListItems
+	FKey_Rows
+	FKey_Selected
+	FKey_State
+	FKey_Status
+	FKey_TemplateItem
+
+	// RESERVED CONSTANT
+	FKey_MAXIMUMKEYS
 )
+
+var _fkeyToName []string
+var _nameToFKey map[string]FKey
+
+func init() {
+	_fkeyToName = make([]string, FKey_MAXIMUMKEYS)
+
+	// ADD NEW FIELDS TO THIS BLOCK - ALPHABETICAL ORDER PLEASE!
+	_fkeyToName[FKey_Changed] = "Changed"
+	_fkeyToName[FKey_Checked] = "Checked"
+	_fkeyToName[FKey_Choice] = "Choice"
+	_fkeyToName[FKey_Choices] = "Choices"
+	_fkeyToName[FKey_Content] = "Content"
+	_fkeyToName[FKey_Data] = "Data"
+	_fkeyToName[FKey_Data] = "Embodiment"
+	_fkeyToName[FKey_GroupItems] = "GroupItems"
+	_fkeyToName[FKey_Issued] = "Issued"
+	_fkeyToName[FKey_Label] = "Label"
+	_fkeyToName[FKey_ListItems] = "ListItems"
+	_fkeyToName[FKey_Rows] = "Rows"
+	_fkeyToName[FKey_Selected] = "Selected"
+	_fkeyToName[FKey_State] = "State"
+	_fkeyToName[FKey_Status] = "Status"
+	_fkeyToName[FKey_TemplateItem] = "TemplateItem"
+
+	_nameToFKey = make(map[string]FKey, FKey_MAXIMUMKEYS)
+
+	for fkey, fname := range _fkeyToName {
+		_nameToFKey[fname] = FKey(fkey)
+	}
+}
 
 func FKeyFor(fieldname string) FKey {
 
-	// TODO:  very temporary.  Eventually need to build a static map of all field names upon program initialization.
-	switch fieldname {
-	// NOTE:  FKey = 0 is reserved!  Do not use.
-	case "B.Row":
-		return 1
-	case "B.Col":
-		return 2
-	case "B.Embodiment":
-		return 3
-	case "Label":
-		return 4
-	case "Issued":
-		return 5
-	case "Status":
-		return 6
-	case "Choices":
-		return 7
-	case "Data":
-		return 8
-	case "ListItems":
-		return 9
-	case "Rows":
-		return 10
-	case "Content":
-		return 11
-	case "Choice":
-		return 12
-	case "State":
-		return 13
-	case "Checked":
-		return 14
-	case "GroupItems":
-		return 15
-	case "Changed":
-		return 16
-	case "Selected":
-		return 17
-	case "TemplateItem":
-		return 18
-	default:
-		return INVALID_FIELDNAME
+	fkey, ok := _nameToFKey[fieldname]
+
+	if ok {
+		return fkey
 	}
+
+	return INVALID_FIELDNAME
 }
 
 func FieldnameFor(fkey FKey) string {
 
-	switch fkey {
-	// NOTE:  FKey = 0 is reserved!  Do not use.
-	case 1:
-		return "B.Row"
-	case 2:
-		return "B.Col"
-	case 3:
-		return "B.Embodiment"
-	case 4:
-		return "Label"
-	case 5:
-		return "Issued"
-	case 6:
-		return "Status"
-	case 7:
-		return "Choices"
-	case 8:
-		return "Data"
-	case 9:
-		return "ListItems"
-	case 10:
-		return "Rows"
-	case 11:
-		return "Content"
-	case 12:
-		return "Choice"
-	case 13:
-		return "State"
-	case 14:
-		return "Checked"
-	case 15:
-		return "GroupItems"
-	case 16:
-		return "Changed"
-	case 17:
-		return "Selected"
-	case 18:
-		return "TemplateItem"
-	default:
+	if fkey >= FKey_MAXIMUMKEYS {
 		return INVALID_FKEY
 	}
+
+	return _fkeyToName[fkey]
 }

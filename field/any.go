@@ -32,9 +32,10 @@ func (f *Any) Set(p primitive.Interface) {
 	f.OnSet(true)
 }
 
-func (f *Any) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
+func (f *Any) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
 	f.prepareDescendantForUpdate()
+	return true
 }
 
 func (f *Any) EgestValue() any {

@@ -35,9 +35,10 @@ func (f *Any1D) Set(ary []primitive.Interface) {
 	f.OnSet(true)
 }
 
-func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
+func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
 	f.prepareDescendantsForUpdate()
+	return true
 }
 
 func (f *Any1D) EgestValue() any {

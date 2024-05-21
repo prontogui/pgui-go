@@ -10,11 +10,18 @@ import (
 func Test_GroupAttachedFields(t *testing.T) {
 	grp := &Group{}
 	grp.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, grp.Reserved, "GroupItems")
+	verifyAllFieldsAttached(t, grp.Reserved, "Embodiment", "GroupItems")
 }
 
 func Test_GroupMake(t *testing.T) {
-	grp := GroupWith{GroupItems: []primitive.Interface{&Command{}, &Command{}}}.Make()
+	grp := GroupWith{
+		Embodiment: "row",
+		GroupItems: []primitive.Interface{&Command{}, &Command{}},
+	}.Make()
+
+	if grp.Embodiment() != "row" {
+		t.Error("Could not initialize Embodiment field.")
+	}
 
 	if len(grp.GroupItems()) != 2 {
 		t.Error("'GroupItems' field was not initialized correctly")
@@ -24,6 +31,11 @@ func Test_GroupMake(t *testing.T) {
 func Test_GroupFieldSettings(t *testing.T) {
 
 	grp := &Group{}
+
+	grp.SetEmbodiment("column")
+	if grp.Embodiment() != "colunn" {
+		t.Error("Could not set Embodiment field.")
+	}
 
 	grp.SetGroupItems([]primitive.Interface{&Command{}, &Command{}})
 

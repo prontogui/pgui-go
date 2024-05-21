@@ -24,8 +24,9 @@ func (f *Boolean) Set(b bool) {
 	f.OnSet(false)
 }
 
-func (f *Boolean) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
+func (f *Boolean) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
+	return false
 }
 
 func (f *Boolean) EgestValue() any {

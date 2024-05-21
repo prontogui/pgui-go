@@ -6,7 +6,8 @@ import (
 )
 
 type TextWith struct {
-	Content string
+	Content    string
+	Embodiment string
 }
 
 func (w TextWith) Make() *Text {
@@ -19,11 +20,15 @@ type Text struct {
 	// Mix-in the common guts for primitives
 	Reserved
 
-	content field.String
+	content    field.String
+	embodiment field.String
 }
 
-func (txt *Text) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	txt.AttachField("Content", &txt.content, pkey, PKeyIndexDontCare, onset)
+func (txt *Text) GetFieldRefs() []FieldRef {
+	return []FieldRef{
+		{key.FKey_Content, &txt.content},
+		{key.FKey_Embodiment, &txt.embodiment},
+	}
 }
 
 func (txt *Text) Content() string {
@@ -32,4 +37,12 @@ func (txt *Text) Content() string {
 
 func (txt *Text) SetContent(s string) {
 	txt.content.Set(s)
+}
+
+func (txt *Text) Embodiment() string {
+	return txt.embodiment.Get()
+}
+
+func (txt *Text) SetEmbodiment(s string) {
+	txt.embodiment.Set(s)
 }

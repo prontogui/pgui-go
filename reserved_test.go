@@ -120,9 +120,6 @@ func verifyValueA2D(t *testing.T, value any, checkno int) {
 
 func createEgestPrimitiveForTest() *ComplexPrimitive {
 	tp := &ComplexPrimitive{}
-	tp.B().SetRow(34)
-	tp.B().SetCol(19)
-	tp.B().SetEmbodiment("industry")
 	tp.Issued.Set(true)
 	tp.Status.Set(100)
 	tp.Choices.Set([]string{"abc", "def", "xyz"})
@@ -145,15 +142,12 @@ func Test_EgestFullUpdate(t *testing.T) {
 	}
 
 	updatelen := len(update)
-	if updatelen != 9 {
-		t.Fatalf("returned map has %d items.  Expecting 9 items", updatelen)
+	if updatelen != 6 {
+		t.Fatalf("returned map has %d items.  Expecting 6 items", updatelen)
 	}
 
 	verifyValueB(t, update["Issued"], 1, true)
 	verifyValueI(t, update["Status"], 2, 100)
-	verifyValueS(t, update["B.Embodiment"], 3, "industry")
-	verifyValueI(t, update["B.Row"], 4, 34)
-	verifyValueI(t, update["B.Col"], 5, 19)
 	verifyValueSA(t, update["Choices"], 6, []string{"abc", "def", "xyz"})
 	verifyValueA1D(t, update["ListItems"], 7, 0)
 	verifyValueA2D(t, update["Rows"], 8)

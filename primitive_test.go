@@ -29,7 +29,6 @@ func verifyAllFieldsAttached(t *testing.T, res Reserved, fields ...string) {
 		}
 	}
 
-	verifyFieldAttached("B.Col", "B.Row", "B.Embodiment")
 	verifyFieldAttached(fields...)
 
 	if !_areFieldsAttachedAlphabetically(res) {

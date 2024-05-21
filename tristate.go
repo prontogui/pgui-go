@@ -6,8 +6,9 @@ import (
 )
 
 type TristateWith struct {
-	Label string
-	State int
+	Embodiment string
+	Label      string
+	State      int
 }
 
 func (w TristateWith) Make() *Tristate {
@@ -21,13 +22,25 @@ type Tristate struct {
 	// Mix-in the common guts for primitives
 	Reserved
 
-	label field.String
-	state field.Integer
+	embodiment field.String
+	label      field.String
+	state      field.Integer
 }
 
-func (tri *Tristate) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	tri.AttachField("Label", &tri.label, pkey, PKeyIndexDontCare, onset)
-	tri.AttachField("State", &tri.state, pkey, PKeyIndexDontCare, onset)
+func (tri *Tristate) GetFieldRefs() []FieldRef {
+	return []FieldRef{
+		{key.FKey_Embodiment, &tri.embodiment},
+		{key.FKey_Label, &tri.label},
+		{key.FKey_State, &tri.state},
+	}
+}
+
+func (tri *Tristate) Embodiment() string {
+	return tri.embodiment.Get()
+}
+
+func (tri *Tristate) SetEmbodiment(s string) {
+	tri.embodiment.Set(s)
 }
 
 func (tri *Tristate) Label() string {

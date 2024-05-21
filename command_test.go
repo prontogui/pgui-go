@@ -9,11 +9,15 @@ import (
 func Test_CommandAttachedFields(t *testing.T) {
 	cmd := &Command{}
 	cmd.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, cmd.Reserved, "Label", "Status")
+	verifyAllFieldsAttached(t, cmd.Reserved, "Embodiment", "Label", "Status")
 }
 
 func Test_CommandMake(t *testing.T) {
-	cmd := CommandWith{Label: "Press Me", Status: 1}.Make()
+	cmd := CommandWith{Embodiment: "raised-btn", Label: "Press Me", Status: 1}.Make()
+
+	if cmd.Embodiment() != "raised-btn" {
+		t.Error("Could not initialize Embodiment field.")
+	}
 
 	if cmd.Label() != "Press Me" {
 		t.Error("Could not initialize Label field.")
@@ -27,6 +31,11 @@ func Test_CommandMake(t *testing.T) {
 func Test_CommandFieldSetting(t *testing.T) {
 	cmd := &Command{}
 	cmd.PrepareForUpdates(key.NewPKey(), nil)
+
+	cmd.SetEmbodiment("raised-btn")
+	if cmd.Embodiment() != "raised-btn" {
+		t.Error("Could not set Embodiment field.")
+	}
 
 	cmd.SetLabel("My label")
 	if cmd.Label() != "My label" {

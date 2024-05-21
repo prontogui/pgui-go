@@ -20,8 +20,9 @@ func (f *Blob) Set(blob []byte) {
 	f.OnSet(false)
 }
 
-func (f *Blob) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
+func (f *Blob) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
+	return false
 }
 
 func (f *Blob) EgestValue() any {

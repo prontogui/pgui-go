@@ -7,6 +7,7 @@ import (
 )
 
 type ListWith struct {
+	Embodiment   string
 	ListItems    []primitive.Interface
 	Selected     int
 	TemplateItem primitive.Interface
@@ -14,6 +15,7 @@ type ListWith struct {
 
 func (w ListWith) Make() *List {
 	list := &List{}
+	list.SetEmbodiment(w.Embodiment)
 	list.listItems.Set(w.ListItems)
 	list.SetSelected(w.Selected)
 	list.SetTemplateItem(w.TemplateItem)
@@ -24,15 +26,22 @@ type List struct {
 	// Mix-in the common guts for primitives
 	Reserved
 
+	embodiment   field.String
 	listItems    field.Any1D
 	selected     field.Integer
 	templateItem field.Any
 }
 
 func (list *List) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	list.AttachField("ListItems", &list.listItems, pkey, PKeyIndex_0, onset)
-	list.AttachField("Selected", &list.selected, pkey, PKeyIndexDontCare, onset)
-	list.AttachField("TemplateItem", &list.templateItem, pkey, PKeyIndex_1, onset)
+
+	list.InternalPrepareForUpdates(pkey, onset, func() []FieldRef {
+		return []FieldRef{
+			{key.FKey_Embodiment, &list.embodiment},
+			{key.FKey_ListItems, &list.listItems},
+			{key.FKey_Selected, &list.selected},
+			{key.FKey_TemplateItem, &list.templateItem},
+		}
+	})
 }
 
 func (list *List) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
@@ -48,6 +57,14 @@ func (list *List) LocateNextDescendant(locator *key.PKeyLocator) primitive.Inter
 	default:
 		panic("cannot locate descendent using a pkey that we assumed was valid")
 	}
+}
+
+func (list *List) Embodiment() string {
+	return list.embodiment.Get()
+}
+
+func (list *List) SetEmbodiment(s string) {
+	list.SetEmbodiment(s)
 }
 
 func (list *List) ListItems() []primitive.Interface {
