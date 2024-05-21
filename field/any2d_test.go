@@ -2,7 +2,6 @@ package field
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/prontogui/golib/key"
@@ -15,10 +14,93 @@ func Test_Any2DSetAndGet(t *testing.T) {
 	actual, _ := generateTestData2D()
 	f.Set(actual)
 
-	expected, _ := generateTestData2D()
+	tp, ok := f.Get()[0][0].(*TestPrimitive)
 
-	if !reflect.DeepEqual(f.Get(), expected) {
-		t.Fatal("cannot set a 2D array and get the same value back.")
+	if !ok || tp.s != "abc" {
+		t.Fatal("cannot set value and get the same value back.")
+	}
+}
+
+func Test_Any2DSetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
+	f := Any2D{}
+
+	actuals_i, actuals_p := generateTestData2D()
+	f.Set(actuals_i)
+
+	for _, row := range actuals_p {
+		for _, p := range row {
+			verifyChildNotPreppedForUpdate(t, p)
+		}
+	}
+}
+
+func Test_Any2DSetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
+	f := Any2D{}
+
+	actuals_i, actuals_p := generateTestData2D()
+
+	bogeyPkey := key.NewPKey(1, 2, 3)
+	bokeyOnset := getBogeyOnsetFunc()
+
+	for _, row := range actuals_p {
+		for _, p := range row {
+			p.PrepareForUpdates(bogeyPkey, bokeyOnset)
+		}
+	}
+
+	f.Set(actuals_i)
+
+	// Since f is not prepped for udpates, the assigned children also should not be prepped after assignment.
+	for _, row := range actuals_p {
+		for _, p := range row {
+			verifyChildNotPreppedForUpdate(t, p)
+		}
+	}
+}
+
+func Test_Any2DSetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
+	f := Any2D{}
+	pkey := key.NewPKey(50)
+	onset := getTestOnsetFunc()
+
+	f.PrepareForUpdates(10, pkey, 0, onset)
+
+	actuals_i, actuals_p := generateTestData2D()
+	f.Set(actuals_i)
+
+	testPKey := pkey.AddLevel(0)
+	for i, row := range actuals_p {
+		for j, p := range row {
+			verifyChildPreppedForUpdate(t, p, testPKey.AddLevel(i).AddLevel(j), onset)
+		}
+	}
+}
+
+func Test_Any2DSetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
+	f := Any2D{}
+
+	pkey := key.NewPKey(50)
+	onset := getTestOnsetFunc()
+	f.PrepareForUpdates(10, pkey, 0, onset)
+
+	actuals_i, actuals_p := generateTestData2D()
+
+	bogeyPkey := key.NewPKey(1, 2, 3)
+	bokeyOnset := getBogeyOnsetFunc()
+
+	for _, row := range actuals_p {
+		for _, p := range row {
+			p.PrepareForUpdates(bogeyPkey, bokeyOnset)
+		}
+	}
+
+	f.Set(actuals_i)
+
+	testPKey := pkey.AddLevel(0)
+	for i, row := range actuals_p {
+		for j, p := range row {
+			verifyChildPreppedForUpdate(t, p, testPKey.AddLevel(i).AddLevel(j), onset)
+		}
 	}
 }
 
@@ -28,13 +110,13 @@ func Test_Any2DPrepareForUpdates(t *testing.T) {
 	values_i, values_p := generateTestData2D()
 	f.Set(values_i)
 
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyStashUpdateInfo(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.Reserved)
 
 	for i, p1 := range values_p {
 		for j, p2 := range p1 {
-			if !p2.prepped {
+			if !p2.IsPrepped() {
 				t.Errorf("array element (%d, %d) was not prepared correctly", i, j)
 			}
 		}

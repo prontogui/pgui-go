@@ -2,6 +2,7 @@ package field
 
 import (
 	"errors"
+	"reflect"
 	"testing"
 
 	"github.com/prontogui/golib/key"
@@ -9,12 +10,17 @@ import (
 )
 
 type TestPrimitive struct {
-	s       string
-	prepped bool
+	s string
+	//	prepped bool
+	pkey key.PKey
 }
 
-func (tp *TestPrimitive) PrepareForUpdates(key.PKey, key.OnSetFunction) {
-	tp.prepped = true
+func (tp *TestPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+	tp.pkey = pkey
+}
+
+func (tp *TestPrimitive) IsPrepped() bool {
+	return len(tp.pkey) != 0
 }
 
 func (tp *TestPrimitive) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
@@ -56,7 +62,7 @@ func generateTestData2D() ([][]primitive.Interface, [][]*TestPrimitive) {
 	return [][]primitive.Interface{{act1a, act1b}, {act2a, act2b}}, [][]*TestPrimitive{{act1a, act1b}, {act2a, act2b}}
 }
 
-func verifyStashUpdateInfo(t *testing.T, f *Reserved) {
+func verifyFieldPreppedForUpdate(t *testing.T, f *Reserved) {
 
 	if f.fkey != 10 {
 		t.Error("fkey was not stashed correctly")
@@ -66,6 +72,18 @@ func verifyStashUpdateInfo(t *testing.T, f *Reserved) {
 	}
 	if f.onset == nil {
 		t.Error("onset was not stashed correctly")
+	}
+}
+
+func verifyChildNotPreppedForUpdate(t *testing.T, p *TestPrimitive) {
+	if p.IsPrepped() {
+		t.Error("child primitive is prepped for updates")
+	}
+}
+
+func verifyChildPreppedForUpdate(t *testing.T, p *TestPrimitive, pkey key.PKey, onset key.OnSetFunction) {
+	if !reflect.DeepEqual(p.pkey, pkey) {
+		t.Error("child primitive is not prepped for updates.  Expecting a different pkey")
 	}
 }
 
@@ -81,6 +99,13 @@ var testOnsetCalled = false
 
 func _testOnset(key.PKey, key.FKey, bool) {
 	testOnsetCalled = true
+}
+
+func getBogeyOnsetFunc() key.OnSetFunction {
+	return _bogeyOnset
+}
+
+func _bogeyOnset(key.PKey, key.FKey, bool) {
 }
 
 func verifyIngestUpdateSuccessful(t *testing.T, err error, testfunc func() bool) {

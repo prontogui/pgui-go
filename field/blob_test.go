@@ -20,9 +20,9 @@ func Test_BlobSetAndGet(t *testing.T) {
 func Test_BlobPrepareForUpdates(t *testing.T) {
 	f := Blob{}
 
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyStashUpdateInfo(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.Reserved)
 
 	f.Set([]byte{1, 2, 3})
 

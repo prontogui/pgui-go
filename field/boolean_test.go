@@ -29,9 +29,9 @@ func Test_BooleanSetAndGetTrue(t *testing.T) {
 func Test_BooleanPrepareForUpdates(t *testing.T) {
 	f := Boolean{}
 
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyStashUpdateInfo(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.Reserved)
 
 	f.Set(true)
 
@@ -56,7 +56,7 @@ func Test_BooleanEgestValue(t *testing.T) {
 func Test_BooleanIngestUpdateTrue(t *testing.T) {
 
 	f := Boolean{}
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	err := f.IngestValue(true)
 
@@ -71,7 +71,7 @@ func Test_BooleanIngestUpdateFalse(t *testing.T) {
 
 	f := Boolean{}
 	f.Set(true)
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	err := f.IngestValue(false)
 

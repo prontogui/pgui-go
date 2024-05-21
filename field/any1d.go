@@ -12,27 +12,32 @@ type Any1D struct {
 	ary []primitive.Interface
 }
 
+func (f *Any1D) prepareDescendantsForUpdate() {
+
+	fieldPkey := f.pkey.AddLevel(f.fieldPKeyIndex)
+
+	for i, p := range f.ary {
+		if f.onset == nil {
+			p.PrepareForUpdates(key.EmptyPKey(), nil)
+		} else {
+			p.PrepareForUpdates(fieldPkey.AddLevel(i), f.onset)
+		}
+	}
+}
+
 func (f *Any1D) Get() []primitive.Interface {
 	return f.ary
 }
 
 func (f *Any1D) Set(ary []primitive.Interface) {
 	f.ary = ary
+	f.prepareDescendantsForUpdate()
 	f.OnSet(true)
 }
 
-func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction, nextContainerIndex int) (isContainer bool) {
-
-	isContainer = true
-
-	f.StashUpdateInfo(fkey, pkey, onset)
-
-	// Prepare the children too
-	for i, p := range f.ary {
-		p.PrepareForUpdates(pkey.AddLevel(nextContainerIndex).AddLevel(i), onset)
-	}
-
-	return
+func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
+	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
+	f.prepareDescendantsForUpdate()
 }
 
 func (f *Any1D) EgestValue() any {

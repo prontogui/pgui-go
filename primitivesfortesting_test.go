@@ -18,15 +18,12 @@ type ComplexPrimitive struct {
 }
 
 func (tp *ComplexPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	tp.AttachField("Issued", &tp.Issued)
-	tp.AttachField("Status", &tp.Status)
-	tp.AttachField("Choices", &tp.Choices)
-	tp.AttachField("ListItems", &tp.ListItems)
-	tp.AttachField("Rows", &tp.Rows)
-	tp.AttachField("Data", &tp.Data)
-
-	// Prepare all the field for updates
-	tp.Reserved.PrepareForUpdates(pkey, onset)
+	tp.AttachField("Choices", &tp.Choices, pkey, PKeyIndexDontCare, onset)
+	tp.AttachField("Data", &tp.Data, pkey, PKeyIndexDontCare, onset)
+	tp.AttachField("Issued", &tp.Issued, pkey, PKeyIndexDontCare, onset)
+	tp.AttachField("ListItems", &tp.ListItems, pkey, PKeyIndex_0, onset)
+	tp.AttachField("Rows", &tp.Rows, pkey, PKeyIndex_1, onset)
+	tp.AttachField("Status", &tp.Status, pkey, PKeyIndexDontCare, onset)
 }
 
 type SimplePrimitive struct {
@@ -39,10 +36,7 @@ type SimplePrimitive struct {
 }
 
 func (tp *SimplePrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-	tp.AttachField("Issued", &tp.Issued)
-	tp.AttachField("Label", &tp.Label)
-	tp.AttachField("Status", &tp.Status)
-
-	// Prepare all the field for updates
-	tp.Reserved.PrepareForUpdates(pkey, onset)
+	tp.AttachField("Issued", &tp.Issued, pkey, PKeyIndexDontCare, onset)
+	tp.AttachField("Label", &tp.Label, pkey, PKeyIndexDontCare, onset)
+	tp.AttachField("Status", &tp.Status, pkey, PKeyIndexDontCare, onset)
 }

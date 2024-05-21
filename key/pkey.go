@@ -4,6 +4,10 @@ const INVALID_INDEX = -1
 
 type PKey []int
 
+func EmptyPKey() PKey {
+	return PKey{}
+}
+
 func NewPKey(indices ...int) PKey {
 	pk := make([]int, len(indices))
 	copy(pk, indices)

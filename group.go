@@ -17,18 +17,14 @@ func (w GroupWith) Make() *Group {
 }
 
 type Group struct {
-	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
+	// Mix-in the common guts for primitives
 	Reserved
 
 	groupItems field.Any1D
 }
 
 func (grp *Group) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-
-	grp.AttachField("GroupItems", &grp.groupItems)
-
-	// Prepare all fields for updates
-	grp.Reserved.PrepareForUpdates(pkey, onset)
+	grp.AttachField("GroupItems", &grp.groupItems, pkey, PKeyIndex_0, onset)
 }
 
 func (grp *Group) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {

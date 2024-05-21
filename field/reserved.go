@@ -5,15 +5,25 @@ import (
 )
 
 type Reserved struct {
-	pkey  key.PKey // `cbor:"omitempty"`
-	fkey  key.FKey
+	// PKey of this field's container primitive.
+	pkey key.PKey // `cbor:"omitempty"`
+
+	// FKey of this field.
+	fkey key.FKey
+
+	// The function to call to notify the field was updated.
 	onset func(key.PKey, key.FKey, bool)
+
+	// This field's pkey index relative to its container primitive (if this field contains primitives).
+	// It is used when assigning new primitives to this field.
+	fieldPKeyIndex int
 }
 
-func (f *Reserved) StashUpdateInfo(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction) {
+func (f *Reserved) StashUpdateInfo(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
 	f.fkey = fkey
 	f.pkey = pkey
 	f.onset = onset
+	fieldPKeyIndex = fieldPKeyIndex
 }
 
 func (f *Reserved) OnSet(structural bool) {

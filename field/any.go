@@ -12,25 +12,29 @@ type Any struct {
 	p primitive.Interface
 }
 
+func (f *Any) prepareDescendantForUpdate() {
+	if f.p != nil {
+		if f.onset == nil {
+			f.p.PrepareForUpdates(key.EmptyPKey(), nil)
+		} else {
+			f.p.PrepareForUpdates(f.pkey.AddLevel(f.fieldPKeyIndex), f.onset)
+		}
+	}
+}
+
 func (f *Any) Get() primitive.Interface {
 	return f.p
 }
 
 func (f *Any) Set(p primitive.Interface) {
 	f.p = p
+	f.prepareDescendantForUpdate()
 	f.OnSet(true)
 }
 
-func (f *Any) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction, nextContainerIndex int) (isContainer bool) {
-
-	isContainer = true
-
-	f.StashUpdateInfo(fkey, pkey, onset)
-	if f.p != nil {
-		f.p.PrepareForUpdates(pkey.AddLevel(nextContainerIndex), onset)
-	}
-
-	return
+func (f *Any) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
+	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
+	f.prepareDescendantForUpdate()
 }
 
 func (f *Any) EgestValue() any {

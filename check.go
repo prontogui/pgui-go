@@ -19,7 +19,7 @@ func (w CheckWith) Make() *Check {
 }
 
 type Check struct {
-	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
+	// Mix-in the common guts for primitives
 	Reserved
 
 	label   field.String
@@ -27,12 +27,8 @@ type Check struct {
 }
 
 func (check *Check) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-
-	check.AttachField("Checked", &check.checked)
-	check.AttachField("Label", &check.label)
-
-	// Prepare all fields for updates
-	check.Reserved.PrepareForUpdates(pkey, onset)
+	check.AttachField("Checked", &check.checked, pkey, PKeyIndexDontCare, onset)
+	check.AttachField("Label", &check.label, pkey, PKeyIndexDontCare, onset)
 }
 
 func (check *Check) Label() string {

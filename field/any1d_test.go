@@ -1,7 +1,6 @@
 package field
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/prontogui/golib/key"
@@ -14,11 +13,79 @@ func Test_Any1DSetAndGet(t *testing.T) {
 	actuals_i, _ := generateTestData1D()
 	f.Set(actuals_i)
 
-	expected_i, _ := generateTestData1D()
+	tp, ok := f.Get()[0].(*TestPrimitive)
 
-	if !reflect.DeepEqual(f.Get(), expected_i) {
-		t.Fatal("cannot set any array and get the same value back.")
+	if !ok || tp.s != "abc" {
+		t.Fatal("cannot set value and get the same value back.")
 	}
+}
+
+func Test_Any1DSetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
+	f := Any1D{}
+
+	actuals_i, actuals_p := generateTestData1D()
+	f.Set(actuals_i)
+
+	verifyChildNotPreppedForUpdate(t, actuals_p[0])
+	verifyChildNotPreppedForUpdate(t, actuals_p[1])
+	verifyChildNotPreppedForUpdate(t, actuals_p[2])
+}
+
+func Test_Any1DSetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
+	f := Any1D{}
+
+	actuals_i, actuals_p := generateTestData1D()
+
+	bogeyPkey := key.NewPKey(1, 2, 3)
+	bokeyOnset := getBogeyOnsetFunc()
+	actuals_p[0].PrepareForUpdates(bogeyPkey, bokeyOnset)
+	actuals_p[1].PrepareForUpdates(bogeyPkey, bokeyOnset)
+	actuals_p[2].PrepareForUpdates(bogeyPkey, bokeyOnset)
+
+	f.Set(actuals_i)
+
+	verifyChildNotPreppedForUpdate(t, actuals_p[0])
+	verifyChildNotPreppedForUpdate(t, actuals_p[1])
+	verifyChildNotPreppedForUpdate(t, actuals_p[2])
+}
+
+func Test_Any1DSetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
+	f := Any1D{}
+
+	pkey := key.NewPKey(50)
+	onset := getTestOnsetFunc()
+	f.PrepareForUpdates(10, pkey, 0, onset)
+
+	actuals_i, actuals_p := generateTestData1D()
+	f.Set(actuals_i)
+
+	testPKey := pkey.AddLevel(0)
+	verifyChildPreppedForUpdate(t, actuals_p[0], testPKey.AddLevel(0), onset)
+	verifyChildPreppedForUpdate(t, actuals_p[1], testPKey.AddLevel(1), onset)
+	verifyChildPreppedForUpdate(t, actuals_p[2], testPKey.AddLevel(2), onset)
+}
+
+func Test_Any1DSetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
+	f := Any1D{}
+
+	pkey := key.NewPKey(50)
+	onset := getTestOnsetFunc()
+	f.PrepareForUpdates(10, pkey, 0, onset)
+
+	actuals_i, actuals_p := generateTestData1D()
+
+	bogeyPkey := key.NewPKey(1, 2, 3)
+	bokeyOnset := getBogeyOnsetFunc()
+	actuals_p[0].PrepareForUpdates(bogeyPkey, bokeyOnset)
+	actuals_p[1].PrepareForUpdates(bogeyPkey, bokeyOnset)
+	actuals_p[2].PrepareForUpdates(bogeyPkey, bokeyOnset)
+
+	f.Set(actuals_i)
+
+	testPKey := pkey.AddLevel(0)
+	verifyChildPreppedForUpdate(t, actuals_p[0], testPKey.AddLevel(0), onset)
+	verifyChildPreppedForUpdate(t, actuals_p[1], testPKey.AddLevel(1), onset)
+	verifyChildPreppedForUpdate(t, actuals_p[2], testPKey.AddLevel(2), onset)
 }
 
 func Test_Any1DPrepareForUpdates(t *testing.T) {
@@ -28,12 +95,12 @@ func Test_Any1DPrepareForUpdates(t *testing.T) {
 
 	f.Set(values_i)
 
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyStashUpdateInfo(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.Reserved)
 
 	for i, p := range values_p {
-		if !p.prepped {
+		if !p.IsPrepped() {
 			t.Errorf("array element (%d) was not prepared correctly", i)
 		}
 	}

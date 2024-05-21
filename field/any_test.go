@@ -1,7 +1,6 @@
 package field
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/prontogui/golib/key"
@@ -12,9 +11,65 @@ func Test_AnySetAndGet(t *testing.T) {
 
 	f.Set(&TestPrimitive{s: "abc"})
 
-	if !reflect.DeepEqual(f.Get(), &TestPrimitive{s: "abc"}) {
+	tp, ok := f.Get().(*TestPrimitive)
+
+	if !ok || tp.s != "abc" {
 		t.Fatal("cannot set value and get the same value back.")
 	}
+}
+
+func Test_AnySetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
+	f := Any{}
+
+	tp := &TestPrimitive{s: "abc"}
+	f.Set(tp)
+
+	verifyChildNotPreppedForUpdate(t, tp)
+}
+
+func Test_AnySetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
+	f := Any{}
+
+	tp := &TestPrimitive{s: "abc"}
+
+	bogeyPkey := key.NewPKey(1, 2, 3)
+	bokeyOnset := getBogeyOnsetFunc()
+	tp.PrepareForUpdates(bogeyPkey, bokeyOnset)
+
+	f.Set(tp)
+
+	verifyChildNotPreppedForUpdate(t, tp)
+}
+
+func Test_AnySetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
+	f := Any{}
+
+	pkey := key.NewPKey(50)
+	onset := getTestOnsetFunc()
+	f.PrepareForUpdates(10, pkey, 0, onset)
+
+	tp := &TestPrimitive{s: "abc"}
+	f.Set(tp)
+
+	verifyChildPreppedForUpdate(t, tp, pkey.AddLevel(0), onset)
+}
+
+func Test_AnySetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
+	f := Any{}
+
+	pkey := key.NewPKey(50)
+	onset := getTestOnsetFunc()
+	f.PrepareForUpdates(10, pkey, 0, onset)
+
+	tp := &TestPrimitive{s: "abc"}
+
+	bogeyPkey := key.NewPKey(1, 2, 3)
+	bokeyOnset := getBogeyOnsetFunc()
+	tp.PrepareForUpdates(bogeyPkey, bokeyOnset)
+
+	f.Set(tp)
+
+	verifyChildPreppedForUpdate(t, tp, pkey.AddLevel(0), onset)
 }
 
 func Test_AnyPrepareForUpdates(t *testing.T) {
@@ -22,9 +77,9 @@ func Test_AnyPrepareForUpdates(t *testing.T) {
 
 	f.Set(&TestPrimitive{s: "abc"})
 
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyStashUpdateInfo(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.Reserved)
 
 	f.Set(&TestPrimitive{s: "xyz"})
 

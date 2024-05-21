@@ -7,7 +7,7 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-func _areFieldsAttachedAlphabetically(t *testing.T, res Reserved) bool {
+func _areFieldsAttachedAlphabetically(res Reserved) bool {
 
 	attachedOrder := []string{}
 
@@ -32,7 +32,7 @@ func verifyAllFieldsAttached(t *testing.T, res Reserved, fields ...string) {
 	verifyFieldAttached("B.Col", "B.Row", "B.Embodiment")
 	verifyFieldAttached(fields...)
 
-	if !_areFieldsAttachedAlphabetically(t, res) {
+	if !_areFieldsAttachedAlphabetically(res) {
 		t.Error("fields were not attached in alphabetical order")
 	}
 }

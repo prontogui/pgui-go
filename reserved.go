@@ -13,10 +13,20 @@ const (
 	// The maximum number of fields in any given primitive.  TODO:  check for accuracy of this in unit testing,
 	// in case a primitive is updated or added without changing this number.
 	MaxPrimitiveFields = 4
+
+	// Use the following constants when calling AttachField.  It is mainly
+	// for readability and clarity of intent.
+	PKeyIndexDontCare = -1
+	PKeyIndex_0       = 0
+	PKeyIndex_1       = 1
+	PKeyIndex_2       = 2
 )
 
 type FieldRef struct {
-	fkey  key.FKey
+	// The field's key
+	fkey key.FKey
+
+	// Reference to the field itself
 	field field.Field
 }
 
@@ -32,7 +42,7 @@ func (r *Reserved) B() *BSide {
 	return &r.bside
 }
 
-func (r *Reserved) AttachField(fieldname string, field field.Field) {
+func (r *Reserved) AttachField(fieldname string, field field.Field, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
 
 	fkey := key.FKeyFor(fieldname)
 	if fkey == key.INVALID_FIELDNAME {
@@ -40,24 +50,12 @@ func (r *Reserved) AttachField(fieldname string, field field.Field) {
 	}
 
 	r.fields = append(r.fields, FieldRef{fkey: fkey, field: field})
+
+	field.PrepareForUpdates(fkey, pkey, fieldPKeyIndex, onset)
 }
 
 func (r *Reserved) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
 	return nil
-}
-
-func (r *Reserved) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-
-	r.bside.AttachFields(r)
-
-	containerIndex := 0
-
-	// Fields should be attached in alphabetical order (TODO:  write a unit test to verify this)
-	for _, f := range r.fields {
-		if f.field.PrepareForUpdates(f.fkey, pkey, onset, containerIndex) {
-			containerIndex = containerIndex + 1
-		}
-	}
 }
 
 func (r *Reserved) findField(fkey key.FKey) field.Field {

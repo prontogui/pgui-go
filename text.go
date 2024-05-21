@@ -16,18 +16,14 @@ func (w TextWith) Make() *Text {
 }
 
 type Text struct {
-	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
+	// Mix-in the common guts for primitives
 	Reserved
 
 	content field.String
 }
 
 func (txt *Text) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-
-	txt.AttachField("Content", &txt.content)
-
-	// Prepare all fields for updates
-	txt.Reserved.PrepareForUpdates(pkey, onset)
+	txt.AttachField("Content", &txt.content, pkey, PKeyIndexDontCare, onset)
 }
 
 func (txt *Text) Content() string {

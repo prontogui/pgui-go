@@ -13,34 +13,41 @@ type Any2D struct {
 	ary [][]primitive.Interface
 }
 
+func (f *Any2D) prepareDescendantsForUpdate() {
+
+	fieldPkey := f.pkey.AddLevel(f.fieldPKeyIndex)
+
+	if f.onset == nil {
+		for _, p1 := range f.ary {
+			for _, p2 := range p1 {
+				p2.PrepareForUpdates(key.EmptyPKey(), nil)
+			}
+		}
+	} else {
+		for i, p1 := range f.ary {
+			pkeyi := fieldPkey.AddLevel(i)
+
+			for j, p2 := range p1 {
+				pkeyj := pkeyi.AddLevel(j)
+				p2.PrepareForUpdates(pkeyj, f.onset)
+			}
+		}
+	}
+}
+
 func (f *Any2D) Get() [][]primitive.Interface {
 	return f.ary
 }
 
 func (f *Any2D) Set(ary [][]primitive.Interface) {
 	f.ary = ary
+	f.prepareDescendantsForUpdate()
 	f.OnSet(true)
 }
 
-func (f *Any2D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, onset key.OnSetFunction, nextContainerIndex int) (isContainer bool) {
-
-	isContainer = true
-
-	f.StashUpdateInfo(fkey, pkey, onset)
-
-	containerPkey := pkey.AddLevel(nextContainerIndex)
-
-	// Prepare the children too
-	for i, p1 := range f.ary {
-		pkeyi := containerPkey.AddLevel(i)
-
-		for j, p2 := range p1 {
-			pkeyj := pkeyi.AddLevel(j)
-			p2.PrepareForUpdates(pkeyj, onset)
-		}
-	}
-
-	return
+func (f *Any2D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
+	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
+	f.prepareDescendantsForUpdate()
 }
 
 func (f *Any2D) EgestValue() any {

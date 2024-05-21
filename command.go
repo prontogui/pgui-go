@@ -19,7 +19,7 @@ func (w CommandWith) Make() *Command {
 }
 
 type Command struct {
-	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
+	// Mix-in the common guts for primitives
 	Reserved
 
 	label  field.String
@@ -27,12 +27,8 @@ type Command struct {
 }
 
 func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-
-	cmd.AttachField("Label", &cmd.label)
-	cmd.AttachField("Status", &cmd.status)
-
-	// Prepare all fields for updates
-	cmd.Reserved.PrepareForUpdates(pkey, onset)
+	cmd.AttachField("Label", &cmd.label, pkey, PKeyIndexDontCare, onset)
+	cmd.AttachField("Status", &cmd.status, pkey, PKeyIndexDontCare, onset)
 }
 
 func (cmd *Command) Label() string {

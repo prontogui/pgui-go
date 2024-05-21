@@ -18,7 +18,7 @@ func (w ChoiceWith) Make() *Choice {
 }
 
 type Choice struct {
-	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
+	// Mix-in the common guts for primitives
 	Reserved
 
 	choice  field.String
@@ -27,11 +27,8 @@ type Choice struct {
 
 func (choice *Choice) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 
-	choice.AttachField("Choice", &choice.choice)
-	choice.AttachField("Choices", &choice.choices)
-
-	// Prepare all fields for updates
-	choice.Reserved.PrepareForUpdates(pkey, onset)
+	choice.AttachField("Choice", &choice.choice, pkey, PKeyIndexDontCare, onset)
+	choice.AttachField("Choices", &choice.choices, pkey, PKeyIndexDontCare, onset)
 }
 
 func (choice *Choice) Choice() string {

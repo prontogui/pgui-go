@@ -21,7 +21,7 @@ func (w ListWith) Make() *List {
 }
 
 type List struct {
-	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
+	// Mix-in the common guts for primitives
 	Reserved
 
 	listItems    field.Any1D
@@ -30,13 +30,9 @@ type List struct {
 }
 
 func (list *List) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-
-	list.AttachField("ListItems", &list.listItems)
-	list.AttachField("Selected", &list.selected)
-	list.AttachField("TemplateItem", &list.templateItem)
-
-	// Prepare all fields for updates
-	list.Reserved.PrepareForUpdates(pkey, onset)
+	list.AttachField("ListItems", &list.listItems, pkey, PKeyIndex_0, onset)
+	list.AttachField("Selected", &list.selected, pkey, PKeyIndexDontCare, onset)
+	list.AttachField("TemplateItem", &list.templateItem, pkey, PKeyIndex_1, onset)
 }
 
 func (list *List) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {

@@ -19,9 +19,9 @@ func Test_IntegerSetAndGet(t *testing.T) {
 func Test_IntegerPrepareForUpdates(t *testing.T) {
 	f := Integer{}
 
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyStashUpdateInfo(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.Reserved)
 
 	f.Set(92342)
 
@@ -46,7 +46,7 @@ func Test_IntegerEgestValue(t *testing.T) {
 func Test_IntegerIngestUpdatePositive(t *testing.T) {
 
 	f := Integer{}
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	testfunc := func() bool {
 		return f.Get() == 34
@@ -67,7 +67,7 @@ func Test_IntegerIngestUpdatePositive(t *testing.T) {
 func Test_IntegerIngestUpdateNegative(t *testing.T) {
 
 	f := Integer{}
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	testfunc := func() bool {
 		return f.Get() == -34
@@ -84,7 +84,7 @@ func Test_IntegerIngestUpdateZero(t *testing.T) {
 
 	f := Integer{}
 	f.Set(290)
-	f.PrepareForUpdates(10, key.NewPKey(50), getTestOnsetFunc(), 0)
+	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	err := f.IngestValue(0)
 

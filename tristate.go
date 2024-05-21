@@ -18,7 +18,7 @@ func (w TristateWith) Make() *Tristate {
 }
 
 type Tristate struct {
-	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
+	// Mix-in the common guts for primitives
 	Reserved
 
 	label field.String
@@ -26,12 +26,8 @@ type Tristate struct {
 }
 
 func (tri *Tristate) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
-
-	tri.AttachField("Label", &tri.label)
-	tri.AttachField("State", &tri.state)
-
-	// Prepare all fields for updates
-	tri.Reserved.PrepareForUpdates(pkey, onset)
+	tri.AttachField("Label", &tri.label, pkey, PKeyIndexDontCare, onset)
+	tri.AttachField("State", &tri.state, pkey, PKeyIndexDontCare, onset)
 }
 
 func (tri *Tristate) Label() string {
