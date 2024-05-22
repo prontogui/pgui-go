@@ -44,6 +44,7 @@ func (list *List) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	})
 }
 
+// TODO:  generalize this code by handling inside primitive Reserved area.
 func (list *List) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
 
 	nextIndex := locator.NextIndex()
@@ -64,7 +65,7 @@ func (list *List) Embodiment() string {
 }
 
 func (list *List) SetEmbodiment(s string) {
-	list.SetEmbodiment(s)
+	list.embodiment.Set(s)
 }
 
 func (list *List) ListItems() []primitive.Interface {

@@ -36,7 +36,11 @@ func (grp *Group) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	})
 }
 
+// TODO:  generalize this code by handling inside primitive Reserved area.
 func (grp *Group) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
+	if locator.NextIndex() != 0 {
+		panic("cannot locate descendent using a pkey that we assumed was valid")
+	}
 	return grp.GroupItems()[locator.NextIndex()]
 }
 

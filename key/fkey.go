@@ -5,6 +5,9 @@ type FKey uint8
 const (
 	INVALID_FIELDNAME = 255
 	INVALID_FKEY      = ""
+)
+
+const (
 
 	// ADD NEW FIELDS TO THIS BLOCK - ALPHABETICAL ORDER PLEASE!
 	FKey_Changed FKey = iota
@@ -41,7 +44,7 @@ func init() {
 	_fkeyToName[FKey_Choices] = "Choices"
 	_fkeyToName[FKey_Content] = "Content"
 	_fkeyToName[FKey_Data] = "Data"
-	_fkeyToName[FKey_Data] = "Embodiment"
+	_fkeyToName[FKey_Embodiment] = "Embodiment"
 	_fkeyToName[FKey_GroupItems] = "GroupItems"
 	_fkeyToName[FKey_Issued] = "Issued"
 	_fkeyToName[FKey_Label] = "Label"

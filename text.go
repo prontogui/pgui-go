@@ -13,6 +13,7 @@ type TextWith struct {
 func (w TextWith) Make() *Text {
 	text := &Text{}
 	text.content.Set(w.Content)
+	text.embodiment.Set(w.Embodiment)
 	return text
 }
 
@@ -24,11 +25,14 @@ type Text struct {
 	embodiment field.String
 }
 
-func (txt *Text) GetFieldRefs() []FieldRef {
-	return []FieldRef{
-		{key.FKey_Content, &txt.content},
-		{key.FKey_Embodiment, &txt.embodiment},
-	}
+func (txt *Text) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+
+	txt.InternalPrepareForUpdates(pkey, onset, func() []FieldRef {
+		return []FieldRef{
+			{key.FKey_Content, &txt.content},
+			{key.FKey_Embodiment, &txt.embodiment},
+		}
+	})
 }
 
 func (txt *Text) Content() string {

@@ -33,7 +33,7 @@ func Test_GroupFieldSettings(t *testing.T) {
 	grp := &Group{}
 
 	grp.SetEmbodiment("column")
-	if grp.Embodiment() != "colunn" {
+	if grp.Embodiment() != "column" {
 		t.Error("Could not set Embodiment field.")
 	}
 

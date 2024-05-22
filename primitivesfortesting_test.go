@@ -16,15 +16,18 @@ type ComplexPrimitive struct {
 	Data      field.Blob
 }
 
-func (tp *ComplexPrimitive) GetFieldRefs() []FieldRef {
-	return []FieldRef{
-		{key.FKey_Choices, &tp.Choices},
-		{key.FKey_Data, &tp.Data},
-		{key.FKey_Issued, &tp.Issued},
-		{key.FKey_ListItems, &tp.ListItems},
-		{key.FKey_Rows, &tp.Rows},
-		{key.FKey_Status, &tp.Status},
-	}
+func (tp *ComplexPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+
+	tp.InternalPrepareForUpdates(pkey, onset, func() []FieldRef {
+		return []FieldRef{
+			{key.FKey_Choices, &tp.Choices},
+			{key.FKey_Data, &tp.Data},
+			{key.FKey_Issued, &tp.Issued},
+			{key.FKey_ListItems, &tp.ListItems},
+			{key.FKey_Rows, &tp.Rows},
+			{key.FKey_Status, &tp.Status},
+		}
+	})
 }
 
 type SimplePrimitive struct {
@@ -35,10 +38,13 @@ type SimplePrimitive struct {
 	Status field.Integer
 }
 
-func (tp *SimplePrimitive) GetFieldRefs() []FieldRef {
-	return []FieldRef{
-		{key.FKey_Issued, &tp.Issued},
-		{key.FKey_Label, &tp.Label},
-		{key.FKey_Status, &tp.Status},
-	}
+func (tp *SimplePrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+
+	tp.InternalPrepareForUpdates(pkey, onset, func() []FieldRef {
+		return []FieldRef{
+			{key.FKey_Issued, &tp.Issued},
+			{key.FKey_Label, &tp.Label},
+			{key.FKey_Status, &tp.Status},
+		}
+	})
 }

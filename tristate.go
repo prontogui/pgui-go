@@ -13,6 +13,7 @@ type TristateWith struct {
 
 func (w TristateWith) Make() *Tristate {
 	tri := &Tristate{}
+	tri.embodiment.Set(w.Embodiment)
 	tri.label.Set(w.Label)
 	tri.state.Set(w.State)
 	return tri
@@ -27,12 +28,15 @@ type Tristate struct {
 	state      field.Integer
 }
 
-func (tri *Tristate) GetFieldRefs() []FieldRef {
-	return []FieldRef{
-		{key.FKey_Embodiment, &tri.embodiment},
-		{key.FKey_Label, &tri.label},
-		{key.FKey_State, &tri.state},
-	}
+func (tri *Tristate) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
+
+	tri.InternalPrepareForUpdates(pkey, onset, func() []FieldRef {
+		return []FieldRef{
+			{key.FKey_Embodiment, &tri.embodiment},
+			{key.FKey_Label, &tri.label},
+			{key.FKey_State, &tri.state},
+		}
+	})
 }
 
 func (tri *Tristate) Embodiment() string {
