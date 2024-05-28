@@ -85,11 +85,11 @@ func Test_GroupGetChildPrimitive(t *testing.T) {
 		return grp.LocateNextDescendant(locator).(*Command)
 	}
 
-	if locate(key.NewPKey(0)).Label() != "a" {
+	if locate(key.NewPKey(0, 0)).Label() != "a" {
 		t.Fatal("LocateNextDescendant doesn't return a child for pkey 0.")
 	}
 
-	if locate(key.NewPKey(1)).Label() != "b" {
+	if locate(key.NewPKey(0, 1)).Label() != "b" {
 		t.Fatal("LocateNextDescendant doesn't return a child for pkey 1.")
 	}
 }

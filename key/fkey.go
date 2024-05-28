@@ -26,6 +26,7 @@ const (
 	FKey_State
 	FKey_Status
 	FKey_TemplateItem
+	FKey_TextEntry
 
 	// RESERVED CONSTANT
 	FKey_MAXIMUMKEYS
@@ -54,6 +55,7 @@ func init() {
 	_fkeyToName[FKey_State] = "State"
 	_fkeyToName[FKey_Status] = "Status"
 	_fkeyToName[FKey_TemplateItem] = "TemplateItem"
+	_fkeyToName[FKey_TextEntry] = "TextEntry"
 
 	_nameToFKey = make(map[string]FKey, FKey_MAXIMUMKEYS)
 
