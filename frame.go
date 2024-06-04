@@ -7,20 +7,25 @@ import (
 )
 
 type FrameWith struct {
+	Embodiment string
+	Showing    bool
 	FrameItems []primitive.Interface
 }
 
 func (w FrameWith) Make() *Frame {
 	frame := &Frame{}
+	frame.embodiment.Set(w.Embodiment)
+	frame.showing.Set(w.Showing)
 	frame.frameItems.Set(w.FrameItems)
 	return frame
 }
 
 type Frame struct {
-	// Mix-in the common guts for primitives (B-side fields, implements primitive interface, etc.)
+	// Mix-in the common guts for primitives
 	Reserved
 
 	embodiment field.String
+	showing    field.Boolean
 	frameItems field.Any1D
 }
 
@@ -30,6 +35,7 @@ func (frame *Frame) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 		return []FieldRef{
 			{key.FKey_Embodiment, &frame.embodiment},
 			{key.FKey_FrameItems, &frame.frameItems},
+			{key.FKey_Showing, &frame.showing},
 		}
 	})
 }

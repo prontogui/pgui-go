@@ -10,13 +10,21 @@ import (
 func Test_FrameAttachedFields(t *testing.T) {
 	frame := &Frame{}
 	frame.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, frame.Reserved, "FrameItems")
+	verifyAllFieldsAttached(t, frame.Reserved, "Embodiment", "Showing", "FrameItems")
 }
 
 func Test_FrameMake(t *testing.T) {
-	grp := FrameWith{FrameItems: []primitive.Interface{&Command{}, &Command{}}}.Make()
+	frame := FrameWith{Showing: true, Embodiment: "full-view", FrameItems: []primitive.Interface{&Command{}, &Command{}}}.Make()
 
-	if len(grp.FrameItems()) != 2 {
+	if !frame.showing.Get() {
+		t.Error("'Showing' field was not initialized properly")
+	}
+
+	if frame.embodiment.Get() != "full-view" {
+		t.Error("'Embodiment' field not initialized properly")
+	}
+
+	if len(frame.FrameItems()) != 2 {
 		t.Error("'FrameItems' field was not initialized correctly")
 	}
 }

@@ -24,6 +24,7 @@ const (
 	FKey_ListItems
 	FKey_Rows
 	FKey_Selected
+	FKey_Showing
 	FKey_State
 	FKey_Status
 	FKey_TemplateItem
@@ -54,6 +55,7 @@ func init() {
 	_fkeyToName[FKey_ListItems] = "ListItems"
 	_fkeyToName[FKey_Rows] = "Rows"
 	_fkeyToName[FKey_Selected] = "Selected"
+	_fkeyToName[FKey_Showing] = "Showing"
 	_fkeyToName[FKey_State] = "State"
 	_fkeyToName[FKey_Status] = "Status"
 	_fkeyToName[FKey_TemplateItem] = "TemplateItem"
