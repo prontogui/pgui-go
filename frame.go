@@ -40,14 +40,12 @@ func (frame *Frame) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	})
 }
 
-func (frame *Frame) GetChildPrimitive(index int) primitive.Interface {
-	frameItems := frame.frameItems.Get()
-
-	if index < len(frameItems) {
-		return frameItems[index]
+// TODO:  generalize this code by handling inside primitive Reserved area.
+func (frame *Frame) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
+	if locator.NextIndex() != 0 {
+		panic("cannot locate descendent using a pkey that we assumed was valid")
 	}
-
-	return nil
+	return frame.FrameItems()[locator.NextIndex()]
 }
 
 func (frame *Frame) FrameItems() []primitive.Interface {

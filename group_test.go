@@ -73,7 +73,7 @@ func Test_GroupFieldSettings(t *testing.T) {
 
 }
 
-func Test_GroupGetChildPrimitive(t *testing.T) {
+func Test_GroupLocateChildPrimitive(t *testing.T) {
 
 	cmd1 := CommandWith{Label: "a"}.Make()
 	cmd2 := CommandWith{Label: "b"}.Make()

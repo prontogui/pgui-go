@@ -69,21 +69,23 @@ func Test_FrameFieldSettings(t *testing.T) {
 
 }
 
-func Test_FrameGetChildPrimitive(t *testing.T) {
+func Test_FrameLocateChildPrimitive(t *testing.T) {
 
-	frame := &Frame{}
+	cmd1 := CommandWith{Label: "a"}.Make()
+	cmd2 := CommandWith{Label: "b"}.Make()
 
-	frame.SetFrameItems([]primitive.Interface{&Command{}, &Command{}})
+	grp := FrameWith{FrameItems: []primitive.Interface{cmd1, cmd2}}.Make()
 
-	if frame.GetChildPrimitive(0) == nil {
-		t.Fatal("GetChildPrimitve doesn't return a child for index = 0.")
+	locate := func(pkey key.PKey) *Command {
+		locator := key.NewPKeyLocator(pkey)
+		return grp.LocateNextDescendant(locator).(*Command)
 	}
 
-	if frame.GetChildPrimitive(1) == nil {
-		t.Fatal("GetChildPrimitve doesn't return a child for index = 1.")
+	if locate(key.NewPKey(0, 0)).Label() != "a" {
+		t.Fatal("LocateNextDescendant doesn't return a child for pkey 0.")
 	}
 
-	if frame.GetChildPrimitive(2) != nil {
-		t.Fatal("GetChildPrimitve shouldn't return a child for index = 2.")
+	if locate(key.NewPKey(0, 1)).Label() != "b" {
+		t.Fatal("LocateNextDescendant doesn't return a child for pkey 1.")
 	}
 }
