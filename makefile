@@ -8,7 +8,7 @@
 PROTOC = protoc
 
 all: 
-	if [ ! -d "proto" ]; then git clone -b v0.0.2 https://andyhjoseph@github.com/prontogui/proto.git; fi
+	if [ ! -d "proto" ]; then git clone -b v0.0.3 https://andyhjoseph@github.com/prontogui/proto.git; fi
 	mkdir -p pb
 	$(PROTOC) --go_opt=paths=import --go_out=pb proto/pg.proto 
 	$(PROTOC) --go-grpc_out=pb proto/pg.proto
