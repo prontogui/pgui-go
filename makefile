@@ -1,3 +1,7 @@
+# Copyright 2024 ProntoGUI, LLC.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
 # Makefile to generate all code for .proto files.
 
 # Define the protobuf compiler and the grpc plugin

@@ -1,3 +1,8 @@
+# Copyright Notice
+Copyright 2024 ProntoGUI, LLC.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+
 # pgui-go
 Go language module for Pronto!GUI
 
