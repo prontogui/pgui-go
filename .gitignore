@@ -23,4 +23,4 @@ go.work
 # "imported" protobuf files
 proto
 
-pb/
+pb/*.go
