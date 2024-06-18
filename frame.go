@@ -63,3 +63,11 @@ func (frame *Frame) SetFrameItems(items []primitive.Interface) {
 func (frame *Frame) SetFrameItemsVA(items ...primitive.Interface) {
 	frame.frameItems.Set(items)
 }
+
+func (frame *Frame) Showing() bool {
+	return frame.showing.Get()
+}
+
+func (frame *Frame) SetShowing(showing bool) {
+	frame.showing.Set(showing)
+}
