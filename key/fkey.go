@@ -21,11 +21,14 @@ const (
 	FKey_Content
 	FKey_Data
 	FKey_Embodiment
+	FKey_Exported
 	FKey_FrameItems
 	FKey_GroupItems
+	FKey_Imported
 	FKey_Issued
 	FKey_Label
 	FKey_ListItems
+	FKey_Name
 	FKey_Rows
 	FKey_Selected
 	FKey_Showing
@@ -33,6 +36,7 @@ const (
 	FKey_Status
 	FKey_TemplateItem
 	FKey_TextEntry
+	FKey_ValidExtensions
 
 	// RESERVED CONSTANT
 	FKey_MAXIMUMKEYS
@@ -52,11 +56,14 @@ func init() {
 	_fkeyToName[FKey_Content] = "Content"
 	_fkeyToName[FKey_Data] = "Data"
 	_fkeyToName[FKey_Embodiment] = "Embodiment"
+	_fkeyToName[FKey_Exported] = "Exported"
 	_fkeyToName[FKey_FrameItems] = "FrameItems"
 	_fkeyToName[FKey_GroupItems] = "GroupItems"
+	_fkeyToName[FKey_Imported] = "Imported"
 	_fkeyToName[FKey_Issued] = "Issued"
 	_fkeyToName[FKey_Label] = "Label"
 	_fkeyToName[FKey_ListItems] = "ListItems"
+	_fkeyToName[FKey_Name] = "Name"
 	_fkeyToName[FKey_Rows] = "Rows"
 	_fkeyToName[FKey_Selected] = "Selected"
 	_fkeyToName[FKey_Showing] = "Showing"
@@ -64,6 +71,7 @@ func init() {
 	_fkeyToName[FKey_Status] = "Status"
 	_fkeyToName[FKey_TemplateItem] = "TemplateItem"
 	_fkeyToName[FKey_TextEntry] = "TextEntry"
+	_fkeyToName[FKey_ValidExtensions] = "ValidExtensions"
 
 	_nameToFKey = make(map[string]FKey, FKey_MAXIMUMKEYS)
 
