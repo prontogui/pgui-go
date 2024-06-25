@@ -12,6 +12,7 @@ import (
 
 type TableWith struct {
 	Embodiment  string
+	Headings    []string
 	Rows        [][]primitive.Interface
 	TemplateRow []primitive.Interface
 }
@@ -19,6 +20,7 @@ type TableWith struct {
 func (w TableWith) Make() *Table {
 	table := &Table{}
 	table.SetEmbodiment(w.Embodiment)
+	table.SetHeadings(w.Headings)
 	table.SetRows(w.Rows)
 	table.SetTemplateRow(w.TemplateRow)
 	return table
@@ -29,6 +31,7 @@ type Table struct {
 	Reserved
 
 	embodiment  field.String
+	headings    field.Strings1D
 	rows        field.Any2D
 	templateRow field.Any1D
 }
@@ -38,6 +41,7 @@ func (table *Table) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 	table.InternalPrepareForUpdates(pkey, onset, func() []FieldRef {
 		return []FieldRef{
 			{key.FKey_Embodiment, &table.embodiment},
+			{key.FKey_Headings, &table.headings},
 			{key.FKey_Rows, &table.rows},
 			{key.FKey_TemplateRow, &table.templateRow},
 		}
@@ -70,6 +74,18 @@ func (table *Table) Embodiment() string {
 
 func (table *Table) SetEmbodiment(s string) {
 	table.embodiment.Set(s)
+}
+
+func (table *Table) Headings() []string {
+	return table.headings.Get()
+}
+
+func (table *Table) SetHeadings(s []string) {
+	table.headings.Set(s)
+}
+
+func (table *Table) SetHeadingsVA(items ...string) {
+	table.headings.Set(items)
 }
 
 func (table *Table) TemplateRow() []primitive.Interface {

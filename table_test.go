@@ -14,18 +14,23 @@ import (
 func Test_TableAttachedFields(t *testing.T) {
 	table := &Table{}
 	table.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, table.Reserved, "Embodiment", "Rows", "TemplateRow")
+	verifyAllFieldsAttached(t, table.Reserved, "Embodiment", "Headings", "Rows", "TemplateRow")
 }
 
 func Test_TableMake(t *testing.T) {
 	table := TableWith{
 		Embodiment:  "paginated",
+		Headings:    []string{"H1", "H2"},
 		Rows:        [][]primitive.Interface{{&Command{}, &Command{}}, {&Command{}, &Command{}}},
 		TemplateRow: []primitive.Interface{&Command{}, &Command{}},
 	}.Make()
 
 	if table.Embodiment() != "paginated" {
 		t.Error("'Embodiment' field was not initialized correctly")
+	}
+
+	if len(table.Headings()) != 2 {
+		t.Error("'Headings' field was not initialized correctly")
 	}
 
 	if len(table.Rows()) != 2 {
@@ -53,6 +58,21 @@ func Test_TableFieldSettings(t *testing.T) {
 	table.SetEmbodiment("paginated")
 	if table.Embodiment() != "paginated" {
 		t.Error("Unable to properly set the Embodiment field")
+	}
+
+	// Headings field
+
+	table.SetHeadingsVA("H1", "H2")
+	if len(table.Headings()) != 2 {
+		t.Errorf("Headings() returned %d items.  Expecting 2 items.", len(table.Headings()))
+	}
+
+	if table.Headings()[0] != "H1" {
+		t.Error("Headings()[0] not equal to 'H1'")
+	}
+
+	if table.Headings()[1] != "H2" {
+		t.Error("Headings()[1] not equal to 'H2'")
 	}
 
 	// Rows field
