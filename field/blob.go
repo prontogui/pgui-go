@@ -34,5 +34,12 @@ func (f *Blob) EgestValue() any {
 }
 
 func (f *Blob) IngestValue(value any) error {
-	return errors.New("ingesting value for Blob is not supported")
+
+	bytes, ok := value.([]uint8)
+	if !ok {
+		return errors.New("ingested value type not supported for Blob")
+	}
+
+	f.blob = bytes
+	return nil
 }

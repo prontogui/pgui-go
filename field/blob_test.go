@@ -53,8 +53,37 @@ func Test_BlobEgestValue(t *testing.T) {
 func Test_BlobIngestUpdate(t *testing.T) {
 
 	f := Blob{}
-	err := f.IngestValue([]byte{})
-	if err == nil || err.Error() != "ingesting value for Blob is not supported" {
-		t.Fatal("ingesting value for Blob should not be supported yet")
+	err := f.IngestValue([]byte{1, 2, 3})
+
+	if err != nil {
+		t.Fatal("error returned from IngestValue.  Not expected an error.")
+	}
+
+	bytes := f.Get()
+
+	if len(bytes) != 3 {
+		t.Fatal("ingesting value for Blob doesn't return correct number of bytes")
+	}
+
+	if bytes[0] != 1 {
+		t.Fatal("element 0 of ingested bytes is not the correct value")
+	}
+
+	if bytes[1] != 2 {
+		t.Fatal("element 1 of ingested bytes is not the correct value")
+	}
+
+	if bytes[2] != 3 {
+		t.Fatal("element 2 of ingested bytes is not the correct value")
+	}
+}
+
+func Test_BlobIngestWrongValueType(t *testing.T) {
+
+	f := Blob{}
+	err := f.IngestValue("something")
+
+	if err == nil {
+		t.Fatal("no error returned from IngestValue.  Expecting an error due to wrong value type.")
 	}
 }
