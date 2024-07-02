@@ -30,6 +30,7 @@ const (
 	FKey_Label
 	FKey_ListItems
 	FKey_Name
+	FKey_PeriodMs
 	FKey_Rows
 	FKey_Selected
 	FKey_Showing
@@ -67,6 +68,7 @@ func init() {
 	_fkeyToName[FKey_Label] = "Label"
 	_fkeyToName[FKey_ListItems] = "ListItems"
 	_fkeyToName[FKey_Name] = "Name"
+	_fkeyToName[FKey_PeriodMs] = "PeriodMs"
 	_fkeyToName[FKey_Rows] = "Rows"
 	_fkeyToName[FKey_Selected] = "Selected"
 	_fkeyToName[FKey_Showing] = "Showing"
