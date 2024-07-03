@@ -25,6 +25,7 @@ const (
 	FKey_FrameItems
 	FKey_GroupItems
 	FKey_Headings
+	FKey_Image
 	FKey_Imported
 	FKey_Issued
 	FKey_Label
@@ -63,6 +64,7 @@ func init() {
 	_fkeyToName[FKey_FrameItems] = "FrameItems"
 	_fkeyToName[FKey_GroupItems] = "GroupItems"
 	_fkeyToName[FKey_Headings] = "Headings"
+	_fkeyToName[FKey_Image] = "Image"
 	_fkeyToName[FKey_Imported] = "Imported"
 	_fkeyToName[FKey_Issued] = "Issued"
 	_fkeyToName[FKey_Label] = "Label"
