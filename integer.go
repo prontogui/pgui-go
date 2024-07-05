@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"errors"
@@ -10,30 +10,30 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-type Integer struct {
-	Reserved
+type IntegerField struct {
+	FieldBase
 	i int
 }
 
-func (f *Integer) Get() int {
+func (f *IntegerField) Get() int {
 	return f.i
 }
 
-func (f *Integer) Set(i int) {
+func (f *IntegerField) Set(i int) {
 	f.i = i
 	f.OnSet(false)
 }
 
-func (f *Integer) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
+func (f *IntegerField) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
 	return false
 }
 
-func (f *Integer) EgestValue() any {
+func (f *IntegerField) EgestValue() any {
 	return f.i
 }
 
-func (f *Integer) IngestValue(value any) error {
+func (f *IntegerField) IngestValue(value any) error {
 
 	// Unfortunately, CBOR encodes different sizes of integers based on optimum space usage.  It's not deterministic
 	// what we are converting from.  So we have to test each case until a successful conversion happens.

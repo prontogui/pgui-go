@@ -5,7 +5,6 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -26,11 +25,11 @@ func (w CheckWith) Make() *Check {
 
 type Check struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	checked    field.Boolean
-	embodiment field.String
-	label      field.String
+	checked    BooleanField
+	embodiment StringField
+	label      StringField
 }
 
 func (check *Check) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

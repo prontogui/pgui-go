@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 )
 
 func Test_StringSetAndGet(t *testing.T) {
-	f := String{}
+	f := StringField{}
 
 	f.Set("abc")
 
@@ -21,11 +21,11 @@ func Test_StringSetAndGet(t *testing.T) {
 }
 
 func Test_StringPrepareForUpdates(t *testing.T) {
-	f := String{}
+	f := StringField{}
 
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyFieldPreppedForUpdate(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.FieldBase)
 
 	f.Set("abc")
 
@@ -35,7 +35,7 @@ func Test_StringPrepareForUpdates(t *testing.T) {
 }
 
 func Test_StringEgestValue(t *testing.T) {
-	f := String{}
+	f := StringField{}
 	f.Set("yabadabadoo!")
 	v := f.EgestValue()
 	s, ok := v.(string)
@@ -49,7 +49,7 @@ func Test_StringEgestValue(t *testing.T) {
 
 func Test_StringIngestUpdate(t *testing.T) {
 
-	f := String{}
+	f := StringField{}
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	err := f.IngestValue("hello, darling")
@@ -63,7 +63,7 @@ func Test_StringIngestUpdate(t *testing.T) {
 
 func Test_StringIngestUpdateEmptyString(t *testing.T) {
 
-	f := String{}
+	f := StringField{}
 	f.Set("goodbye, dear")
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
@@ -78,7 +78,7 @@ func Test_StringIngestUpdateEmptyString(t *testing.T) {
 
 func Test_StringIngestUpdateInvalid(t *testing.T) {
 
-	f := String{}
+	f := StringField{}
 	err := f.IngestValue(false)
 	verifyIngestUpdateInvalid(t, err)
 }

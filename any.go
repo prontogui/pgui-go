@@ -2,21 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"errors"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
-type Any struct {
-	Reserved
-	p primitive.Interface
+type AnyField struct {
+	FieldBase
+	p Primitive
 }
 
-func (f *Any) prepareDescendantForUpdate() {
+func (f *AnyField) prepareDescendantForUpdate() {
 	if f.p != nil {
 		if f.onset == nil {
 			f.p.PrepareForUpdates(key.EmptyPKey(), nil)
@@ -26,23 +25,23 @@ func (f *Any) prepareDescendantForUpdate() {
 	}
 }
 
-func (f *Any) Get() primitive.Interface {
+func (f *AnyField) Get() Primitive {
 	return f.p
 }
 
-func (f *Any) Set(p primitive.Interface) {
+func (f *AnyField) Set(p Primitive) {
 	f.p = p
 	f.prepareDescendantForUpdate()
 	f.OnSet(true)
 }
 
-func (f *Any) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
+func (f *AnyField) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
 	f.prepareDescendantForUpdate()
 	return true
 }
 
-func (f *Any) EgestValue() any {
+func (f *AnyField) EgestValue() any {
 	if f.p != nil {
 		return f.p.EgestUpdate(true, nil)
 	} else {
@@ -50,7 +49,7 @@ func (f *Any) EgestValue() any {
 	}
 }
 
-func (f *Any) IngestValue(value any) error {
+func (f *AnyField) IngestValue(value any) error {
 
 	m, ok := value.(map[any]any)
 	if !ok {

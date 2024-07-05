@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"errors"
@@ -10,30 +10,30 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-type Blob struct {
-	Reserved
+type BlobField struct {
+	FieldBase
 	blob []byte
 }
 
-func (f *Blob) Get() []byte {
+func (f *BlobField) Get() []byte {
 	return f.blob
 }
 
-func (f *Blob) Set(blob []byte) {
+func (f *BlobField) Set(blob []byte) {
 	f.blob = blob
 	f.OnSet(false)
 }
 
-func (f *Blob) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
+func (f *BlobField) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
 	return false
 }
 
-func (f *Blob) EgestValue() any {
+func (f *BlobField) EgestValue() any {
 	return f.blob
 }
 
-func (f *Blob) IngestValue(value any) error {
+func (f *BlobField) IngestValue(value any) error {
 
 	bytes, ok := value.([]uint8)
 	if !ok {

@@ -5,7 +5,6 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -26,12 +25,12 @@ func (w ExportFileWith) Make() *ExportFile {
 
 type ExportFile struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	data       field.Blob
-	embodiment field.String
-	exported   field.Boolean
-	name       field.String
+	data       BlobField
+	embodiment StringField
+	exported   BooleanField
+	name       StringField
 }
 
 func (ef *ExportFile) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

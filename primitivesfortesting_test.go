@@ -5,19 +5,18 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
 type ComplexPrimitive struct {
-	Reserved
+	PrimitiveBase
 
-	Issued    field.Boolean
-	Status    field.Integer
-	Choices   field.Strings1D
-	ListItems field.Any1D
-	Rows      field.Any2D
-	Data      field.Blob
+	Issued    BooleanField
+	Status    IntegerField
+	Choices   Strings1DField
+	ListItems Any1DField
+	Rows      Any2DField
+	Data      BlobField
 }
 
 func (tp *ComplexPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
@@ -35,11 +34,11 @@ func (tp *ComplexPrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunc
 }
 
 type SimplePrimitive struct {
-	Reserved
+	PrimitiveBase
 
-	Issued field.Boolean
-	Label  field.String
-	Status field.Integer
+	Issued BooleanField
+	Label  StringField
+	Status IntegerField
 }
 
 func (tp *SimplePrimitive) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

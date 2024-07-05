@@ -5,7 +5,6 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -25,11 +24,11 @@ func (w TristateWith) Make() *Tristate {
 
 type Tristate struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	embodiment field.String
-	label      field.String
-	state      field.Integer
+	embodiment StringField
+	label      StringField
+	state      IntegerField
 }
 
 func (tri *Tristate) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

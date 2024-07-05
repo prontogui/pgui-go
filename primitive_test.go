@@ -11,7 +11,7 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-func _areFieldsAttachedAlphabetically(res Reserved) bool {
+func _areFieldsAttachedAlphabetically(res PrimitiveBase) bool {
 
 	attachedOrder := []string{}
 
@@ -23,7 +23,7 @@ func _areFieldsAttachedAlphabetically(res Reserved) bool {
 	return slices.IsSorted(attachedOrder)
 }
 
-func verifyAllFieldsAttached(t *testing.T, res Reserved, fields ...string) {
+func verifyAllFieldsAttached(t *testing.T, res PrimitiveBase, fields ...string) {
 
 	verifyFieldAttached := func(fields ...string) {
 		for _, field := range fields {

@@ -8,19 +8,18 @@ import (
 	"testing"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 func Test_GroupAttachedFields(t *testing.T) {
 	grp := &Group{}
 	grp.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, grp.Reserved, "Embodiment", "GroupItems")
+	verifyAllFieldsAttached(t, grp.PrimitiveBase, "Embodiment", "GroupItems")
 }
 
 func Test_GroupMake(t *testing.T) {
 	grp := GroupWith{
 		Embodiment: "row",
-		GroupItems: []primitive.Interface{&Command{}, &Command{}},
+		GroupItems: []Primitive{&Command{}, &Command{}},
 	}.Make()
 
 	if grp.Embodiment() != "row" {
@@ -41,7 +40,7 @@ func Test_GroupFieldSettings(t *testing.T) {
 		t.Error("Could not set Embodiment field.")
 	}
 
-	grp.SetGroupItems([]primitive.Interface{&Command{}, &Command{}})
+	grp.SetGroupItems([]Primitive{&Command{}, &Command{}})
 
 	grpGet := grp.GroupItems()
 
@@ -82,7 +81,7 @@ func Test_GroupLocateChildPrimitive(t *testing.T) {
 	cmd1 := CommandWith{Label: "a"}.Make()
 	cmd2 := CommandWith{Label: "b"}.Make()
 
-	grp := GroupWith{GroupItems: []primitive.Interface{cmd1, cmd2}}.Make()
+	grp := GroupWith{GroupItems: []Primitive{cmd1, cmd2}}.Make()
 
 	locate := func(pkey key.PKey) *Command {
 		locator := key.NewPKeyLocator(pkey)

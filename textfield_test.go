@@ -13,7 +13,7 @@ import (
 func Test_TextFieldAttach(t *testing.T) {
 	txt := &TextField{}
 	txt.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, txt.Reserved, "TextEntry", "Embodiment")
+	verifyAllFieldsAttached(t, txt.PrimitiveBase, "TextEntry", "Embodiment")
 }
 
 func Test_TextFieldMake(t *testing.T) {

@@ -5,14 +5,12 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 type GroupWith struct {
 	Embodiment string
-	GroupItems []primitive.Interface
+	GroupItems []Primitive
 }
 
 func (w GroupWith) Make() *Group {
@@ -24,10 +22,10 @@ func (w GroupWith) Make() *Group {
 
 type Group struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	embodiment field.String
-	groupItems field.Any1D
+	embodiment StringField
+	groupItems Any1DField
 }
 
 func (grp *Group) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
@@ -41,7 +39,7 @@ func (grp *Group) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 }
 
 // TODO:  generalize this code by handling inside primitive Reserved area.
-func (grp *Group) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
+func (grp *Group) LocateNextDescendant(locator *key.PKeyLocator) Primitive {
 	if locator.NextIndex() != 0 {
 		panic("cannot locate descendent using a pkey that we assumed was valid")
 	}
@@ -56,14 +54,14 @@ func (grp *Group) SetEmbodiment(s string) {
 	grp.embodiment.Set(s)
 }
 
-func (grp *Group) GroupItems() []primitive.Interface {
+func (grp *Group) GroupItems() []Primitive {
 	return grp.groupItems.Get()
 }
 
-func (grp *Group) SetGroupItems(items []primitive.Interface) {
+func (grp *Group) SetGroupItems(items []Primitive) {
 	grp.groupItems.Set(items)
 }
 
-func (grp *Group) SetGroupItemsVA(items ...primitive.Interface) {
+func (grp *Group) SetGroupItemsVA(items ...Primitive) {
 	grp.groupItems.Set(items)
 }

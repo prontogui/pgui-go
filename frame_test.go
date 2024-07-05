@@ -8,17 +8,16 @@ import (
 	"testing"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 func Test_FrameAttachedFields(t *testing.T) {
 	frame := &Frame{}
 	frame.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, frame.Reserved, "Embodiment", "Showing", "FrameItems")
+	verifyAllFieldsAttached(t, frame.PrimitiveBase, "Embodiment", "Showing", "FrameItems")
 }
 
 func Test_FrameMake(t *testing.T) {
-	frame := FrameWith{Showing: true, Embodiment: "full-view", FrameItems: []primitive.Interface{&Command{}, &Command{}}}.Make()
+	frame := FrameWith{Showing: true, Embodiment: "full-view", FrameItems: []Primitive{&Command{}, &Command{}}}.Make()
 
 	if !frame.showing.Get() {
 		t.Error("'Showing' field was not initialized properly")
@@ -37,7 +36,7 @@ func Test_FrameFieldSettings(t *testing.T) {
 
 	frame := &Frame{}
 
-	frame.SetFrameItems([]primitive.Interface{&Command{}, &Command{}})
+	frame.SetFrameItems([]Primitive{&Command{}, &Command{}})
 
 	frameGet := frame.FrameItems()
 
@@ -78,7 +77,7 @@ func Test_FrameLocateChildPrimitive(t *testing.T) {
 	cmd1 := CommandWith{Label: "a"}.Make()
 	cmd2 := CommandWith{Label: "b"}.Make()
 
-	grp := FrameWith{FrameItems: []primitive.Interface{cmd1, cmd2}}.Make()
+	grp := FrameWith{FrameItems: []Primitive{cmd1, cmd2}}.Make()
 
 	locate := func(pkey key.PKey) *Command {
 		locator := key.NewPKeyLocator(pkey)

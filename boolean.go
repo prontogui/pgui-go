@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"errors"
@@ -10,34 +10,34 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-type Boolean struct {
-	Reserved
+type BooleanField struct {
+	FieldBase
 	b bool
 }
 
-func (f *Boolean) GetAsAny() any {
+func (f *BooleanField) GetAsAny() any {
 	return f.b
 }
 
-func (f *Boolean) Get() bool {
+func (f *BooleanField) Get() bool {
 	return f.b
 }
 
-func (f *Boolean) Set(b bool) {
+func (f *BooleanField) Set(b bool) {
 	f.b = b
 	f.OnSet(false)
 }
 
-func (f *Boolean) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
+func (f *BooleanField) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
 	return false
 }
 
-func (f *Boolean) EgestValue() any {
+func (f *BooleanField) EgestValue() any {
 	return f.b
 }
 
-func (f *Boolean) IngestValue(value any) error {
+func (f *BooleanField) IngestValue(value any) error {
 
 	b, ok := value.(bool)
 

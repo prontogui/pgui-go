@@ -2,17 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"testing"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 func Test_Any1DSetAndGet(t *testing.T) {
-	f := Any1D{}
+	f := Any1DField{}
 
 	actuals_i, _ := generateTestData1D()
 	f.Set(actuals_i)
@@ -25,7 +24,7 @@ func Test_Any1DSetAndGet(t *testing.T) {
 }
 
 func Test_Any1DSetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
-	f := Any1D{}
+	f := Any1DField{}
 
 	actuals_i, actuals_p := generateTestData1D()
 	f.Set(actuals_i)
@@ -36,7 +35,7 @@ func Test_Any1DSetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
 }
 
 func Test_Any1DSetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
-	f := Any1D{}
+	f := Any1DField{}
 
 	actuals_i, actuals_p := generateTestData1D()
 
@@ -54,7 +53,7 @@ func Test_Any1DSetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
 }
 
 func Test_Any1DSetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
-	f := Any1D{}
+	f := Any1DField{}
 
 	pkey := key.NewPKey(50)
 	onset := getTestOnsetFunc()
@@ -70,7 +69,7 @@ func Test_Any1DSetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
 }
 
 func Test_Any1DSetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
-	f := Any1D{}
+	f := Any1DField{}
 
 	pkey := key.NewPKey(50)
 	onset := getTestOnsetFunc()
@@ -93,7 +92,7 @@ func Test_Any1DSetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
 }
 
 func Test_Any1DPrepareForUpdates(t *testing.T) {
-	f := Any1D{}
+	f := Any1DField{}
 
 	values_i, values_p := generateTestData1D()
 
@@ -101,7 +100,7 @@ func Test_Any1DPrepareForUpdates(t *testing.T) {
 
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyFieldPreppedForUpdate(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.FieldBase)
 
 	for i, p := range values_p {
 		if !p.IsPrepped() {
@@ -117,8 +116,8 @@ func Test_Any1DPrepareForUpdates(t *testing.T) {
 }
 
 func Test_Any1DEgestValue(t *testing.T) {
-	f := Any1D{}
-	f.Set([]primitive.Interface{&TestPrimitive{s: "abc"}, &TestPrimitive{s: "xyz"}})
+	f := Any1DField{}
+	f.Set([]Primitive{&TestPrimitive{s: "abc"}, &TestPrimitive{s: "xyz"}})
 	v := f.EgestValue()
 	a, ok := v.([]any)
 	if !ok {
@@ -151,11 +150,11 @@ func Test_Any1DEgestValue(t *testing.T) {
 	}
 }
 
-func createAny1DForTest() (*Any1D, []*TestPrimitive) {
-	f := &Any1D{}
+func createAny1DForTest() (*Any1DField, []*TestPrimitive) {
+	f := &Any1DField{}
 	p1 := &TestPrimitive{}
 	p2 := &TestPrimitive{}
-	f.Set([]primitive.Interface{p1, p2})
+	f.Set([]Primitive{p1, p2})
 	return f, []*TestPrimitive{p1, p2}
 }
 
@@ -182,10 +181,10 @@ func Test_Any1DIngestUpdate(t *testing.T) {
 
 func Test_Any1DIngestUpdateInvalid1(t *testing.T) {
 
-	f := Any1D{}
+	f := Any1DField{}
 	p1 := &TestPrimitive{}
 	p2 := &TestPrimitive{}
-	f.Set([]primitive.Interface{p1, p2})
+	f.Set([]Primitive{p1, p2})
 
 	err := f.IngestValue(3453)
 	if err == nil {
@@ -198,10 +197,10 @@ func Test_Any1DIngestUpdateInvalid1(t *testing.T) {
 
 func Test_Any1DIngestUpdateInvalid2(t *testing.T) {
 
-	f := Any1D{}
+	f := Any1DField{}
 	p1 := &TestPrimitive{}
 	p2 := &TestPrimitive{}
-	f.Set([]primitive.Interface{p1, p2})
+	f.Set([]Primitive{p1, p2})
 
 	err := f.IngestValue([]any{"Hello", "World"})
 
@@ -215,10 +214,10 @@ func Test_Any1DIngestUpdateInvalid2(t *testing.T) {
 
 func Test_Any1DIngestUpdateInvalidNumPrimitives(t *testing.T) {
 
-	f := Any1D{}
+	f := Any1DField{}
 	p1 := &TestPrimitive{}
 	p2 := &TestPrimitive{}
-	f.Set([]primitive.Interface{p1, p2})
+	f.Set([]Primitive{p1, p2})
 
 	m1 := map[any]any{"s": "Hello"}
 

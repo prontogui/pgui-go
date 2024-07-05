@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 )
 
 func Test_AnySetAndGet(t *testing.T) {
-	f := Any{}
+	f := AnyField{}
 
 	f.Set(&TestPrimitive{s: "abc"})
 
@@ -23,7 +23,7 @@ func Test_AnySetAndGet(t *testing.T) {
 }
 
 func Test_AnySetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
-	f := Any{}
+	f := AnyField{}
 
 	tp := &TestPrimitive{s: "abc"}
 	f.Set(tp)
@@ -32,7 +32,7 @@ func Test_AnySetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
 }
 
 func Test_AnySetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
-	f := Any{}
+	f := AnyField{}
 
 	tp := &TestPrimitive{s: "abc"}
 
@@ -46,7 +46,7 @@ func Test_AnySetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
 }
 
 func Test_AnySetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
-	f := Any{}
+	f := AnyField{}
 
 	pkey := key.NewPKey(50)
 	onset := getTestOnsetFunc()
@@ -59,7 +59,7 @@ func Test_AnySetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
 }
 
 func Test_AnySetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
-	f := Any{}
+	f := AnyField{}
 
 	pkey := key.NewPKey(50)
 	onset := getTestOnsetFunc()
@@ -77,13 +77,13 @@ func Test_AnySetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
 }
 
 func Test_AnyPrepareForUpdates(t *testing.T) {
-	f := Any{}
+	f := AnyField{}
 
 	f.Set(&TestPrimitive{s: "abc"})
 
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyFieldPreppedForUpdate(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.FieldBase)
 
 	f.Set(&TestPrimitive{s: "xyz"})
 
@@ -93,7 +93,7 @@ func Test_AnyPrepareForUpdates(t *testing.T) {
 }
 
 func Test_AnyEgestValue(t *testing.T) {
-	f := Any{}
+	f := AnyField{}
 	f.Set(&TestPrimitive{s: "abc"})
 	v := f.EgestValue()
 	_, ok := v.(map[any]any)
@@ -104,7 +104,7 @@ func Test_AnyEgestValue(t *testing.T) {
 
 func Test_AnyIngestUpdate(t *testing.T) {
 
-	f := &Any{}
+	f := &AnyField{}
 	tp := &TestPrimitive{}
 	f.Set(tp)
 
@@ -122,7 +122,7 @@ func Test_AnyIngestUpdate(t *testing.T) {
 
 func Test_AnyIngestUpdateInvalid1(t *testing.T) {
 
-	f := Any{}
+	f := AnyField{}
 	f.Set(&TestPrimitive{})
 
 	err := f.IngestValue(3453)
@@ -136,7 +136,7 @@ func Test_AnyIngestUpdateInvalid1(t *testing.T) {
 
 func Test_AnyIngestUpdateInvalid2(t *testing.T) {
 
-	f := Any{}
+	f := AnyField{}
 	f.Set(&TestPrimitive{})
 
 	err := f.IngestValue([]any{"Hello", "World"})

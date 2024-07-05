@@ -5,7 +5,6 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -24,10 +23,10 @@ func (w TimerWith) Make() *Timer {
 
 type Timer struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	embodiment field.String
-	periodMs   field.Integer
+	embodiment StringField
+	periodMs   IntegerField
 }
 
 func (tmr *Timer) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

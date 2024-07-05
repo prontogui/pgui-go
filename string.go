@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"errors"
@@ -10,30 +10,30 @@ import (
 	"github.com/prontogui/golib/key"
 )
 
-type String struct {
-	Reserved
+type StringField struct {
+	FieldBase
 	s string
 }
 
-func (f *String) Get() string {
+func (f *StringField) Get() string {
 	return f.s
 }
 
-func (f *String) Set(s string) {
+func (f *StringField) Set(s string) {
 	f.s = s
 	f.OnSet(false)
 }
 
-func (f *String) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
+func (f *StringField) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
 	return false
 }
 
-func (f *String) EgestValue() any {
+func (f *StringField) EgestValue() any {
 	return f.s
 }
 
-func (f *String) IngestValue(value any) error {
+func (f *StringField) IngestValue(value any) error {
 
 	s, ok := value.(string)
 

@@ -5,16 +5,14 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 type TableWith struct {
 	Embodiment  string
 	Headings    []string
-	Rows        [][]primitive.Interface
-	TemplateRow []primitive.Interface
+	Rows        [][]Primitive
+	TemplateRow []Primitive
 }
 
 func (w TableWith) Make() *Table {
@@ -28,12 +26,12 @@ func (w TableWith) Make() *Table {
 
 type Table struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	embodiment  field.String
-	headings    field.Strings1D
-	rows        field.Any2D
-	templateRow field.Any1D
+	embodiment  StringField
+	headings    Strings1DField
+	rows        Any2DField
+	templateRow Any1DField
 }
 
 func (table *Table) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
@@ -49,7 +47,7 @@ func (table *Table) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 }
 
 // TODO:  generalize this code by handling inside primitive Reserved area.
-func (table *Table) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
+func (table *Table) LocateNextDescendant(locator *key.PKeyLocator) Primitive {
 
 	nextIndex := locator.NextIndex()
 
@@ -88,18 +86,18 @@ func (table *Table) SetHeadingsVA(items ...string) {
 	table.headings.Set(items)
 }
 
-func (table *Table) TemplateRow() []primitive.Interface {
+func (table *Table) TemplateRow() []Primitive {
 	return table.templateRow.Get()
 }
 
-func (table *Table) SetTemplateRow(items []primitive.Interface) {
+func (table *Table) SetTemplateRow(items []Primitive) {
 	table.templateRow.Set(items)
 }
 
-func (table *Table) Rows() [][]primitive.Interface {
+func (table *Table) Rows() [][]Primitive {
 	return table.rows.Get()
 }
 
-func (table *Table) SetRows(items [][]primitive.Interface) {
+func (table *Table) SetRows(items [][]Primitive) {
 	table.rows.Set(items)
 }

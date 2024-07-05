@@ -5,7 +5,6 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -23,10 +22,10 @@ func (w TextFieldWith) Make() *TextField {
 
 type TextField struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	textEntry  field.String
-	embodiment field.String
+	textEntry  StringField
+	embodiment StringField
 }
 
 func (txt *TextField) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

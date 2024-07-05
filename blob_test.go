@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"reflect"
@@ -12,7 +12,7 @@ import (
 )
 
 func Test_BlobSetAndGet(t *testing.T) {
-	f := Blob{}
+	f := BlobField{}
 
 	f.Set([]byte{34, 200, 90, 1, 0})
 
@@ -22,11 +22,11 @@ func Test_BlobSetAndGet(t *testing.T) {
 }
 
 func Test_BlobPrepareForUpdates(t *testing.T) {
-	f := Blob{}
+	f := BlobField{}
 
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyFieldPreppedForUpdate(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.FieldBase)
 
 	f.Set([]byte{1, 2, 3})
 
@@ -37,7 +37,7 @@ func Test_BlobPrepareForUpdates(t *testing.T) {
 
 func Test_BlobEgestValue(t *testing.T) {
 
-	f := Blob{}
+	f := BlobField{}
 	f.Set([]byte{10, 20, 30})
 
 	v := f.EgestValue()
@@ -52,7 +52,7 @@ func Test_BlobEgestValue(t *testing.T) {
 
 func Test_BlobIngestUpdate(t *testing.T) {
 
-	f := Blob{}
+	f := BlobField{}
 	err := f.IngestValue([]byte{1, 2, 3})
 
 	if err != nil {
@@ -80,7 +80,7 @@ func Test_BlobIngestUpdate(t *testing.T) {
 
 func Test_BlobIngestWrongValueType(t *testing.T) {
 
-	f := Blob{}
+	f := BlobField{}
 	err := f.IngestValue("something")
 
 	if err == nil {

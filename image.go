@@ -10,7 +10,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -38,10 +37,10 @@ func (w ImageWith) Make() *Image {
 
 type Image struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	embodiment field.String
-	image      field.Blob
+	embodiment StringField
+	image      BlobField
 }
 
 func (image *Image) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

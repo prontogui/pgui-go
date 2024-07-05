@@ -10,7 +10,6 @@ import (
 
 	cbor "github.com/fxamacker/cbor/v2"
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 type Update struct {
@@ -20,7 +19,7 @@ type Update struct {
 }
 
 type Synchro struct {
-	primitives []primitive.Interface
+	primitives []Primitive
 
 	pendingUpdates []*Update
 }
@@ -58,7 +57,7 @@ func appendFieldToUpdate(update *Update, fkey key.FKey) {
 	update.fields = append(update.fields, fkey)
 }
 
-func locatePrimitive(primitives []primitive.Interface, pkey key.PKey) primitive.Interface {
+func locatePrimitive(primitives []Primitive, pkey key.PKey) Primitive {
 
 	locator := key.NewPKeyLocator(pkey)
 
@@ -91,7 +90,7 @@ func (s *Synchro) OnSet(pkey key.PKey, fkey key.FKey, structural bool) {
 	}
 }
 
-func (s *Synchro) SetTopPrimitives(primitives ...primitive.Interface) {
+func (s *Synchro) SetTopPrimitives(primitives ...Primitive) {
 	//	s.pendingUpdates = make(map[key.PKey][primitive.MaxPrimitiveFields]key.FKey)
 
 	s.primitives = primitives
@@ -103,7 +102,7 @@ func (s *Synchro) SetTopPrimitives(primitives ...primitive.Interface) {
 	}
 }
 
-func (s *Synchro) GetTopPrimitives() []primitive.Interface {
+func (s *Synchro) GetTopPrimitives() []Primitive {
 	return s.primitives
 }
 
@@ -150,7 +149,7 @@ func (s *Synchro) GetFullUpdate() ([]byte, error) {
 	return cbor.Marshal(l)
 }
 
-func (s *Synchro) IngestUpdate(updatesCbor []byte) (updatedPrimitive primitive.Interface, updateError error) {
+func (s *Synchro) IngestUpdate(updatesCbor []byte) (updatedPrimitive Primitive, updateError error) {
 
 	var updates any
 

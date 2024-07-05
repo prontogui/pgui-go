@@ -2,18 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 func Test_Any2DSetAndGet(t *testing.T) {
-	f := Any2D{}
+	f := Any2DField{}
 
 	actual, _ := generateTestData2D()
 	f.Set(actual)
@@ -26,7 +25,7 @@ func Test_Any2DSetAndGet(t *testing.T) {
 }
 
 func Test_Any2DSetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
-	f := Any2D{}
+	f := Any2DField{}
 
 	actuals_i, actuals_p := generateTestData2D()
 	f.Set(actuals_i)
@@ -39,7 +38,7 @@ func Test_Any2DSetWithFieldUnpreppedAndChildrenUnprepped(t *testing.T) {
 }
 
 func Test_Any2DSetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
-	f := Any2D{}
+	f := Any2DField{}
 
 	actuals_i, actuals_p := generateTestData2D()
 
@@ -63,7 +62,7 @@ func Test_Any2DSetWithFieldUnpreppedAndChildrenPreviouslyPrepped(t *testing.T) {
 }
 
 func Test_Any2DSetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
-	f := Any2D{}
+	f := Any2DField{}
 	pkey := key.NewPKey(50)
 	onset := getTestOnsetFunc()
 
@@ -81,7 +80,7 @@ func Test_Any2DSetWithFieldPreppedAndChildrenUnprepped(t *testing.T) {
 }
 
 func Test_Any2DSetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
-	f := Any2D{}
+	f := Any2DField{}
 
 	pkey := key.NewPKey(50)
 	onset := getTestOnsetFunc()
@@ -109,14 +108,14 @@ func Test_Any2DSetWithFieldPreppedAndChildrenPreviouslyPrepped(t *testing.T) {
 }
 
 func Test_Any2DPrepareForUpdates(t *testing.T) {
-	f := Any2D{}
+	f := Any2DField{}
 
 	values_i, values_p := generateTestData2D()
 	f.Set(values_i)
 
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyFieldPreppedForUpdate(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.FieldBase)
 
 	for i, p1 := range values_p {
 		for j, p2 := range p1 {
@@ -134,8 +133,8 @@ func Test_Any2DPrepareForUpdates(t *testing.T) {
 }
 
 func Test_Any2DEgestValue(t *testing.T) {
-	f := Any2D{}
-	f.Set([][]primitive.Interface{
+	f := Any2DField{}
+	f.Set([][]Primitive{
 		{&TestPrimitive{s: "abc0"}, &TestPrimitive{s: "xyz0"}},
 		{&TestPrimitive{s: "abc1"}, &TestPrimitive{s: "xyz1"}},
 	})
@@ -179,13 +178,13 @@ func Test_Any2DEgestValue(t *testing.T) {
 	}
 }
 
-func createAny2DForTest() (*Any2D, []*TestPrimitive) {
-	f := &Any2D{}
+func createAny2DForTest() (*Any2DField, []*TestPrimitive) {
+	f := &Any2DField{}
 	p11 := &TestPrimitive{}
 	p12 := &TestPrimitive{}
 	p21 := &TestPrimitive{}
 	p22 := &TestPrimitive{}
-	a := [][]primitive.Interface{{p11, p12}, {p21, p22}}
+	a := [][]Primitive{{p11, p12}, {p21, p22}}
 	f.Set(a)
 	return f, []*TestPrimitive{p11, p12, p21, p22}
 }

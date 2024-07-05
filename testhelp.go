@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"errors"
@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 type TestPrimitive struct {
@@ -27,7 +26,7 @@ func (tp *TestPrimitive) IsPrepped() bool {
 	return len(tp.pkey) != 0
 }
 
-func (tp *TestPrimitive) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
+func (tp *TestPrimitive) LocateNextDescendant(locator *key.PKeyLocator) Primitive {
 	return nil
 }
 
@@ -47,26 +46,26 @@ func (tp *TestPrimitive) IngestUpdate(update map[any]any) error {
 	return nil
 }
 
-func generateTestData1D() ([]primitive.Interface, []*TestPrimitive) {
+func generateTestData1D() ([]Primitive, []*TestPrimitive) {
 
 	act1 := &TestPrimitive{s: "abc"}
 	act2 := &TestPrimitive{s: "def"}
 	act3 := &TestPrimitive{s: "uvw"}
 
-	return []primitive.Interface{act1, act2, act3}, []*TestPrimitive{act1, act2, act3}
+	return []Primitive{act1, act2, act3}, []*TestPrimitive{act1, act2, act3}
 }
 
-func generateTestData2D() ([][]primitive.Interface, [][]*TestPrimitive) {
+func generateTestData2D() ([][]Primitive, [][]*TestPrimitive) {
 
 	act1a := &TestPrimitive{s: "abc"}
 	act1b := &TestPrimitive{s: "def"}
 	act2a := &TestPrimitive{s: "uvw"}
 	act2b := &TestPrimitive{s: "xyz"}
 
-	return [][]primitive.Interface{{act1a, act1b}, {act2a, act2b}}, [][]*TestPrimitive{{act1a, act1b}, {act2a, act2b}}
+	return [][]Primitive{{act1a, act1b}, {act2a, act2b}}, [][]*TestPrimitive{{act1a, act1b}, {act2a, act2b}}
 }
 
-func verifyFieldPreppedForUpdate(t *testing.T, f *Reserved) {
+func verifyFieldPreppedForUpdate(t *testing.T, f *FieldBase) {
 
 	if f.fkey != 10 {
 		t.Error("fkey was not stashed correctly")

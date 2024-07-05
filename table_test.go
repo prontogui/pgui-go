@@ -8,21 +8,20 @@ import (
 	"testing"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 func Test_TableAttachedFields(t *testing.T) {
 	table := &Table{}
 	table.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, table.Reserved, "Embodiment", "Headings", "Rows", "TemplateRow")
+	verifyAllFieldsAttached(t, table.PrimitiveBase, "Embodiment", "Headings", "Rows", "TemplateRow")
 }
 
 func Test_TableMake(t *testing.T) {
 	table := TableWith{
 		Embodiment:  "paginated",
 		Headings:    []string{"H1", "H2"},
-		Rows:        [][]primitive.Interface{{&Command{}, &Command{}}, {&Command{}, &Command{}}},
-		TemplateRow: []primitive.Interface{&Command{}, &Command{}},
+		Rows:        [][]Primitive{{&Command{}, &Command{}}, {&Command{}, &Command{}}},
+		TemplateRow: []Primitive{&Command{}, &Command{}},
 	}.Make()
 
 	if table.Embodiment() != "paginated" {
@@ -77,7 +76,7 @@ func Test_TableFieldSettings(t *testing.T) {
 
 	// Rows field
 
-	table.SetRows([][]primitive.Interface{{&Command{}, &Command{}}})
+	table.SetRows([][]Primitive{{&Command{}, &Command{}}})
 
 	tableGet := table.Rows()
 
@@ -95,7 +94,7 @@ func Test_TableFieldSettings(t *testing.T) {
 	}
 
 	// TemplateRow field tests
-	table.SetTemplateRow([]primitive.Interface{&Text{}, &Command{}})
+	table.SetTemplateRow([]Primitive{&Text{}, &Command{}})
 
 	_, ok = table.TemplateRow()[0].(*Text)
 
@@ -121,8 +120,8 @@ func Test_TableGetChildPrimitive(t *testing.T) {
 	cmdtr0 := CommandWith{Label: "a"}.Make()
 	cmdtr1 := CommandWith{Label: "b"}.Make()
 
-	table.SetRows([][]primitive.Interface{{cmdr0c0, cmdr0c1}, {cmdr1c0, cmdr1c1}})
-	table.SetTemplateRow([]primitive.Interface{cmdtr0, cmdtr1})
+	table.SetRows([][]Primitive{{cmdr0c0, cmdr0c1}, {cmdr1c0, cmdr1c1}})
+	table.SetTemplateRow([]Primitive{cmdtr0, cmdtr1})
 
 	locate := func(pkey key.PKey) *Command {
 		locator := key.NewPKeyLocator(pkey)

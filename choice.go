@@ -5,7 +5,6 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -25,11 +24,11 @@ func (w ChoiceWith) Make() *Choice {
 
 type Choice struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	choice     field.String
-	choices    field.Strings1D
-	embodiment field.String
+	choice     StringField
+	choices    Strings1DField
+	embodiment StringField
 }
 
 func (choice *Choice) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

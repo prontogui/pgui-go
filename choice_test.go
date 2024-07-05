@@ -14,7 +14,7 @@ import (
 func Test_ChoiceAttachedFields(t *testing.T) {
 	cmd := &Choice{}
 	cmd.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, cmd.Reserved, "Choice", "Choices", "Embodiment")
+	verifyAllFieldsAttached(t, cmd.PrimitiveBase, "Choice", "Choices", "Embodiment")
 }
 
 func Test_ChoiceMake(t *testing.T) {

@@ -13,7 +13,7 @@ import (
 func Test_ImageAttachedFields(t *testing.T) {
 	image := &Image{}
 	image.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, image.Reserved, "Embodiment", "Image")
+	verifyAllFieldsAttached(t, image.PrimitiveBase, "Embodiment", "Image")
 }
 
 func Test_ImageMake1(t *testing.T) {

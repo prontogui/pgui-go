@@ -13,7 +13,7 @@ import (
 func Test_CommandAttachedFields(t *testing.T) {
 	cmd := &Command{}
 	cmd.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, cmd.Reserved, "Embodiment", "Label", "Status")
+	verifyAllFieldsAttached(t, cmd.PrimitiveBase, "Embodiment", "Label", "Status")
 }
 
 func Test_CommandMake(t *testing.T) {

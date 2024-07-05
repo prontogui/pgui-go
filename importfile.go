@@ -5,7 +5,6 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -28,13 +27,13 @@ func (w ImportFileWith) Make() *ImportFile {
 
 type ImportFile struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	data            field.Blob
-	embodiment      field.String
-	imported        field.Boolean
-	name            field.String
-	validExtensions field.Strings1D
+	data            BlobField
+	embodiment      StringField
+	imported        BooleanField
+	name            StringField
+	validExtensions Strings1DField
 }
 
 func (ifile *ImportFile) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

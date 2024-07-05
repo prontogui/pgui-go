@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 )
 
 func Test_IntegerSetAndGet(t *testing.T) {
-	f := Integer{}
+	f := IntegerField{}
 
 	f.Set(92342)
 
@@ -21,11 +21,11 @@ func Test_IntegerSetAndGet(t *testing.T) {
 }
 
 func Test_IntegerPrepareForUpdates(t *testing.T) {
-	f := Integer{}
+	f := IntegerField{}
 
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyFieldPreppedForUpdate(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.FieldBase)
 
 	f.Set(92342)
 
@@ -35,7 +35,7 @@ func Test_IntegerPrepareForUpdates(t *testing.T) {
 }
 
 func Test_IntegerEgestValue(t *testing.T) {
-	f := Integer{}
+	f := IntegerField{}
 	f.Set(12345)
 	v := f.EgestValue()
 	i, ok := v.(int)
@@ -49,7 +49,7 @@ func Test_IntegerEgestValue(t *testing.T) {
 
 func Test_IntegerIngestUpdatePositive(t *testing.T) {
 
-	f := Integer{}
+	f := IntegerField{}
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	testfunc := func() bool {
@@ -70,7 +70,7 @@ func Test_IntegerIngestUpdatePositive(t *testing.T) {
 
 func Test_IntegerIngestUpdateNegative(t *testing.T) {
 
-	f := Integer{}
+	f := IntegerField{}
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	testfunc := func() bool {
@@ -86,7 +86,7 @@ func Test_IntegerIngestUpdateNegative(t *testing.T) {
 
 func Test_IntegerIngestUpdateZero(t *testing.T) {
 
-	f := Integer{}
+	f := IntegerField{}
 	f.Set(290)
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
@@ -101,7 +101,7 @@ func Test_IntegerIngestUpdateZero(t *testing.T) {
 
 func Test_IntegerIngestUpdateInvalid(t *testing.T) {
 
-	f := Integer{}
+	f := IntegerField{}
 	err := f.IngestValue(false)
 	verifyIngestUpdateInvalid(t, err)
 }

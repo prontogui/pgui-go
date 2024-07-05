@@ -2,21 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"errors"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
-type Any1D struct {
-	Reserved
-	ary []primitive.Interface
+type Any1DField struct {
+	FieldBase
+	ary []Primitive
 }
 
-func (f *Any1D) prepareDescendantsForUpdate() {
+func (f *Any1DField) prepareDescendantsForUpdate() {
 
 	fieldPkey := f.pkey.AddLevel(f.fieldPKeyIndex)
 
@@ -29,23 +28,23 @@ func (f *Any1D) prepareDescendantsForUpdate() {
 	}
 }
 
-func (f *Any1D) Get() []primitive.Interface {
+func (f *Any1DField) Get() []Primitive {
 	return f.ary
 }
 
-func (f *Any1D) Set(ary []primitive.Interface) {
+func (f *Any1DField) Set(ary []Primitive) {
 	f.ary = ary
 	f.prepareDescendantsForUpdate()
 	f.OnSet(true)
 }
 
-func (f *Any1D) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
+func (f *Any1DField) PrepareForUpdates(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) (isContainer bool) {
 	f.StashUpdateInfo(fkey, pkey, fieldPKeyIndex, onset)
 	f.prepareDescendantsForUpdate()
 	return true
 }
 
-func (f *Any1D) EgestValue() any {
+func (f *Any1DField) EgestValue() any {
 
 	ary := []any{}
 
@@ -56,7 +55,7 @@ func (f *Any1D) EgestValue() any {
 	return ary
 }
 
-func (f *Any1D) IngestValue(value any) error {
+func (f *Any1DField) IngestValue(value any) error {
 
 	l, ok := value.([]any)
 	if !ok {

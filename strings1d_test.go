@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"reflect"
@@ -12,7 +12,7 @@ import (
 )
 
 func Test_String1DSetAndGet(t *testing.T) {
-	f := Strings1D{}
+	f := Strings1DField{}
 
 	sa := []string{"abc", "xyz", "def"}
 
@@ -24,11 +24,11 @@ func Test_String1DSetAndGet(t *testing.T) {
 }
 
 func Test_String1DPrepareForUpdates(t *testing.T) {
-	f := Strings1D{}
+	f := Strings1DField{}
 
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyFieldPreppedForUpdate(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.FieldBase)
 
 	f.Set([]string{"abc", "xyz"})
 
@@ -39,7 +39,7 @@ func Test_String1DPrepareForUpdates(t *testing.T) {
 
 func Test_Strings1DEgestValue(t *testing.T) {
 
-	f := Strings1D{}
+	f := Strings1DField{}
 	f.Set([]string{"x", "y", "z"})
 
 	v := f.EgestValue()
@@ -54,7 +54,7 @@ func Test_Strings1DEgestValue(t *testing.T) {
 
 func Test_Strings1DIngestUpdate(t *testing.T) {
 
-	f := Strings1D{}
+	f := Strings1DField{}
 	err := f.IngestValue([]string{"abc", "def"})
 	if err != nil {
 		t.Fatalf("unexpected error was returned:  %s", err.Error())
@@ -66,7 +66,7 @@ func Test_Strings1DIngestUpdate(t *testing.T) {
 
 func Test_Strings1DIngestUpdateInvalid(t *testing.T) {
 
-	f := Strings1D{}
+	f := Strings1DField{}
 	err := f.IngestValue(450)
 	if err == nil {
 		t.Fatal("error was not returned")

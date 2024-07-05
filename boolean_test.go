@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 )
 
 func Test_BooleanSetAndGetFalse(t *testing.T) {
-	f := Boolean{}
+	f := BooleanField{}
 
 	f.Set(false)
 
@@ -21,7 +21,7 @@ func Test_BooleanSetAndGetFalse(t *testing.T) {
 }
 
 func Test_BooleanSetAndGetTrue(t *testing.T) {
-	f := Boolean{}
+	f := BooleanField{}
 
 	f.Set(true)
 
@@ -31,11 +31,11 @@ func Test_BooleanSetAndGetTrue(t *testing.T) {
 }
 
 func Test_BooleanPrepareForUpdates(t *testing.T) {
-	f := Boolean{}
+	f := BooleanField{}
 
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
-	verifyFieldPreppedForUpdate(t, &f.Reserved)
+	verifyFieldPreppedForUpdate(t, &f.FieldBase)
 
 	f.Set(true)
 
@@ -45,7 +45,7 @@ func Test_BooleanPrepareForUpdates(t *testing.T) {
 }
 
 func Test_BooleanEgestValue(t *testing.T) {
-	f := Boolean{}
+	f := BooleanField{}
 	f.Set(true)
 	v := f.EgestValue()
 	b, ok := v.(bool)
@@ -59,7 +59,7 @@ func Test_BooleanEgestValue(t *testing.T) {
 
 func Test_BooleanIngestUpdateTrue(t *testing.T) {
 
-	f := Boolean{}
+	f := BooleanField{}
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
 	err := f.IngestValue(true)
@@ -73,7 +73,7 @@ func Test_BooleanIngestUpdateTrue(t *testing.T) {
 
 func Test_BooleanIngestUpdateFalse(t *testing.T) {
 
-	f := Boolean{}
+	f := BooleanField{}
 	f.Set(true)
 	f.PrepareForUpdates(10, key.NewPKey(50), 0, getTestOnsetFunc())
 
@@ -88,7 +88,7 @@ func Test_BooleanIngestUpdateFalse(t *testing.T) {
 
 func Test_BooleanIngestUpdateInvalid(t *testing.T) {
 
-	f := Boolean{}
+	f := BooleanField{}
 	err := f.IngestValue(10)
 	verifyIngestUpdateInvalid(t, err)
 }

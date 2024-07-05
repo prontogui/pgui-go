@@ -13,7 +13,7 @@ import (
 func Test_CheckAttachedFields(t *testing.T) {
 	check := &Check{}
 	check.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, check.Reserved, "Checked", "Embodiment", "Label")
+	verifyAllFieldsAttached(t, check.PrimitiveBase, "Checked", "Embodiment", "Label")
 }
 
 func Test_CheckMake(t *testing.T) {

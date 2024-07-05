@@ -8,15 +8,14 @@ import (
 	"errors"
 
 	"github.com/prontogui/golib/pgcomm"
-	"github.com/prontogui/golib/primitive"
 )
 
 // The API for working with app-to-server communication.
 type ProntoGUI interface {
 	StartServing(addr string, port int) error
 	StopServing()
-	SetGUI(primitives ...primitive.Interface)
-	Wait() (updatedPrimitive primitive.Interface, waitError error)
+	SetGUI(primitives ...Primitive)
+	Wait() (updatedPrimitive Primitive, waitError error)
 }
 
 // Internal data for handling the API of this library
@@ -60,7 +59,7 @@ func (pg *_ProntoGUI) StopServing() {
 //     them will visually change.
 //
 //   - It's best to avoid reusing primitives in the same GUI unless they are static, such as Text.
-func (pg *_ProntoGUI) SetGUI(primitives ...primitive.Interface) {
+func (pg *_ProntoGUI) SetGUI(primitives ...Primitive) {
 	pg.fullupdate = true
 	pg.isgui = true
 	pg.synchro.SetTopPrimitives(primitives...)
@@ -69,7 +68,7 @@ func (pg *_ProntoGUI) SetGUI(primitives ...primitive.Interface) {
 // Sends model updates to the app for rendering, waits for an event to occured in the app that requires server attention,
 // and receives model updates from the app.  This function returns the primitive that ended triggered the event that ended
 // the wait period.  An error is returend if something went wrong.
-func (pg *_ProntoGUI) Wait() (updatedPrimitive primitive.Interface, waitError error) {
+func (pg *_ProntoGUI) Wait() (updatedPrimitive Primitive, waitError error) {
 
 	if !pg.isgui {
 		return nil, errors.New("no GUI has been set")

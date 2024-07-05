@@ -13,7 +13,7 @@ import (
 func Test_TristateAttachedFields(t *testing.T) {
 	tri := &Tristate{}
 	tri.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, tri.Reserved, "Embodiment", "Label", "State")
+	verifyAllFieldsAttached(t, tri.PrimitiveBase, "Embodiment", "Label", "State")
 }
 
 func Test_TristateMake(t *testing.T) {

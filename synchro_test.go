@@ -10,8 +10,6 @@ import (
 
 	cbor "github.com/fxamacker/cbor/v2"
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
-	// "github.com/prontogui/golib/testhelp"
 )
 
 func verifyFullUpdate(t *testing.T, cborUpdate []byte, expecting ...*SimplePrimitive) {
@@ -190,7 +188,7 @@ func Test_PartialUpdate1(t *testing.T) {
 	verifyUpdateItemMap(t, updates[4], m2)
 }
 
-func verifyPrimitivesEqual(t *testing.T, a []primitive.Interface, b []primitive.Interface) {
+func verifyPrimitivesEqual(t *testing.T, a []Primitive, b []Primitive) {
 
 	lena, lenb := len(a), len(b)
 

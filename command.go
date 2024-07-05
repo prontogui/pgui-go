@@ -5,7 +5,6 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
 )
 
@@ -26,11 +25,11 @@ func (w CommandWith) Make() *Command {
 
 type Command struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	embodiment field.String
-	label      field.String
-	status     field.Integer
+	embodiment StringField
+	label      StringField
+	status     IntegerField
 }
 
 func (cmd *Command) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {

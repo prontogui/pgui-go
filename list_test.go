@@ -8,19 +8,18 @@ import (
 	"testing"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 func Test_ListAttachedFields(t *testing.T) {
 	list := &List{}
 	list.PrepareForUpdates(key.NewPKey(), nil)
-	verifyAllFieldsAttached(t, list.Reserved, "Embodiment", "ListItems", "Selected", "TemplateItem")
+	verifyAllFieldsAttached(t, list.PrimitiveBase, "Embodiment", "ListItems", "Selected", "TemplateItem")
 }
 
 func Test_ListMake(t *testing.T) {
 	list := ListWith{
 		Embodiment:   "scrolling",
-		ListItems:    []primitive.Interface{&Command{}, &Command{}},
+		ListItems:    []Primitive{&Command{}, &Command{}},
 		Selected:     1,
 		TemplateItem: &Command{},
 	}.Make()
@@ -55,7 +54,7 @@ func Test_ListFieldSettings(t *testing.T) {
 
 	// ListItems field (as array)
 
-	list.SetListItems([]primitive.Interface{&Command{}, &Command{}})
+	list.SetListItems([]Primitive{&Command{}, &Command{}})
 
 	listGet := list.ListItems()
 

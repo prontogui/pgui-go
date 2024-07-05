@@ -5,15 +5,13 @@
 package golib
 
 import (
-	"github.com/prontogui/golib/field"
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
 )
 
 type FrameWith struct {
 	Embodiment string
 	Showing    bool
-	FrameItems []primitive.Interface
+	FrameItems []Primitive
 }
 
 func (w FrameWith) Make() *Frame {
@@ -26,11 +24,11 @@ func (w FrameWith) Make() *Frame {
 
 type Frame struct {
 	// Mix-in the common guts for primitives
-	Reserved
+	PrimitiveBase
 
-	embodiment field.String
-	showing    field.Boolean
-	frameItems field.Any1D
+	embodiment StringField
+	showing    BooleanField
+	frameItems Any1DField
 }
 
 func (frame *Frame) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
@@ -45,22 +43,22 @@ func (frame *Frame) PrepareForUpdates(pkey key.PKey, onset key.OnSetFunction) {
 }
 
 // TODO:  generalize this code by handling inside primitive Reserved area.
-func (frame *Frame) LocateNextDescendant(locator *key.PKeyLocator) primitive.Interface {
+func (frame *Frame) LocateNextDescendant(locator *key.PKeyLocator) Primitive {
 	if locator.NextIndex() != 0 {
 		panic("cannot locate descendent using a pkey that we assumed was valid")
 	}
 	return frame.FrameItems()[locator.NextIndex()]
 }
 
-func (frame *Frame) FrameItems() []primitive.Interface {
+func (frame *Frame) FrameItems() []Primitive {
 	return frame.frameItems.Get()
 }
 
-func (frame *Frame) SetFrameItems(items []primitive.Interface) {
+func (frame *Frame) SetFrameItems(items []Primitive) {
 	frame.frameItems.Set(items)
 }
 
-func (frame *Frame) SetFrameItemsVA(items ...primitive.Interface) {
+func (frame *Frame) SetFrameItemsVA(items ...Primitive) {
 	frame.frameItems.Set(items)
 }
 

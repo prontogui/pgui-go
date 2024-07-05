@@ -10,8 +10,6 @@ import (
 	"testing"
 
 	"github.com/prontogui/golib/key"
-	"github.com/prontogui/golib/primitive"
-	// "github.com/prontogui/golib/field"
 )
 
 func trueOrFalseVariation(variation int) bool {
@@ -22,7 +20,7 @@ func trueOrFalseVariation(variation int) bool {
 	}
 }
 
-func buildSimplePrimitiveArray(variation int) []primitive.Interface {
+func buildSimplePrimitiveArray(variation int) []Primitive {
 
 	p1 := &SimplePrimitive{}
 
@@ -35,11 +33,11 @@ func buildSimplePrimitiveArray(variation int) []primitive.Interface {
 	p2.Status.Set(150 + variation)
 	p2.Label.Set(fmt.Sprintf("orange%d", variation))
 
-	return []primitive.Interface{p1, p2}
+	return []Primitive{p1, p2}
 }
 
-func buildSimplePrimitiveArray2D() [][]primitive.Interface {
-	return [][]primitive.Interface{buildSimplePrimitiveArray(0), buildSimplePrimitiveArray(1)}
+func buildSimplePrimitiveArray2D() [][]Primitive {
+	return [][]Primitive{buildSimplePrimitiveArray(0), buildSimplePrimitiveArray(1)}
 }
 
 func verifyValueB(t *testing.T, value any, checkno int, expecting bool) {
@@ -208,8 +206,8 @@ func Test_IngestUpdate(t *testing.T) {
 	p21 := &SimplePrimitive{}
 	p22 := &SimplePrimitive{}
 
-	tp.ListItems.Set([]primitive.Interface{p1, p2})
-	tp.Rows.Set([][]primitive.Interface{{p11, p12}, {p21, p22}})
+	tp.ListItems.Set([]Primitive{p1, p2})
+	tp.Rows.Set([][]Primitive{{p11, p12}, {p21, p22}})
 	tp.PrepareForUpdates(key.NewPKey(0), nil)
 
 	err := tp.IngestUpdate(update)

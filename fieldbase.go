@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package field
+package golib
 
 import (
 	"github.com/prontogui/golib/key"
 )
 
-type Reserved struct {
+type FieldBase struct {
 	// PKey of this field's container primitive.
 	pkey key.PKey // `cbor:"omitempty"`
 
@@ -23,14 +23,14 @@ type Reserved struct {
 	fieldPKeyIndex int
 }
 
-func (f *Reserved) StashUpdateInfo(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
+func (f *FieldBase) StashUpdateInfo(fkey key.FKey, pkey key.PKey, fieldPKeyIndex int, onset key.OnSetFunction) {
 	f.fkey = fkey
 	f.pkey = pkey
 	f.onset = onset
 	fieldPKeyIndex = fieldPKeyIndex
 }
 
-func (f *Reserved) OnSet(structural bool) {
+func (f *FieldBase) OnSet(structural bool) {
 	if f.onset != nil {
 		f.onset(f.pkey, f.fkey, structural)
 	}
