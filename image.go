@@ -6,7 +6,7 @@ package golib
 
 import (
 	"image"
-	_ "image/png"
+	_ "image/png" // Question:  how much will this impact load performance for those not using Image?
 	"log"
 	"os"
 
