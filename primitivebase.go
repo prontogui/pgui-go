@@ -164,7 +164,7 @@ func CanonizeEmbodiment(embodiment string) string {
 		return convertSimplifiedKVPairsToJson(s)
 	}
 
-	return fmt.Sprintf("{\"Embodiment\":\"%s\"}", s)
+	return fmt.Sprintf("{\"embodiment\":\"%s\"}", s)
 }
 
 func convertSimplifiedKVPairsToJson(s string) string {
