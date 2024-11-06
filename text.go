@@ -19,7 +19,7 @@ type TextWith struct {
 func (w TextWith) Make() *Text {
 	text := &Text{}
 	text.content.Set(w.Content)
-	text.embodiment.Set(w.Embodiment)
+	text.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	text.tag.Set(w.Tag)
 	return text
 }
@@ -77,7 +77,7 @@ func (txt *Text) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (txt *Text) SetEmbodiment(s string) *Text {
-	txt.embodiment.Set(s)
+	txt.embodiment.Set(CanonizeEmbodiment(s))
 	return txt
 }
 

@@ -21,7 +21,7 @@ type FrameWith struct {
 // Creates a new Frame using the supplied field assignments.
 func (w FrameWith) Make() *Frame {
 	frame := &Frame{}
-	frame.embodiment.Set(w.Embodiment)
+	frame.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	frame.showing.Set(w.Showing)
 	frame.frameItems.Set(w.FrameItems)
 	frame.tag.Set(w.Tag)
@@ -78,7 +78,7 @@ func (frame *Frame) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (frame *Frame) SetEmbodiment(s string) *Frame {
-	frame.embodiment.Set(s)
+	frame.embodiment.Set(CanonizeEmbodiment(s))
 	return frame
 }
 

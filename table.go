@@ -23,7 +23,7 @@ type TableWith struct {
 // Creates a new Table using the supplied field assignments.
 func (w TableWith) Make() *Table {
 	table := &Table{}
-	table.embodiment.Set(w.Embodiment)
+	table.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	table.headings.Set(w.Headings)
 	table.rows.Set(w.Rows)
 	table.status.Set(w.Status)
@@ -91,7 +91,7 @@ func (table *Table) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (table *Table) SetEmbodiment(s string) *Table {
-	table.embodiment.Set(s)
+	table.embodiment.Set(CanonizeEmbodiment(s))
 	return table
 }
 

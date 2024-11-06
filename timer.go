@@ -21,7 +21,7 @@ type TimerWith struct {
 // Makes a new Timer with specified field values.
 func (w TimerWith) Make() *Timer {
 	timer := &Timer{}
-	timer.embodiment.Set(w.Embodiment)
+	timer.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	timer.periodMs.Set(w.PeriodMs)
 	timer.tag.Set(w.Tag)
 	return timer
@@ -66,7 +66,7 @@ func (tmr *Timer) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (tmr *Timer) SetEmbodiment(s string) *Timer {
-	tmr.embodiment.Set(s)
+	tmr.embodiment.Set(CanonizeEmbodiment(s))
 	return tmr
 }
 

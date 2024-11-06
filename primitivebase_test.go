@@ -301,3 +301,30 @@ func Test_IndexOf(t *testing.T) {
 	testfunc(-1, -1)
 	testfunc(-10, -1)
 }
+
+func Test_CanonizeEmbodiment1(t *testing.T) {
+
+	if CanonizeEmbodiment("full-view") != "{\"Embodiment\":\"full-view\"}" {
+		t.Error("'Simplified embodiment was not canonized correctly")
+	}
+
+	if CanonizeEmbodiment("  Onething:abc123   ") != "{\"Onething\":\"abc123\"}" {
+		t.Error("Simplified key/value embodiment string with one property was not canonized correctly")
+	}
+
+	if CanonizeEmbodiment("Embodiment:dialog-view, Yadayada:123") != "{\"Embodiment\":\"dialog-view\",\"Yadayada\":\"123\"}" {
+		t.Error("Simplified key/value embodiment string was not canonized correctly")
+	}
+
+	if CanonizeEmbodiment("{\"Embodiment\":\"dialog-view\",\"Yadayada\":\"123\"}") != "{\"Embodiment\":\"dialog-view\",\"Yadayada\":\"123\"}" {
+		t.Error("Canonizing an already canonized embodiment string should return the same string")
+	}
+
+	if CanonizeEmbodiment("") != "" {
+		t.Error("Canonizing an empty string should return an empty string")
+	}
+
+	if CanonizeEmbodiment("   ") != "" {
+		t.Error("Canonizing an string of whitespace should return an empty string")
+	}
+}

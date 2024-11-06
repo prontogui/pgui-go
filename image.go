@@ -24,7 +24,7 @@ type ImageWith struct {
 // Makes a new Image with specified field values.
 func (w ImageWith) Make() *Image {
 	image := &Image{}
-	image.embodiment.Set(w.Embodiment)
+	image.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 
 	if len(w.FromFile) > 0 {
 		loadedImage := loadImageFromFile(w.FromFile)
@@ -75,7 +75,7 @@ func (image *Image) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (image *Image) SetEmbodiment(s string) *Image {
-	image.embodiment.Set(s)
+	image.embodiment.Set(CanonizeEmbodiment(s))
 	return image
 }
 

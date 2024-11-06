@@ -21,7 +21,7 @@ type CheckWith struct {
 func (w CheckWith) Make() *Check {
 	check := &Check{}
 	check.checked.Set(w.Checked)
-	check.embodiment.Set(w.Embodiment)
+	check.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	check.label.Set(w.Label)
 	check.tag.Set(w.Tag)
 	return check
@@ -83,7 +83,7 @@ func (check *Check) Embodiment() string {
 
 // Returns a JSON string specifying the embodiment to use for this primitive.
 func (check *Check) SetEmbodiment(s string) *Check {
-	check.embodiment.Set(s)
+	check.embodiment.Set(CanonizeEmbodiment(s))
 	return check
 }
 

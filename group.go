@@ -20,7 +20,7 @@ type GroupWith struct {
 // Creates a new Group using the supplied field assignments.
 func (w GroupWith) Make() *Group {
 	grp := &Group{}
-	grp.embodiment.Set(w.Embodiment)
+	grp.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	grp.groupItems.Set(w.GroupItems)
 	grp.tag.Set(w.Tag)
 	return grp
@@ -74,7 +74,7 @@ func (grp *Group) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (grp *Group) SetEmbodiment(s string) *Group {
-	grp.embodiment.Set(s)
+	grp.embodiment.Set(CanonizeEmbodiment(s))
 	return grp
 }
 

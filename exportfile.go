@@ -23,7 +23,7 @@ type ExportFileWith struct {
 func (w ExportFileWith) Make() *ExportFile {
 	ef := &ExportFile{}
 	ef.data.Set(w.Data)
-	ef.embodiment.Set(w.Embodiment)
+	ef.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	ef.name.Set(w.Name)
 	ef.tag.Set(w.Tag)
 	return ef
@@ -90,7 +90,7 @@ func (ef *ExportFile) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (ef *ExportFile) SetEmbodiment(s string) *ExportFile {
-	ef.embodiment.Set(s)
+	ef.embodiment.Set(CanonizeEmbodiment(s))
 	return ef
 }
 

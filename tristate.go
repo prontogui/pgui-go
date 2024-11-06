@@ -20,7 +20,7 @@ type TristateWith struct {
 // Creates a new TriState using the supplied field assignments.
 func (w TristateWith) Make() *Tristate {
 	tri := &Tristate{}
-	tri.embodiment.Set(w.Embodiment)
+	tri.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	tri.label.Set(w.Label)
 	tri.state.Set(w.State)
 	tri.tag.Set(w.Tag)
@@ -72,7 +72,7 @@ func (tri *Tristate) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (tri *Tristate) SetEmbodiment(s string) *Tristate {
-	tri.embodiment.Set(s)
+	tri.embodiment.Set(CanonizeEmbodiment(s))
 	return tri
 }
 

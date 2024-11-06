@@ -18,7 +18,7 @@ type TextFieldWith struct {
 // Creates a new TextField using the supplied field assignments.
 func (w TextFieldWith) Make() *TextField {
 	textField := &TextField{}
-	textField.embodiment.Set(w.Embodiment)
+	textField.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	textField.textEntry.Set(w.TextEntry)
 	textField.tag.Set(w.Tag)
 	return textField
@@ -77,7 +77,7 @@ func (txt *TextField) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (txt *TextField) SetEmbodiment(s string) *TextField {
-	txt.embodiment.Set(s)
+	txt.embodiment.Set(CanonizeEmbodiment(s))
 	return txt
 }
 

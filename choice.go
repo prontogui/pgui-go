@@ -21,7 +21,7 @@ func (w ChoiceWith) Make() *Choice {
 	choice := &Choice{}
 	choice.choice.Set(w.Choice)
 	choice.choices.Set(w.Choices)
-	choice.embodiment.Set(w.Embodiment)
+	choice.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	choice.tag.Set(w.Tag)
 	return choice
 }
@@ -98,7 +98,7 @@ func (choice *Choice) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (choice *Choice) SetEmbodiment(s string) *Choice {
-	choice.embodiment.Set(s)
+	choice.embodiment.Set(CanonizeEmbodiment(s))
 	return choice
 }
 

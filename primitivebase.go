@@ -6,6 +6,8 @@ package golib
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/prontogui/golib/key"
 )
@@ -144,4 +146,43 @@ func (r *PrimitiveBase) IndexOf(parentLevel int) int {
 // Default implementation of fmt:Stringer interface.
 func (r *PrimitiveBase) String() string {
 	return ""
+}
+
+func CanonizeEmbodiment(embodiment string) string {
+
+	s := strings.TrimSpace(embodiment)
+
+	if len(s) == 0 {
+		return ""
+	}
+
+	if s[0] == '{' {
+		return s
+	}
+
+	if strings.Contains(s, ":") {
+		return convertSimplifiedKVPairsToJson(s)
+	}
+
+	return fmt.Sprintf("{\"Embodiment\":\"%s\"}", s)
+}
+
+func convertSimplifiedKVPairsToJson(s string) string {
+	parts := strings.Split(s, ",")
+
+	innerJson := ""
+
+	for _, part := range parts {
+		kv := strings.Split(part, ":")
+		if len(kv) != 2 {
+			return ""
+		}
+
+		if len(innerJson) > 0 {
+			innerJson = innerJson + ","
+		}
+		innerJson = innerJson + fmt.Sprintf("\"%s\":\"%s\"", strings.TrimSpace(kv[0]), strings.TrimSpace(kv[1]))
+	}
+
+	return "{" + innerJson + "}"
 }

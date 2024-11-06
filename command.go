@@ -26,7 +26,7 @@ func (w CommandWith) Make() *Command {
 	cmd.commandIssued.TimestampProvider = getEventTimestamp
 
 	// Set fields
-	cmd.embodiment.Set(w.Embodiment)
+	cmd.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	cmd.label.Set(w.Label)
 	cmd.status.Set(w.Status)
 	cmd.tag.Set(w.Tag)
@@ -88,7 +88,7 @@ func (cmd *Command) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (cmd *Command) SetEmbodiment(s string) *Command {
-	cmd.embodiment.Set(s)
+	cmd.embodiment.Set(CanonizeEmbodiment(s))
 	return cmd
 }
 

@@ -20,7 +20,7 @@ type ListWith struct {
 // Creates a new List using the supplied field assignments.
 func (w ListWith) Make() *List {
 	list := &List{}
-	list.embodiment.Set(w.Embodiment)
+	list.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	list.listItems.Set(w.ListItems)
 	list.selected.Set(w.Selected)
 	list.tag.Set(w.Tag)
@@ -82,7 +82,7 @@ func (list *List) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (list *List) SetEmbodiment(s string) *List {
-	list.embodiment.Set(s)
+	list.embodiment.Set(CanonizeEmbodiment(s))
 	return list
 }
 

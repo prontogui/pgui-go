@@ -22,7 +22,7 @@ type ImportFileWith struct {
 func (w ImportFileWith) Make() *ImportFile {
 	ifile := &ImportFile{}
 	ifile.data.Set(w.Data)
-	ifile.embodiment.Set(w.Embodiment)
+	ifile.embodiment.Set(CanonizeEmbodiment(w.Embodiment))
 	ifile.name.Set(w.Name)
 	ifile.tag.Set(w.Tag)
 	ifile.validExtensions.Set(w.ValidExtensions)
@@ -93,7 +93,7 @@ func (ifile *ImportFile) Embodiment() string {
 
 // Sets a JSON string specifying the embodiment to use for this primitive.
 func (ifile *ImportFile) SetEmbodiment(s string) *ImportFile {
-	ifile.embodiment.Set(s)
+	ifile.embodiment.Set(CanonizeEmbodiment(s))
 	return ifile
 }
 
